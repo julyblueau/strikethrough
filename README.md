@@ -22,9 +22,18 @@ https://strikethrough.com.au (hosted on Netlify)
 4. **Sign-ups** use Netlify Forms automatically on Netlify: submissions appear under the site's Forms tab, where you can turn on email notifications. To use Mailchimp or Klaviyo instead, paste a form URL into `formEndpoint` near the bottom of `index.html`.
 5. **Analytics.** Paste your GA4 or Plausible snippet into the `<head>`.
 
+## Affiliate links
+
+Edit `affiliates.json` on GitHub (pencil icon, then Commit changes). The site picks it up within a minute or two.
+
+- **Amazon Associates:** put your tracking ID (it looks like `yourname-22`) in `amazon_tag`.
+- **Commission Factory and similar networks:** join the retailer in your dashboard, copy its tracking link, and paste it into that retailer's `template` with `?Url={url}` on the end, for example `https://t.cfjump.com/12345/t/67890?Url={url}`. The site swaps `{url}` for each product link.
+
+Affiliate links get `rel="sponsored"`, and the disclosure line appears automatically once any retailer is switched on.
+
 ## Keeping the data fresh
 
-Run `python3 build.py` and `python3 build_calendar.py` after editing `raw_deals.json`, then copy the `rows` into `data/`. Once the GitHub repo exists, the scheduled refresh can commit new data straight to it.
+A scheduled refresh runs twice a day and commits new data here. By hand: edit `raw_deals.json` (an optional 12th field on a deal is its exact product URL), then run `python3 build.py && python3 build_calendar.py && python3 build_pages.py`. That writes `data/deals.json`, `data/calendar.json`, appends to `data/history.json` (our own price record), and rebuilds the category pages, `sitemap.xml` and `robots.txt`.
 
 ## Before launch
 

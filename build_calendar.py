@@ -45,4 +45,5 @@ rows.sort(key=lambda r: (r["start"], r["retailer"]))
 meta = [{"label": "build_calendar.py", "value": pathlib.Path(__file__).read_text(), "type": "code", "lang": "python"}]
 out = sys.argv[1] if len(sys.argv) > 1 else pathlib.Path(__file__).parent / "calendar.json"
 pathlib.Path(out).write_text(json.dumps({"rows": rows, "meta": meta}, ensure_ascii=False))
+(pathlib.Path(__file__).parent / "data" / "calendar.json").write_text(json.dumps({"rows": rows}, ensure_ascii=False))
 print(len(rows))

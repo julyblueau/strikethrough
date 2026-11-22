@@ -1,0 +1,13 @@
+{
+  "_help": "Fill in a retailer once you're approved by its affiliate program, then commit. The site updates itself. Leave a value empty to send shoppers to the retailer without tracking. 'amazon_tag': your Amazon Associates tracking ID. 'template': your network tracking link with {url} where the product URL goes, e.g. a Commission Factory link like https://t.cfjump.com/12345/t/67890?Url={url}",
+  "disclosure": "Some links on Strikethrough are affiliate links, so we may earn a commission if you buy. It never changes a verdict or a score.",
+  "retailers": {
+    "Amazon AU": {"amazon_tag": ""},
+    "The Good Guys": {"template": ""},
+    "JB Hi-Fi": {"template": ""},
+    "Kogan": {"template": ""},
+    "Harvey Norman": {"template": ""},
+    "Dyson AU": {"template": ""},
+    "Koala": {"template": ""}
+  }
+}

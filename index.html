@@ -97,6 +97,18 @@ select,input{font:inherit;font-size:16px;color:var(--ink);background:var(--bg);b
 .acts{display:flex;gap:8px;margin-top:auto;padding-top:8px;border-top:1px dashed var(--line)}
 .acts button{flex:1;min-height:40px;border:1px solid var(--line);border-radius:999px;background:var(--bg);font-size:14px;cursor:pointer}
 .acts button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.buy{display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;border-radius:999px;background:var(--red);color:#fff;text-decoration:none;font-weight:600;font-size:15px;padding:8px 14px;margin-top:4px}
+.buy:hover{filter:brightness(.92)}
+.buy.alt{background:var(--ink);color:var(--bg)}
+.disc{font-size:13px;color:var(--mute);margin:6px 0 0}
+.hist{position:relative;height:170px;margin:8px 0 4px}
+.hist svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.hist text{font:12px Archivo,system-ui,sans-serif;fill:var(--mute);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+.drow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.drow>*{flex:1 1 200px}
+.copied{font-size:13px;color:var(--green);min-height:1.2em;margin:6px 0 0}
+.fcats{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.fcats a{border:1px solid var(--line);border-radius:999px;padding:6px 12px;text-decoration:none;font-size:14px}
 .more{margin:20px auto 0;display:block;min-height:44px;padding:10px 22px;border-radius:999px;border:1px solid var(--ink);background:var(--bg);cursor:pointer}
 .empty{padding:28px;border:1px dashed var(--line);border-radius:12px;color:var(--mute)}
 .alt{background:var(--soft)}
@@ -196,6 +208,7 @@ dialog::backdrop{background:rgb(0 0 0 / .5)}
   <div class="wrap">
     <h2 class="disp">Black Friday deals, checked</h2>
     <p class="lede">Tap a product for its price story. Add up to three deals to compare them side by side.</p>
+    <p class="disc" id="disc" hidden></p>
     <div class="bar" id="bar">
       <div class="cats" id="cats" role="group" aria-label="Category"></div>
       <div class="row">
@@ -284,6 +297,7 @@ dialog::backdrop{background:rgb(0 0 0 / .5)}
     <span>An independent project by July Blue.</span>
     <span id="foot-upd"></span>
   </div>
+  <div class="wrap" style="margin-top:18px"><span>Browse checked deals by category</span><div class="fcats" id="fcats"></div><p class="disc" id="disc2" hidden></p></div>
 </footer>
 
 <button class="totop" id="totop" type="button" hidden>Back to top</button>
@@ -293,7 +307,7 @@ dialog::backdrop{background:rgb(0 0 0 / .5)}
 
 <script>
 {
-const CONFIG = {formEndpoint: '', dealsUrl: 'data/deals.json', calendarUrl: 'data/calendar.json'};
+const CONFIG = {formEndpoint: '', dealsUrl: 'data/deals.json', calendarUrl: 'data/calendar.json', historyUrl: 'data/history.json', affiliatesUrl: 'affiliates.json'};
 const V = {
   'Record low': ['Record low', 'good', 'The lowest price trackers have recorded for it.'],
   'Near record low': ['Near record low', 'good', 'Within a whisker of its lowest recorded price.'],
@@ -313,7 +327,18 @@ const safe = (u) => /^https?:\/\//.test(u || '');
 const info = (r) => V[r.verdict] || [r.verdict, 'mid', ''];
 const grp = (r) => info(r)[1];
 const fmtDate = (d) => new Date(d + 'T00:00:00Z').toLocaleDateString('en-AU', {weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC'});
-const S = {deals: [], byId: {}, byKey: {}, shown: 24, group: '', cat: '', picks: []};
+const S = {deals: [], byId: {}, byKey: {}, bySlug: {}, hist: {}, aff: {retailers: {}}, shown: 24, group: '', cat: '', picks: []};
+const slugify = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+function buy(r) {
+  if (!r.link) return null;
+  const a = (S.aff.retailers || {})[r.retailer] || {};
+  let href = r.link, aff = false;
+  if (a.amazon_tag && /amazon\.com\.au/.test(href)) { href += (href.includes('?') ? '&' : '?') + 'tag=' + encodeURIComponent(a.amazon_tag); aff = true; }
+  else if (a.template && a.template.includes('{url}')) { href = a.template.replace('{url}', encodeURIComponent(r.link)); aff = true; }
+  if (!safe(href)) return null;
+  return {href, aff, label: r.link_label || 'View deal', rel: aff ? 'sponsored nofollow noopener' : 'nofollow noopener'};
+}
+const buyHtml = (r, cls = '') => { const b = buy(r); return b ? `<a class="buy ${cls}" href="${esc(b.href)}" target="_blank" rel="${b.rel}">${esc(b.label)} <span aria-hidden="true">↗</span></a>` : ''; };
 try { S.picks = JSON.parse(localStorage.getItem('st-picks') || '[]'); } catch { S.picks = []; }
 const savePicks = () => { try { localStorage.setItem('st-picks', JSON.stringify(S.picks)); } catch {} };
 
@@ -334,6 +359,7 @@ function card(r) {
     <div class="pct">${padded ? `Advertised ${Math.round(r.claimed_pct)}% off · <strong>real ${Math.round(r.real_pct)}% off</strong>` : `<strong>${Math.round(r.real_pct)}% off</strong> · save ${money(r.reference - r.now)}`}</div>
     <span class="pill ${g}">${esc(lab)}</span>
     <p class="why">${esc(r.reason)}</p>
+    ${buyHtml(r)}
     <div class="acts"><button type="button" data-open="${esc(r.id)}">Price story</button><button type="button" data-pick="${esc(r.id)}" aria-pressed="${picked}">${picked ? 'Added' : '+ Compare'}</button></div></article>`;
 }
 
@@ -414,10 +440,61 @@ function openDeal(id) {
       <div class="fact"><span>Deal score</span><b>${r.score}/100</b></div>
     </div>
     <p>${esc(r.reason)}</p>
+    <h3>Price over time</h3>
+    <div class="hist" id="hist"></div>
+    <p class="pct" id="hist-note" style="margin:0"></p>
     ${peers.length ? `<h3>Same product elsewhere</h3><table><tbody>${peers.map((p) => `<tr><td>${esc(p.retailer)}</td><td class="n">${money(p.now)}</td><td>${esc(info(p)[0])}</td></tr>`).join('')}</tbody></table>` : ''}
     <p class="pct">Seen ${esc(fmtDate(r.seen))} · ${safe(r.source_url) ? `<a href="${esc(r.source_url)}" target="_blank" rel="noopener">${esc(r.source)}</a>` : esc(r.source)}. Always confirm the price at checkout.</p>
+    <div class="drow">${buyHtml(r)}<button class="buy alt" type="button" data-share="${esc(r.slug)}">Share this deal</button></div>
+    <p class="copied" id="copied" role="status"></p>
     <div class="acts" style="border:0"><button type="button" data-pick="${esc(r.id)}" aria-pressed="${S.picks.includes(r.id)}">${S.picks.includes(r.id) ? 'Added to compare' : '+ Add to compare'}</button></div>`;
-  showDlg(); ladder($('#lad'), r);
+  showDlg(); ladder($('#lad'), r); histChart($('#hist'), r);
+  try { history.replaceState(null, '', '#d-' + r.slug); } catch {}
+}
+
+function histChart(box, r) {
+  const pts = (S.hist[r.id] || []).map(([t, v]) => ({t: new Date(t + ':00+11:00'), v}));
+  const note = $('#hist-note');
+  if (pts.length < 2) {
+    box.style.height = '0px';
+    note.textContent = `Strikethrough started tracking this price on ${fmtDate(r.tracked_since || r.seen)}. A price-over-time line appears here after the next check, twice a day.`;
+    return;
+  }
+  const draw = () => {
+    const W = box.clientWidth, H = box.clientHeight, m = {l: 54, r: 16, t: 14, b: 26};
+    const vs = pts.map((p) => p.v), lo = Math.min(...vs), hi = Math.max(...vs), pad = Math.max(1, (hi - lo) * 0.25 || hi * 0.05);
+    const y0 = lo - pad, y1 = hi + pad, t0 = +pts[0].t, t1 = +pts[pts.length - 1].t || t0 + 1;
+    const x = (t) => m.l + (W - m.l - m.r) * ((+t - t0) / Math.max(1, t1 - t0)), y = (v) => m.t + (H - m.t - m.b) * (1 - (v - y0) / (y1 - y0));
+    let d = '', s = '';
+    pts.forEach((p, i) => { const px = x(p.t), py = y(p.v); d += (i ? `H${px}V${py}` : `M${px},${py}`); });
+    [lo, hi].forEach((v) => { s += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${m.l - 8}" y="${y(v) + 4}" text-anchor="end">${money(v)}</text>`; });
+    s += `<path d="${d}H${W - m.r}" fill="none" stroke="var(--ink)" stroke-width="2.5"/>`;
+    pts.forEach((p) => { s += `<circle cx="${x(p.t)}" cy="${y(p.v)}" r="${p.v === lo ? 5 : 3}" fill="${p.v === lo ? 'var(--green)' : 'var(--ink)'}"/>`; });
+    const days = [...new Set(pts.map((p) => p.t.toDateString()))];
+    [pts[0], pts[pts.length - 1]].forEach((p, i) => { s += `<text x="${x(p.t)}" y="${H - 6}" text-anchor="${i ? 'end' : 'start'}">${p.t.toLocaleDateString('en-AU', {day: 'numeric', month: 'short'})}</text>`; });
+    box.querySelector('svg').innerHTML = s;
+    note.textContent = `${pts.length} checks over ${days.length} day${days.length === 1 ? '' : 's'}. Lowest seen by Strikethrough: ${money(lo)}.`;
+  };
+  box.style.height = '';
+  box.innerHTML = `<svg role="img" aria-label="Price over time for ${esc(r.product)}"></svg>`;
+  const ro = new ResizeObserver(draw); ro.observe(box);
+}
+
+async function share(slug) {
+  const url = location.origin + location.pathname + '#d-' + slug, r = S.bySlug[slug], msg = $('#copied');
+  const text = r ? `${r.product} for ${money(r.now)}: ${info(r)[0]} on Strikethrough` : 'Strikethrough';
+  try { if (navigator.share) { await navigator.share({title: 'Strikethrough', text, url}); return; } } catch { return; }
+  try { await navigator.clipboard.writeText(url); if (msg) msg.textContent = 'Link copied.'; }
+  catch { if (msg) msg.textContent = 'Copy this link: ' + url; }
+}
+
+function route() {
+  const h = decodeURIComponent(location.hash.slice(1));
+  if (h.startsWith('d-') && S.bySlug[h.slice(2)]) openDeal(S.bySlug[h.slice(2)].id);
+  else if (h.startsWith('c-')) {
+    const c = [...new Set(S.deals.map((r) => r.category))].find((x) => slugify(x) === h.slice(2));
+    if (c) { S.cat = c; refresh(); setTimeout(goDeals, 50); }
+  }
 }
 
 function openCompare() {
@@ -507,9 +584,10 @@ function drawCal(rows) {
 }
 
 document.addEventListener('click', (e) => {
-  const t = e.target.closest('[data-open],[data-pick],[data-unpick],[data-close],#legend .chip,#seg button,#cats .chip,.cell[data-r],[data-ret]');
+  const t = e.target.closest('[data-open],[data-pick],[data-unpick],[data-close],[data-share],#legend .chip,#seg button,#cats .chip,.cell[data-r],[data-ret]');
   if (!t) return;
-  if (t.dataset.open) openDeal(t.dataset.open);
+  if (t.dataset.share) share(t.dataset.share);
+  else if (t.dataset.open) openDeal(t.dataset.open);
   else if (t.dataset.pick) { togglePick(t.dataset.pick); if ($('#dlg').open) { t.setAttribute('aria-pressed', String(S.picks.includes(t.dataset.pick))); t.textContent = S.picks.includes(t.dataset.pick) ? 'Added to compare' : '+ Add to compare'; } }
   else if (t.dataset.unpick) togglePick(t.dataset.unpick);
   else if (t.hasAttribute('data-close')) $('#dlg').close();
@@ -520,6 +598,8 @@ document.addEventListener('click', (e) => {
   else if (t.dataset.ret) { $('#f-ret').value = t.dataset.ret; S.cat = ''; S.group = ''; refresh(); goDeals(); }
 });
 $('#dlg').addEventListener('click', (e) => { if (e.target === $('#dlg')) $('#dlg').close(); });
+$('#dlg').addEventListener('close', () => { if (location.hash.startsWith('#d-')) try { history.replaceState(null, '', location.pathname + location.search); } catch {} });
+addEventListener('hashchange', route);
 ['#f-ret', '#f-sort'].forEach((s) => $(s).addEventListener('change', refresh));
 let qt; $('#f-q').addEventListener('input', () => { clearTimeout(qt); qt = setTimeout(refresh, 200); });
 $('#more').addEventListener('click', () => { S.shown += 24; render(); });
@@ -557,11 +637,15 @@ $('#signup').addEventListener('submit', async (e) => {
   } catch { msg.textContent = "That didn't go through. Try again in a minute."; }
 });
 
-Promise.all([fetch(CONFIG.dealsUrl).then((r) => r.json()), fetch(CONFIG.calendarUrl).then((r) => r.json())])
-  .then(([d, c]) => {
-    S.deals = d.rows || d;
-    S.deals.forEach((r) => { S.byId[r.id] = r; (S.byKey[r.product_key] = S.byKey[r.product_key] || []).push(r); });
-    drawFilters(); drawHero(); render(); drawHeat(); drawWatch(); drawCal(c.rows || c); drawTray();
+const optional = (u, dflt) => fetch(u).then((r) => (r.ok ? r.json() : dflt)).catch(() => dflt);
+Promise.all([fetch(CONFIG.dealsUrl).then((r) => r.json()), fetch(CONFIG.calendarUrl).then((r) => r.json()), optional(CONFIG.historyUrl, {}), optional(CONFIG.affiliatesUrl, {retailers: {}})])
+  .then(([d, c, h, a]) => {
+    S.deals = d.rows || d; S.hist = h || {}; S.aff = a && a.retailers ? a : {retailers: {}};
+    S.deals.forEach((r) => { r.slug = r.slug || slugify(r.product_key + '-' + r.retailer); S.byId[r.id] = r; S.bySlug[r.slug] = r; (S.byKey[r.product_key] = S.byKey[r.product_key] || []).push(r); });
+    const anyAff = S.deals.some((r) => buy(r)?.aff);
+    ['#disc', '#disc2'].forEach((s) => { $(s).hidden = !anyAff; $(s).textContent = S.aff.disclosure || ''; });
+    $('#fcats').innerHTML = [...new Set(S.deals.map((r) => r.category))].sort().map((c) => `<a href="deals/${slugify(c)}/">${esc(c)}</a>`).join('');
+    drawFilters(); drawHero(); render(); drawHeat(); drawWatch(); drawCal(c.rows || c); drawTray(); route();
   })
   .catch(() => { $('#stamp').textContent = "Deals couldn't load just now. Refresh to try again."; $('#cards').innerHTML = '<div class="empty">Deals couldn\'t load just now. Refresh to try again.</div>'; });
 }
