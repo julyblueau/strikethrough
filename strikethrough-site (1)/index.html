@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Strikethrough</title>
+<meta name="description" content="Strikethrough checks Australia's Black Friday deals against price history and other retailers, so you can see which discounts are real.">
+<link rel="canonical" href="https://strikethrough.com.au/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://strikethrough.com.au/">
+<meta property="og:title" content="Strikethrough: which Black Friday deals are real?">
+<meta property="og:description" content="Every deal checked against price history and other Australian retailers.">
+<meta name="theme-color" content="#e10600">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23111'/%3E%3Ctext x='16' y='23' font-family='Arial' font-weight='900' font-size='20' fill='%23fff' text-anchor='middle'%3ES%3C/text%3E%3Cpath d='M5 19 L27 13' stroke='%23e10600' stroke-width='3'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet">
+<style>
+/* VOICE friendly, exact price watchdog; one loud gesture, the red strike
+   IDEA a supermarket shelf ticket: was-price crossed out, the real price large
+   PICTURE every deal as a tiny ticket (hero); a price ladder per deal; a retailer x category heatmap
+   COLOUR white ground, near-black ink, ticket red for strikes and catches, green for verified
+   TYPE Archivo condensed 800 display and prices, Archivo text
+   LAYOUT title over ticket field; sticky filter bar over cards; compare tray pinned to the bottom */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#0f1011);--ink:light-dark(#111111,#f1f1ef);--mute:light-dark(#5d5d5a,#a3a3a0);--line:light-dark(#e6e5e1,#2a2b2d);--soft:light-dark(#f5f4f1,#18191b);--red:light-dark(#e10600,#ff5446);--redsoft:light-dark(#fde9e7,#3a1715);--green:light-dark(#0a8f4e,#3ccf86);--greensoft:light-dark(#e3f4ea,#12301f);--grey:light-dark(#9a9994,#6c6c69)}
+:root[data-theme=light]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html{scroll-padding-top:140px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Archivo,system-ui,sans-serif;overflow-x:clip}
+a{color:inherit}
+button{font:inherit;color:inherit}
+.wrap{max-width:1240px;margin:0 auto}
+.band{padding-block:clamp(28px,4vw,60px);padding-inline:max(5vw,16px)}
+.disp{font-stretch:75%;font-weight:800;letter-spacing:-.02em;line-height:1.05}
+.nav{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);padding:10px max(5vw,16px)}
+.nav .wrap{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.logo{font-size:26px;text-decoration:none}
+.logo s{text-decoration:none;position:relative}
+.logo s::after{content:"";position:absolute;left:-2px;right:-2px;top:52%;height:3px;background:var(--red);transform:rotate(-4deg)}
+.links{display:flex;gap:4px;flex-wrap:wrap;font-size:15px;margin-left:auto}
+.links a{text-decoration:none;color:var(--mute);padding:8px 10px;border-radius:999px}
+.links a:hover{color:var(--ink)}
+.links a.on{color:var(--ink);background:var(--soft)}
+h1{font-size:clamp(34px,5.2vw,56px);margin:0 0 12px;text-wrap:balance;max-width:18ch}
+h2{font-size:clamp(28px,3.4vw,40px);margin:0 0 8px;text-wrap:balance}
+h3{margin:0 0 8px;font-size:19px}
+.lede{font-size:17px;max-width:62ch;color:var(--mute);margin:0}
+.stamp{font-size:14px;color:var(--mute);margin:14px 0 0}
+.field{margin-top:26px;display:grid;grid-template-columns:repeat(auto-fill,minmax(22px,1fr));gap:5px;position:relative}
+.t{height:30px;border-radius:3px 3px 6px 6px;position:relative;border:0;padding:0;cursor:pointer;background:none}
+.t::before{content:"";position:absolute;left:50%;top:5px;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--bg)}
+.t.good{background:var(--green)}
+.t.mid{box-shadow:inset 0 0 0 1.5px var(--grey)}
+.t.flag{background:var(--redsoft);box-shadow:inset 0 0 0 1.5px var(--red)}
+.t.flag::after{content:"";position:absolute;left:2px;right:2px;top:58%;height:2px;background:var(--red);transform:rotate(-30deg)}
+.t.dim{opacity:.18}
+.t:hover{transform:translateY(-2px)}
+.tip{position:absolute;z-index:4;pointer-events:none;background:var(--ink);color:var(--bg);font-size:13px;line-height:1.35;padding:8px 10px;border-radius:8px;max-width:240px}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.chip{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--bg);font-size:15px;cursor:pointer;white-space:nowrap}
+.chip[aria-pressed=true]{border-color:var(--ink);background:var(--ink);color:var(--bg)}
+.chip b{font-stretch:75%;font-size:22px;font-weight:800}
+.sw{width:12px;height:16px;border-radius:2px 2px 4px 4px;display:inline-block;flex:none}
+.sw.good{background:var(--green)}.sw.mid{box-shadow:inset 0 0 0 1.5px var(--grey)}.sw.flag{background:var(--redsoft);box-shadow:inset 0 0 0 1.5px var(--red)}
+.chip[aria-pressed=true] .sw.mid{box-shadow:inset 0 0 0 1.5px var(--bg)}
+.bar{position:sticky;top:61px;z-index:10;background:var(--soft);padding:12px 0 10px;border-bottom:1px solid var(--line);margin-inline:calc(-1*max(5vw,16px));padding-inline:max(5vw,16px)}
+.cats{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin}
+.cats .chip{min-height:38px;padding:6px 12px;font-size:14px;flex:none}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:8px}
+.row select,.row input{flex:1 1 160px}
+select,input{font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;min-height:44px;padding:8px 10px}
+.seg{display:flex;border:1px solid var(--line);border-radius:999px;overflow-x:auto;background:var(--bg);flex:none;max-width:100%}
+.seg button{flex:none;white-space:nowrap}
+.seg button{border:0;background:none;min-height:42px;padding:6px 14px;font-size:14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+.ghost{border:0;background:none;text-decoration:underline;min-height:44px;padding:0 6px;cursor:pointer;color:var(--mute)}
+.status{font-size:14px;color:var(--mute);margin:16px 0 12px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.card{border:1px solid var(--line);border-radius:6px 6px 14px 14px;padding:16px;display:flex;flex-direction:column;gap:8px;background:var(--bg);position:relative}
+.card.picked{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.meta{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:var(--mute)}
+.pname{font-weight:600;font-size:16px;line-height:1.3;text-align:left;border:0;background:none;padding:0;cursor:pointer}
+.pname:hover{text-decoration:underline}
+.prices{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.now{font-stretch:75%;font-weight:800;font-size:38px;line-height:1;white-space:nowrap}
+.was{position:relative;color:var(--mute);font-size:18px;white-space:nowrap}
+.was::after{content:"";position:absolute;left:-3px;right:-3px;top:50%;height:2px;background:var(--red);transform:rotate(-8deg)}
+.pct{font-size:14px;color:var(--mute)}
+.pct strong{color:var(--ink)}
+.pill{align-self:flex-start;font-size:13px;font-weight:600;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.pill.good{background:var(--greensoft);color:var(--green)}
+.pill.mid{background:var(--soft);color:var(--mute)}
+.pill.flag{background:var(--redsoft);color:var(--red)}
+.why{font-size:14px;color:var(--mute);margin:0}
+.acts{display:flex;gap:8px;margin-top:auto;padding-top:8px;border-top:1px dashed var(--line)}
+.acts button{flex:1;min-height:40px;border:1px solid var(--line);border-radius:999px;background:var(--bg);font-size:14px;cursor:pointer}
+.acts button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.more{margin:20px auto 0;display:block;min-height:44px;padding:10px 22px;border-radius:999px;border:1px solid var(--ink);background:var(--bg);cursor:pointer}
+.empty{padding:28px;border:1px dashed var(--line);border-radius:12px;color:var(--mute)}
+.alt{background:var(--soft)}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,4vw,48px);margin-top:20px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th{text-align:left;font-weight:600;color:var(--mute);font-size:13px;padding:8px 10px;border-bottom:1px solid var(--ink)}
+td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.link{border:0;background:none;padding:0;text-align:left;text-decoration:underline;cursor:pointer}
+.heat{display:grid;gap:3px;margin-top:18px;font-size:13px}
+.heat .h{color:var(--mute);padding:4px;display:flex;align-items:flex-end;min-height:60px;writing-mode:vertical-rl;transform:rotate(180deg);justify-content:flex-start}
+.heat .rn{font-weight:600;display:flex;align-items:center;padding-right:8px;font-size:14px}
+.cell{min-height:46px;border:0;border-radius:4px;cursor:pointer;font-stretch:75%;font-weight:800;font-size:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.05}
+.cell small{font-stretch:100%;font-weight:400;font-size:11px;opacity:.85}
+.cell.none{background:var(--bg);border:1px dashed var(--line);cursor:default}
+.key{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mute);margin-top:12px;flex-wrap:wrap}
+.ramp{width:160px;height:10px;border-radius:2px;background:linear-gradient(90deg,color-mix(in srgb,var(--green) 12%,var(--bg)),var(--green))}
+.scores .score{display:grid;grid-template-columns:minmax(0,9em) minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.score .r{font-weight:600}
+.score .v{font-size:13px;color:var(--mute);white-space:nowrap}
+.sbar{display:flex;height:14px;border-radius:2px;overflow:hidden}
+.sbar span{display:block;height:100%}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:20px}
+.step{border-top:3px solid var(--ink);padding-top:12px}
+.step p{margin:0;color:var(--mute);font-size:15px}
+.fine{font-size:14px;color:var(--mute);max-width:75ch;margin-top:24px}
+.pro{background:var(--ink);color:var(--bg)}
+.pro .lede{color:color-mix(in srgb,var(--bg) 70%,var(--ink))}
+.pro ul{margin:16px 0 0;padding-left:20px}
+.pro li{margin-bottom:6px}
+form{display:grid;gap:12px;align-content:start}
+form label{display:flex;flex-direction:column;gap:4px;font-size:14px}
+.pro input,.pro select{background:var(--ink);color:var(--bg);border-color:color-mix(in srgb,var(--bg) 40%,var(--ink))}
+.go{min-height:44px;border:0;border-radius:999px;background:var(--red);color:#fff;font-weight:600;cursor:pointer;padding:10px 20px}
+.msg{font-size:14px;min-height:1.4em;margin:0}
+footer{border-top:1px solid var(--line);font-size:14px;color:var(--mute);padding-bottom:90px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-between;align-items:center}
+.tray{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--ink);color:var(--bg);padding:10px max(5vw,16px) calc(10px + env(safe-area-inset-bottom,0px))}
+.tray .wrap{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.tray .slot{display:inline-flex;align-items:center;gap:6px;background:color-mix(in srgb,var(--bg) 14%,var(--ink));border-radius:999px;padding:6px 6px 6px 12px;font-size:14px;max-width:260px}
+.tray .slot span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tray .x{border:0;background:none;color:var(--bg);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:18px;line-height:1}
+.tray .cta{margin-left:auto;display:flex;gap:8px}
+.tray .go{min-height:40px}
+.tray .clear{border:1px solid color-mix(in srgb,var(--bg) 40%,var(--ink));background:none;color:var(--bg);border-radius:999px;min-height:40px;padding:6px 14px;cursor:pointer}
+dialog{border:0;padding:0;border-radius:14px;width:min(960px,calc(100vw - 24px));max-height:calc(100vh - 32px);background:var(--bg);color:var(--ink)}
+dialog::backdrop{background:rgb(0 0 0 / .5)}
+.dlg{padding:clamp(18px,3vw,32px);overflow:auto;max-height:calc(100vh - 32px)}
+.dhead{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+.close{border:1px solid var(--line);background:var(--bg);border-radius:999px;min-width:44px;min-height:44px;cursor:pointer;font-size:20px;flex:none}
+.ladder{position:relative;height:150px;margin:18px 0 6px}
+.ladder svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.ladder text{font:13px Archivo,system-ui,sans-serif;fill:var(--ink);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+.ladder .lm{fill:var(--mute)}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(9em,1fr));gap:12px;margin:14px 0}
+.fact{background:var(--soft);border-radius:8px;padding:10px 12px}
+.fact span{display:block;font-size:13px;color:var(--mute)}
+.fact b{font-stretch:75%;font-weight:800;font-size:24px}
+.cmp{display:grid;gap:14px;margin-top:16px}
+.cmpcol{border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:6px}
+.cmpcol .best{font-size:12px;font-weight:600;color:var(--green)}
+.kv{display:flex;justify-content:space-between;gap:10px;font-size:14px;border-top:1px solid var(--line);padding-top:6px}
+.kv span:first-child{color:var(--mute)}
+.mini{height:10px;border-radius:2px;background:var(--line);position:relative;overflow:hidden;margin:4px 0}
+.mini i{position:absolute;inset:0 auto 0 0;background:var(--green)}
+.mini em{position:absolute;inset:0 auto 0 0;background:repeating-linear-gradient(135deg,var(--red) 0 3px,transparent 3px 6px);opacity:.6}
+.totop{position:fixed;right:16px;bottom:84px;z-index:25;border:1px solid var(--line);background:var(--bg);border-radius:999px;min-height:44px;padding:0 16px;cursor:pointer}
+@media(max-width:760px){.two{grid-template-columns:minmax(0,1fr)}.links{margin-left:0;width:100%;overflow-x:auto;flex-wrap:nowrap}.links a{flex:none}.bar{top:101px}html{scroll-padding-top:200px}}
+@media(max-width:600px){table{font-size:13px}th,td{padding:6px 4px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px;border-bottom:1px solid var(--line)}.stack td{display:flex;justify-content:space-between;gap:12px;border:0;padding:3px 0;text-align:right}.stack td::before{content:attr(data-l);color:var(--mute);text-align:left}.stack td:empty{display:none}.field{grid-template-columns:repeat(auto-fill,minmax(16px,1fr));gap:4px}.t{height:22px}.now{font-size:32px}.tray .slot{max-width:46vw}.tray .cta{margin-left:0;width:100%}.tray .cta button{flex:1}.row select{flex:1 1 40%}.row input{flex:1 1 100%}.bar{position:static}.seg button{padding:6px 11px}}
+@media(prefers-reduced-motion:no-preference){.t{transition:opacity .25s,transform .15s}html{scroll-behavior:smooth}}
+</style>
+</head>
+<body>
+<nav class="nav" aria-label="Main">
+  <div class="wrap">
+    <a class="logo disp" href="#top">Strike<s>through</s></a>
+    <div class="links" id="links"><a href="#deals">Deals</a><a href="#map">Where the discounts are</a><a href="#watch">Watch-outs</a><a href="#calendar">Sale dates</a><a href="#how">How we check</a><a href="#pro">For retailers</a></div>
+  </div>
+</nav>
+
+<header class="band" id="top">
+  <div class="wrap">
+    <h1 class="disp" id="headline">We check the was-price so you don't have to.</h1>
+    <p class="lede" id="sub">Every Black Friday deal below has been checked against price history and the same product at other Australian retailers.</p>
+    <div class="field" id="field" role="group" aria-label="Every tracked deal as a ticket. Select one to see its details."></div>
+    <div class="legend" id="legend">
+      <button class="chip" type="button" data-g="good" aria-pressed="false"><span class="sw good"></span><b id="n-good">–</b>Verified good</button>
+      <button class="chip" type="button" data-g="mid" aria-pressed="false"><span class="sw mid"></span><b id="n-mid">–</b>Not yet verified</button>
+      <button class="chip" type="button" data-g="flag" aria-pressed="false"><span class="sw flag"></span><b id="n-flag">–</b>Watch out</button>
+    </div>
+    <p class="stamp" id="stamp">Loading deals…</p>
+  </div>
+</header>
+
+<section class="band" id="deals" style="padding-top:8px">
+  <div class="wrap">
+    <h2 class="disp">Black Friday deals, checked</h2>
+    <p class="lede">Tap a product for its price story. Add up to three deals to compare them side by side.</p>
+    <div class="bar" id="bar">
+      <div class="cats" id="cats" role="group" aria-label="Category"></div>
+      <div class="row">
+        <div class="seg" id="seg" role="group" aria-label="Verdict">
+          <button type="button" data-g="" aria-pressed="true">All</button><button type="button" data-g="good" aria-pressed="false">Verified good</button><button type="button" data-g="mid" aria-pressed="false">Not yet verified</button><button type="button" data-g="flag" aria-pressed="false">Watch out</button>
+        </div>
+        <select id="f-ret" aria-label="Retailer"><option value="">All retailers</option></select>
+        <select id="f-sort" aria-label="Sort"><option value="score">Best deals first</option><option value="real">Biggest real discount</option><option value="save">Biggest dollar saving</option><option value="low">Lowest price</option></select>
+        <input id="f-q" type="search" placeholder="Search: Dyson, air fryer, AirPods" aria-label="Search products or brands" autocomplete="off">
+      </div>
+    </div>
+    <p class="status" aria-live="polite"><span id="count"></span> <button class="ghost" id="clear" type="button" hidden>Clear filters</button></p>
+    <div class="cards" id="cards"></div>
+    <button class="more" id="more" type="button" hidden>Show more deals</button>
+  </div>
+</section>
+
+<section class="band alt" id="map">
+  <div class="wrap">
+    <h2 class="disp" id="map-title">Where the real discounts are</h2>
+    <p class="lede">Average real discount for each retailer and category we track. Tap a square to see those deals.</p>
+    <div class="scroll"><div class="heat" id="heat"></div></div>
+    <div class="key"><span>Smaller</span><span class="ramp"></span><span>Bigger real discount</span><span>· number under it = deals tracked</span></div>
+    <h3 style="margin-top:36px">How each retailer's deals hold up</h3>
+    <div class="scores" id="scores"></div>
+  </div>
+</section>
+
+<section class="band" id="watch">
+  <div class="wrap">
+    <h2 class="disp">Watch-outs: the headline isn't the whole story</h2>
+    <p class="lede">Deals that were cheaper recently, and products another retailer is selling for less right now.</p>
+    <div class="two">
+      <div><h3>Was cheaper recently</h3><div class="scroll"><table class="stack"><thead><tr><th>Product</th><th>Retailer</th><th class="n">Now</th><th>What we found</th></tr></thead><tbody id="w-before"></tbody></table></div></div>
+      <div><h3>Same product, lower elsewhere</h3><div class="scroll"><table class="stack"><thead><tr><th>Product</th><th>Cheapest at</th><th class="n">Price</th><th class="n">You'd save</th></tr></thead><tbody id="w-h2h"></tbody></table></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="band alt" id="calendar">
+  <div class="wrap">
+    <h2 class="disp">When the sales start</h2>
+    <p class="lede">Black Friday is Friday 27 November and Cyber Monday is 30 November. "Estimate" rows are based on last year's patterns.</p>
+    <div class="scroll" style="margin-top:16px"><table class="stack"><thead><tr><th>Retailer</th><th>Category</th><th>Sale opens</th><th>Peak days</th><th class="n">Advertised</th><th>Status</th></tr></thead><tbody id="cal"></tbody></table></div>
+  </div>
+</section>
+
+<section class="band" id="how">
+  <div class="wrap">
+    <h2 class="disp">How we check a deal</h2>
+    <div class="steps">
+      <div class="step"><h3>Price history</h3><p>Where trackers have recorded past prices, we mark a deal as a record low, near-record low, a price it often hits, or one that was cheaper recently.</p></div>
+      <div class="step"><h3>Other retailers</h3><p>When several stores sell the same product, we compare them. A deal more than 2% above the cheapest is marked "Lower elsewhere".</p></div>
+      <div class="step"><h3>The was-price</h3><p>If one store's was-price is more than 10% above another's for the same product, we measure the discount from the lower one. That's the "real" discount.</p></div>
+      <div class="step"><h3>The score</h3><p>Each deal gets a score out of 100: mostly from the verdict, then up to 28 points for how deep the real discount is.</p></div>
+    </div>
+    <p class="fine">"Not yet verified" means the maths is right against the quoted was-price, but we haven't found price history or a second retailer to confirm it. It's not a judgment on the retailer. Very deep discounts with no history, and discounts on a store's own brand, are marked "Was-price unconfirmed" for the same reason. Prices come from retailer pages and dated deal reports, change through the day, and may be member-only or colour-specific. Always confirm the price at checkout. Strikethrough is independent and isn't paid by the retailers listed.</p>
+  </div>
+</section>
+
+<section class="band pro" id="pro">
+  <div class="wrap two" style="margin-top:0">
+    <div>
+      <h2 class="disp">Strikethrough Pro, for retailers and brands</h2>
+      <p class="lede">See how your competitors are really discounting, every day, across your category.</p>
+      <ul>
+        <li>Daily competitor deal tracking by category and product</li>
+        <li>Real versus advertised discount depth, by retailer</li>
+        <li>Who's cheapest on the products you both sell</li>
+        <li>Sale timing, so you can plan your own promotions</li>
+      </ul>
+    </div>
+    <form id="signup" name="signup" method="POST" data-netlify="true" netlify-honeypot="bot-field" novalidate>
+      <input type="hidden" name="form-name" value="signup"><p hidden><label>Leave blank<input name="bot-field"></label></p>
+      <label for="s-email">Email<input id="s-email" name="email" type="email" required placeholder="name@company.com.au" autocomplete="email"></label>
+      <label for="s-type">I'm a<select id="s-type" name="type"><option>Shopper who wants the verified list</option><option>Retailer or brand interested in Pro</option><option>Journalist</option></select></label>
+      <button class="go" type="submit">Keep me posted</button>
+      <p class="msg" id="s-msg" role="status"></p>
+    </form>
+  </div>
+</section>
+
+<footer class="band">
+  <div class="wrap">
+    <span class="logo disp" style="font-size:20px">Strike<s>through</s></span>
+    <span>An independent project by July Blue.</span>
+    <span id="foot-upd"></span>
+  </div>
+</footer>
+
+<button class="totop" id="totop" type="button" hidden>Back to top</button>
+<div class="tray" id="tray" hidden><div class="wrap"><span id="tray-slots" style="display:flex;gap:8px;flex-wrap:wrap"></span><div class="cta"><button class="clear" id="tray-clear" type="button">Clear</button><button class="go" id="tray-go" type="button">Compare</button></div></div></div>
+
+<dialog id="dlg" aria-labelledby="dlg-title"><div class="dlg" id="dlg-body"></div></dialog>
+
+<script>
+{
+const CONFIG = {formEndpoint: '', dealsUrl: 'data/deals.json', calendarUrl: 'data/calendar.json'};
+const V = {
+  'Record low': ['Record low', 'good', 'The lowest price trackers have recorded for it.'],
+  'Near record low': ['Near record low', 'good', 'Within a whisker of its lowest recorded price.'],
+  'Cheapest tracked': ['Best price tracked', 'good', 'The cheapest of the stores we track that sell it.'],
+  'Regular price drop': ['Often this price', 'mid', 'A real discount, but one it hits regularly.'],
+  'Unverified': ['Not yet verified', 'mid', 'No price history or second store found yet.'],
+  'Check the RRP': ['Was-price unconfirmed', 'flag', "We can't confirm the was-price the discount is based on."],
+  'Token discount': ['Small discount', 'flag', 'Under 10% off the reference price.'],
+  'Beaten elsewhere': ['Lower elsewhere', 'flag', 'Another store has the same product for less.'],
+  'Cheaper before': ['Was cheaper recently', 'flag', "It's been sold for less recently."],
+};
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => [...document.querySelectorAll(s)];
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+const money = (x) => '$' + Number(x).toLocaleString('en-AU', {minimumFractionDigits: x < 100 && x % 1 ? 2 : 0, maximumFractionDigits: x < 100 ? 2 : 0});
+const safe = (u) => /^https?:\/\//.test(u || '');
+const info = (r) => V[r.verdict] || [r.verdict, 'mid', ''];
+const grp = (r) => info(r)[1];
+const fmtDate = (d) => new Date(d + 'T00:00:00Z').toLocaleDateString('en-AU', {weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC'});
+const S = {deals: [], byId: {}, byKey: {}, shown: 24, group: '', cat: '', picks: []};
+try { S.picks = JSON.parse(localStorage.getItem('st-picks') || '[]'); } catch { S.picks = []; }
+const savePicks = () => { try { localStorage.setItem('st-picks', JSON.stringify(S.picks)); } catch {} };
+
+function filtered() {
+  const ret = $('#f-ret').value, q = $('#f-q').value.trim().toLowerCase(), sort = $('#f-sort').value;
+  const rows = S.deals.filter((r) => (!S.group || grp(r) === S.group) && (!S.cat || r.category === S.cat) && (!ret || r.retailer === ret) &&
+    (!q || (r.product + ' ' + r.brand + ' ' + r.category + ' ' + r.retailer).toLowerCase().includes(q)));
+  const by = {score: (a, b) => b.score - a.score, real: (a, b) => b.real_pct - a.real_pct, low: (a, b) => a.now - b.now,
+    save: (a, b) => (b.reference - b.now) - (a.reference - a.now)}[sort];
+  return rows.sort(by);
+}
+
+function card(r) {
+  const [lab, g] = info(r), padded = Math.abs(r.claimed_pct - r.real_pct) >= 1, picked = S.picks.includes(r.id);
+  return `<article class="card${picked ? ' picked' : ''}"><div class="meta"><span>${esc(r.retailer)}</span><span>${esc(r.category)}</span></div>
+    <button class="pname" type="button" data-open="${esc(r.id)}">${esc(r.product)}</button>
+    <div class="prices"><span class="now">${money(r.now)}</span><span class="was">${money(r.was)}</span></div>
+    <div class="pct">${padded ? `Advertised ${Math.round(r.claimed_pct)}% off · <strong>real ${Math.round(r.real_pct)}% off</strong>` : `<strong>${Math.round(r.real_pct)}% off</strong> · save ${money(r.reference - r.now)}`}</div>
+    <span class="pill ${g}">${esc(lab)}</span>
+    <p class="why">${esc(r.reason)}</p>
+    <div class="acts"><button type="button" data-open="${esc(r.id)}">Price story</button><button type="button" data-pick="${esc(r.id)}" aria-pressed="${picked}">${picked ? 'Added' : '+ Compare'}</button></div></article>`;
+}
+
+function render() {
+  const rows = filtered();
+  const active = S.group || S.cat || $('#f-ret').value || $('#f-q').value.trim();
+  $('#count').textContent = `Showing ${Math.min(S.shown, rows.length)} of ${rows.length} deal${rows.length === 1 ? '' : 's'}.`;
+  $('#clear').hidden = !active;
+  $('#cards').innerHTML = rows.length ? rows.slice(0, S.shown).map(card).join('') : '<div class="empty">No deals match. Try another category, or clear the filters.</div>';
+  $('#more').hidden = rows.length <= S.shown;
+  $$('.t').forEach((t) => t.classList.toggle('dim', !!S.group && !t.classList.contains(S.group)));
+  $$('#legend .chip').forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.g === S.group)));
+  $$('#seg button').forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.g === S.group)));
+  $$('#cats .chip').forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.c === S.cat)));
+}
+function refresh() { S.shown = 24; render(); }
+function goDeals() { $('#deals').scrollIntoView(); }
+
+function drawTray() {
+  S.picks = S.picks.filter((id) => S.byId[id]);
+  $('#tray').hidden = !S.picks.length;
+  $('#tray-slots').innerHTML = S.picks.map((id) => `<span class="slot"><span>${esc(S.byId[id].product)}</span><button class="x" type="button" data-unpick="${esc(id)}" aria-label="Remove ${esc(S.byId[id].product)}">×</button></span>`).join('');
+  $('#tray-go').textContent = S.picks.length < 2 ? 'Add one more to compare' : `Compare ${S.picks.length}`;
+  $('#tray-go').disabled = false;
+}
+function togglePick(id) {
+  if (S.picks.includes(id)) S.picks = S.picks.filter((x) => x !== id);
+  else { if (S.picks.length >= 3) S.picks.shift(); S.picks.push(id); }
+  savePicks(); drawTray(); render();
+}
+
+function ladder(box, r) {
+  const peers = (S.byKey[r.product_key] || []).filter((p) => p.id !== r.id);
+  const pts = [{v: r.was, l: 'Was ' + money(r.was), k: 'was'}];
+  if (Math.abs(r.reference - r.was) > 0.5) pts.push({v: r.reference, l: 'Fair was-price ' + money(r.reference), k: 'ref'});
+  if (r.prior_price) pts.push({v: r.prior_price, l: 'Recently ' + money(r.prior_price), k: 'prior'});
+  peers.forEach((p) => pts.push({v: p.now, l: p.retailer + ' ' + money(p.now), k: 'peer'}));
+  pts.push({v: r.now, l: 'Now ' + money(r.now), k: 'now'});
+  const draw = () => {
+    const W = box.clientWidth, H = box.clientHeight, m = {l: 14, r: 14};
+    const lo = Math.min(...pts.map((p) => p.v)) * 0.92, hi = Math.max(...pts.map((p) => p.v)) * 1.02;
+    const x = (v) => m.l + (W - m.l - m.r) * (v - lo) / (hi - lo), y = H / 2;
+    const sorted = pts.slice().sort((a, b) => a.v - b.v);
+    let lastUp = -1e9, lastDn = -1e9, s = '';
+    s += `<line x1="${m.l}" x2="${W - m.r}" y1="${y}" y2="${y}" stroke="var(--line)" stroke-width="10" stroke-linecap="round"/>`;
+    s += `<line x1="${x(r.now)}" x2="${x(r.reference)}" y1="${y}" y2="${y}" stroke="var(--green)" stroke-width="10"/>`;
+    if (r.reference < r.was - 0.5) s += `<line x1="${x(r.reference)}" x2="${x(r.was)}" y1="${y}" y2="${y}" stroke="var(--red)" stroke-width="10" stroke-dasharray="3 3"/>`;
+    sorted.forEach((p) => {
+      const px = x(p.v), est = p.l.length * 7;
+      const up = p.k === 'now' || p.k === 'was' ? p.k === 'now' : (px - lastUp > px - lastDn ? true : false);
+      const side = up ? 'up' : 'dn';
+      const anchor = px < est / 2 + 4 ? 'start' : px > W - est / 2 - 4 ? 'end' : 'middle';
+      const ty = up ? y - 26 - ((px - lastUp < est) ? 22 : 0) : y + 38 + ((px - lastDn < est) ? 22 : 0);
+      if (up) lastUp = px; else lastDn = px;
+      const col = p.k === 'now' ? 'var(--ink)' : p.k === 'was' ? 'var(--red)' : p.k === 'peer' ? 'var(--grey)' : p.k === 'prior' ? 'var(--red)' : 'var(--mute)';
+      s += `<line x1="${px}" x2="${px}" y1="${y - 14}" y2="${y + 14}" stroke="${col}" stroke-width="${p.k === 'now' ? 4 : 2}"/>`;
+      s += `<text x="${px}" y="${ty}" text-anchor="${anchor}" class="${p.k === 'now' ? '' : 'lm'}" ${p.k === 'now' ? 'font-weight="700"' : ''}>${esc(p.l)}</text>`;
+    });
+    box.querySelector('svg').innerHTML = s;
+  };
+  box.innerHTML = `<svg role="img" aria-label="Price ladder for ${esc(r.product)}: ${esc(pts.map((p) => p.l).join(', '))}"></svg>`;
+  const ro = new ResizeObserver(draw); ro.observe(box);
+}
+
+function openDeal(id) {
+  const r = S.byId[id]; if (!r) return;
+  const [lab, g, plain] = info(r), peers = (S.byKey[r.product_key] || []).filter((p) => p.id !== r.id).sort((a, b) => a.now - b.now);
+  $('#dlg-body').innerHTML = `<div class="dhead"><div><div class="meta" style="justify-content:flex-start;gap:14px"><span>${esc(r.retailer)}</span><span>${esc(r.category)}</span></div>
+    <h2 class="disp" id="dlg-title" style="font-size:clamp(24px,3vw,34px);margin-top:4px">${esc(r.product)}</h2></div><button class="close" type="button" data-close aria-label="Close">×</button></div>
+    <span class="pill ${g}">${esc(lab)}</span> <span class="pct">${esc(plain)}</span>
+    <div class="ladder" id="lad"></div>
+    <p class="pct" style="margin:0">Green is the real saving. A dashed red stretch is the part of the advertised discount that comes from a higher was-price than another store uses.</p>
+    <div class="facts">
+      <div class="fact"><span>Now</span><b>${money(r.now)}</b></div>
+      <div class="fact"><span>Advertised</span><b>${Math.round(r.claimed_pct)}%</b></div>
+      <div class="fact"><span>Real discount</span><b>${Math.round(r.real_pct)}%</b></div>
+      <div class="fact"><span>Real saving</span><b>${money(Math.max(0, r.reference - r.now))}</b></div>
+      <div class="fact"><span>Deal score</span><b>${r.score}/100</b></div>
+    </div>
+    <p>${esc(r.reason)}</p>
+    ${peers.length ? `<h3>Same product elsewhere</h3><table><tbody>${peers.map((p) => `<tr><td>${esc(p.retailer)}</td><td class="n">${money(p.now)}</td><td>${esc(info(p)[0])}</td></tr>`).join('')}</tbody></table>` : ''}
+    <p class="pct">Seen ${esc(fmtDate(r.seen))} · ${safe(r.source_url) ? `<a href="${esc(r.source_url)}" target="_blank" rel="noopener">${esc(r.source)}</a>` : esc(r.source)}. Always confirm the price at checkout.</p>
+    <div class="acts" style="border:0"><button type="button" data-pick="${esc(r.id)}" aria-pressed="${S.picks.includes(r.id)}">${S.picks.includes(r.id) ? 'Added to compare' : '+ Add to compare'}</button></div>`;
+  showDlg(); ladder($('#lad'), r);
+}
+
+function openCompare() {
+  const rows = S.picks.map((id) => S.byId[id]).filter(Boolean);
+  if (rows.length < 2) { goDeals(); return; }
+  const best = (f, dir) => rows.reduce((a, b) => (dir * (f(b) - f(a)) > 0 ? b : a));
+  const bReal = best((r) => r.real_pct, 1), bScore = best((r) => r.score, 1), bSave = best((r) => r.reference - r.now, 1);
+  const tag = (r, b, t) => r === b ? `<span class="best">${t}</span>` : '';
+  $('#dlg-body').innerHTML = `<div class="dhead"><h2 class="disp" id="dlg-title" style="font-size:clamp(24px,3vw,34px)">Compare deals</h2><button class="close" type="button" data-close aria-label="Close">×</button></div>
+    <p class="pct" style="margin:0">Bars show the price as a share of the was-price: green is the real saving, dashed red is discount that rests on a higher was-price.</p>
+    <div class="cmp" style="grid-template-columns:repeat(${rows.length},minmax(0,1fr))">${rows.map((r) => {
+      const real = 100 * (r.reference - r.now) / r.was, pad = 100 * (r.was - r.reference) / r.was;
+      return `<div class="cmpcol"><div class="meta"><span>${esc(r.retailer)}</span></div><b>${esc(r.product)}</b>
+      <span class="now" style="font-size:32px">${money(r.now)}</span>
+      <div class="mini" aria-hidden="true"><i style="left:${100 - real - pad}%;width:${real}%"></i><em style="left:${100 - pad}%;width:${pad}%"></em></div>
+      <span class="pill ${grp(r)}">${esc(info(r)[0])}</span>
+      ${tag(r, bScore, 'Best deal score')}${tag(r, bReal, 'Biggest real discount')}${tag(r, bSave, 'Biggest dollar saving')}
+      <div class="kv"><span>Was</span><span>${money(r.was)}</span></div>
+      <div class="kv"><span>Advertised</span><span>${Math.round(r.claimed_pct)}%</span></div>
+      <div class="kv"><span>Real discount</span><span>${Math.round(r.real_pct)}%</span></div>
+      <div class="kv"><span>Real saving</span><span>${money(Math.max(0, r.reference - r.now))}</span></div>
+      <div class="kv"><span>Score</span><span>${r.score}/100</span></div>
+      <div class="kv"><span>Stores tracked</span><span>${r.retailers_tracked}</span></div>
+      <p class="why">${esc(r.reason)}</p>
+      <button class="link" type="button" data-open="${esc(r.id)}">See price story</button></div>`; }).join('')}</div>`;
+  if (innerWidth < 640) $('.cmp').style.gridTemplateColumns = 'minmax(0,1fr)';
+  showDlg();
+}
+function showDlg() { const d = $('#dlg'); if (!d.open) { try { d.showModal(); } catch { d.setAttribute('open', ''); } } $('#dlg-body').scrollTop = 0; }
+
+function drawHero() {
+  const order = {good: 0, mid: 1, flag: 2};
+  const sorted = S.deals.slice().sort((a, b) => order[grp(a)] - order[grp(b)] || b.score - a.score);
+  $('#field').innerHTML = sorted.map((r) => `<button type="button" class="t ${grp(r)}" data-open="${esc(r.id)}" aria-label="${esc(r.product)}, ${esc(r.retailer)}, ${money(r.now)}, ${esc(info(r)[0])}"></button>`).join('') + '<div class="tip" id="tip" hidden></div>';
+  const n = {good: 0, mid: 0, flag: 0};
+  S.deals.forEach((r) => n[grp(r)]++);
+  for (const k in n) $('#n-' + k).textContent = n[k];
+  const rets = new Set(S.deals.map((r) => r.retailer)).size;
+  $('#headline').textContent = `${S.deals.length} Black Friday deals checked. ${n.good} hold up.`;
+  $('#sub').textContent = `Each ticket is a deal from one of ${rets} Australian retailers, checked against price history and other stores. ${n.flag} come with a catch. Point at a ticket to peek, tap it for the full story, or tap a colour to filter.`;
+  const latest = S.deals.map((r) => r.seen).sort().pop();
+  $('#stamp').textContent = `Prices last checked ${fmtDate(latest)}. Updated twice a day until Cyber Monday.`;
+  $('#foot-upd').textContent = `Data as of ${fmtDate(latest)}`;
+}
+
+function drawFilters() {
+  const cats = [...new Set(S.deals.map((r) => r.category))].sort();
+  $('#cats').innerHTML = `<button class="chip" type="button" data-c="" aria-pressed="true">All categories</button>` + cats.map((c) => `<button class="chip" type="button" data-c="${esc(c)}" aria-pressed="false">${esc(c)}</button>`).join('');
+  $('#f-ret').insertAdjacentHTML('beforeend', [...new Set(S.deals.map((r) => r.retailer))].sort().map((v) => `<option>${esc(v)}</option>`).join(''));
+}
+
+function drawHeat() {
+  const rets = Object.entries(S.deals.reduce((o, r) => (o[r.retailer] = (o[r.retailer] || 0) + 1, o), {})).sort((a, b) => b[1] - a[1]).map((e) => e[0]);
+  const cats = [...new Set(S.deals.map((r) => r.category))].sort();
+  const cell = {};
+  S.deals.forEach((r) => { const k = r.retailer + '|' + r.category; (cell[k] = cell[k] || []).push(r.real_pct); });
+  let top = null;
+  for (const k in cell) { const a = cell[k].reduce((s, v) => s + v, 0) / cell[k].length; if (cell[k].length >= 2 && (!top || a > top.a)) top = {k, a}; }
+  if (top) { const [rr, cc] = top.k.split('|'); $('#map-title').textContent = `Deepest real discounts: ${cc} at ${rr}, averaging ${Math.round(top.a)}% off`; }
+  const g = $('#heat');
+  g.style.gridTemplateColumns = `9em repeat(${cats.length}, minmax(52px,1fr))`;
+  g.style.minWidth = `calc(9em + ${cats.length * 56}px)`;
+  g.innerHTML = '<div></div>' + cats.map((c) => `<div class="h">${esc(c)}</div>`).join('') + rets.map((rt) => `<div class="rn">${esc(rt)}</div>` + cats.map((c) => {
+    const v = cell[rt + '|' + c];
+    if (!v) return `<div class="cell none" aria-label="${esc(rt)}, ${esc(c)}: no deals tracked"></div>`;
+    const a = v.reduce((s, x) => s + x, 0) / v.length, w = Math.round(12 + 88 * Math.min(a, 70) / 70);
+    return `<button class="cell" type="button" data-r="${esc(rt)}" data-c="${esc(c)}" style="background:color-mix(in srgb,var(--green) ${w}%,var(--bg));color:${w > 55 ? '#fff' : 'var(--ink)'}" aria-label="${esc(rt)}, ${esc(c)}: ${Math.round(a)}% average real discount across ${v.length} deals">${Math.round(a)}%<small>${v.length}</small></button>`;
+  }).join('')).join('');
+  const by = {};
+  S.deals.forEach((r) => { const o = by[r.retailer] = by[r.retailer] || {good: 0, mid: 0, flag: 0, n: 0}; o[grp(r)]++; o.n++; });
+  const col = {good: 'var(--green)', mid: 'var(--grey)', flag: 'var(--red)'};
+  $('#scores').innerHTML = Object.entries(by).sort((a, b) => b[1].n - a[1].n).map(([name, o]) => `<div class="score"><button class="r link" type="button" data-ret="${esc(name)}" style="text-decoration:none">${esc(name)}</button>
+    <div class="sbar" role="img" aria-label="${esc(name)}: ${o.good} verified good, ${o.mid} not yet verified, ${o.flag} watch-outs">${['good', 'mid', 'flag'].map((k) => `<span style="width:${100 * o[k] / o.n}%;background:${col[k]}"></span>`).join('')}</div>
+    <span class="v">${o.good} good · ${o.flag} watch-out${o.flag === 1 ? '' : 's'} · ${o.n} deal${o.n === 1 ? '' : 's'}</span></div>`).join('');
+}
+
+function drawWatch() {
+  const before = S.deals.filter((r) => r.verdict === 'Cheaper before').sort((a, b) => b.now - a.now);
+  $('#w-before').innerHTML = before.map((r) => `<tr><td data-l="Product"><button class="link" type="button" data-open="${esc(r.id)}">${esc(r.product)}</button></td><td data-l="Retailer">${esc(r.retailer)}</td><td class="n" data-l="Now">${money(r.now)}</td><td data-l="Found">${esc(r.history_note || r.reason)}</td></tr>`).join('');
+  const h2h = Object.values(S.byKey).filter((g) => g.length > 1).map((g) => g.slice().sort((a, b) => a.now - b.now))
+    .map((s) => ({r: s[0], worst: s[s.length - 1]})).filter((x) => x.worst.now - x.r.now > 0.5).sort((a, b) => (b.worst.now - b.r.now) - (a.worst.now - a.r.now));
+  $('#w-h2h').innerHTML = h2h.map((x) => `<tr><td data-l="Product"><button class="link" type="button" data-open="${esc(x.r.id)}">${esc(x.r.product)}</button></td><td data-l="Cheapest at">${esc(x.r.retailer)}</td><td class="n" data-l="Price">${money(x.r.now)}</td><td class="n" data-l="You'd save">up to ${money(x.worst.now - x.r.now)}</td></tr>`).join('');
+}
+
+function drawCal(rows) {
+  $('#cal').innerHTML = rows.map((r) => `<tr><td data-l="Retailer">${esc(r.retailer)}</td><td data-l="Category">${esc(r.sector)}</td><td data-l="Opens">${esc(fmtDate(r.start))}</td><td data-l="Peak">${esc(r.peak)}</td><td class="n" data-l="Advertised">${r.min_pct}–${r.max_pct}%</td><td data-l="Status">${r.confirmed === 'Yes' ? 'Confirmed' : 'Estimate'}</td></tr>`).join('');
+}
+
+document.addEventListener('click', (e) => {
+  const t = e.target.closest('[data-open],[data-pick],[data-unpick],[data-close],#legend .chip,#seg button,#cats .chip,.cell[data-r],[data-ret]');
+  if (!t) return;
+  if (t.dataset.open) openDeal(t.dataset.open);
+  else if (t.dataset.pick) { togglePick(t.dataset.pick); if ($('#dlg').open) { t.setAttribute('aria-pressed', String(S.picks.includes(t.dataset.pick))); t.textContent = S.picks.includes(t.dataset.pick) ? 'Added to compare' : '+ Add to compare'; } }
+  else if (t.dataset.unpick) togglePick(t.dataset.unpick);
+  else if (t.hasAttribute('data-close')) $('#dlg').close();
+  else if (t.matches('#legend .chip')) { S.group = S.group === t.dataset.g ? '' : t.dataset.g; refresh(); }
+  else if (t.matches('#seg button')) { S.group = t.dataset.g; refresh(); }
+  else if (t.matches('#cats .chip')) { S.cat = t.dataset.c; refresh(); }
+  else if (t.dataset.r) { S.cat = t.dataset.c; $('#f-ret').value = t.dataset.r; S.group = ''; refresh(); goDeals(); }
+  else if (t.dataset.ret) { $('#f-ret').value = t.dataset.ret; S.cat = ''; S.group = ''; refresh(); goDeals(); }
+});
+$('#dlg').addEventListener('click', (e) => { if (e.target === $('#dlg')) $('#dlg').close(); });
+['#f-ret', '#f-sort'].forEach((s) => $(s).addEventListener('change', refresh));
+let qt; $('#f-q').addEventListener('input', () => { clearTimeout(qt); qt = setTimeout(refresh, 200); });
+$('#more').addEventListener('click', () => { S.shown += 24; render(); });
+$('#clear').addEventListener('click', () => { S.group = ''; S.cat = ''; $('#f-ret').value = ''; $('#f-q').value = ''; refresh(); });
+$('#tray-clear').addEventListener('click', () => { S.picks = []; savePicks(); drawTray(); render(); });
+$('#tray-go').addEventListener('click', openCompare);
+$('#totop').addEventListener('click', () => scrollTo({top: 0}));
+
+const field = $('#field');
+field.addEventListener('pointerover', (e) => {
+  const t = e.target.closest('.t'), tip = $('#tip'); if (!t || !tip) return;
+  const r = S.byId[t.dataset.open]; tip.textContent = `${r.product} · ${r.retailer} · ${money(r.now)} · ${info(r)[0]}`; tip.hidden = false;
+  const fb = field.getBoundingClientRect(), tb = t.getBoundingClientRect();
+  tip.style.left = Math.max(0, Math.min(tb.left - fb.left - 100, fb.width - tip.offsetWidth)) + 'px'; tip.style.top = (tb.bottom - fb.top + 8) + 'px';
+});
+field.addEventListener('pointerleave', () => { const tip = $('#tip'); if (tip) tip.hidden = true; });
+
+const secs = ['deals', 'map', 'watch', 'calendar', 'how', 'pro'].map((id) => document.getElementById(id));
+const spy = new IntersectionObserver((es) => { es.forEach((en) => { if (en.isIntersecting) $$('#links a').forEach((a) => a.classList.toggle('on', a.getAttribute('href') === '#' + en.target.id)); }); }, {rootMargin: '-45% 0px -50% 0px'});
+secs.forEach((s) => spy.observe(s));
+addEventListener('scroll', () => { $('#totop').hidden = scrollY < 900; }, {passive: true});
+
+$('#signup').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = $('#s-email').value.trim(), msg = $('#s-msg');
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { msg.textContent = 'Enter a valid email address.'; return; }
+  const onNetlify = !/claude\.ai|claudeusercontent|localhost|127\.0\.0\.1/.test(location.hostname);
+  if (!CONFIG.formEndpoint && !onNetlify) { msg.textContent = "Sign-up only works on the live site, so nothing was sent from this preview."; return; }
+  try {
+    const res = CONFIG.formEndpoint
+      ? await fetch(CONFIG.formEndpoint, {method: 'POST', headers: {'Content-Type': 'application/json', Accept: 'application/json'}, body: JSON.stringify({email, type: $('#s-type').value})})
+      : await fetch('/', {method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'}, body: new URLSearchParams(new FormData($('#signup'))).toString()});
+    msg.textContent = res.ok ? "You're on the list." : "That didn't go through. Try again in a minute.";
+    if (res.ok) $('#signup').reset();
+  } catch { msg.textContent = "That didn't go through. Try again in a minute."; }
+});
+
+Promise.all([fetch(CONFIG.dealsUrl).then((r) => r.json()), fetch(CONFIG.calendarUrl).then((r) => r.json())])
+  .then(([d, c]) => {
+    S.deals = d.rows || d;
+    S.deals.forEach((r) => { S.byId[r.id] = r; (S.byKey[r.product_key] = S.byKey[r.product_key] || []).push(r); });
+    drawFilters(); drawHero(); render(); drawHeat(); drawWatch(); drawCal(c.rows || c); drawTray();
+  })
+  .catch(() => { $('#stamp').textContent = "Deals couldn't load just now. Refresh to try again."; $('#cards').innerHTML = '<div class="empty">Deals couldn\'t load just now. Refresh to try again.</div>'; });
+}
+</script>
+</body>
+</html>
