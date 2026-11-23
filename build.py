@@ -34,7 +34,7 @@ COLS = ["key", "product", "brand", "category", "retailer", "was", "now",
         "history", "prior_price", "note", "src"]
 
 RETAILERS = raw.get("retailers", {})
-deals = [dict(zip(COLS + ["url"], d + [""] * (12 - len(d)))) for d in raw["deals"]]
+deals = [dict(zip(COLS + ["url", "image"], d + [""] * (13 - len(d)))) for d in raw["deals"]]
 RUN = datetime.datetime.now(ZoneInfo("Australia/Sydney"))
 RUN_TS = RUN.strftime("%Y-%m-%dT%H:%M")
 HIST_PATH = HERE / "data" / "history.json"
@@ -182,6 +182,7 @@ for d in deals:
         "source": src["name"], "source_url": src["url"], "seen": src["date"],
         "product_key": d["key"],
         "slug": slugify(d["key"] + "-" + d["retailer"]),
+        "image": d["image"] if str(d["image"]).startswith("https://") else "",
         "link": link_for(d)[0], "link_label": link_for(d)[1], "link_kind": link_for(d)[2],
         "tracked_since": (HISTORY.get(did) or [[RUN_TS]])[0][0][:10],
     })

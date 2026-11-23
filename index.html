@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Strikethrough</title>
 <meta name="description" content="Strikethrough checks Australia's Black Friday deals against price history and other retailers, so you can see which discounts are real.">
+<script>window.STRIKETHROUGH_GA4 = ""; // paste your GA4 measurement ID, e.g. "G-ABC123XYZ"</script>
 <link rel="canonical" href="https://strikethrough.com.au/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://strikethrough.com.au/">
@@ -97,6 +98,18 @@ select,input{font:inherit;font-size:16px;color:var(--ink);background:var(--bg);b
 .acts{display:flex;gap:8px;margin-top:auto;padding-top:8px;border-top:1px dashed var(--line)}
 .acts button{flex:1;min-height:40px;border:1px solid var(--line);border-radius:999px;background:var(--bg);font-size:14px;cursor:pointer}
 .acts button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.alert{background:var(--red);color:#fff;padding:10px max(5vw,16px)}
+.alert .wrap{display:flex;align-items:center;gap:10px 16px;flex-wrap:wrap}
+.alert b{font-weight:600}
+.alert .wrap>span{flex:1 1 380px}
+.alert form{display:flex;flex-wrap:wrap;gap:8px;flex:1 1 360px;max-width:480px}
+.alert input{flex:1 1 200px;min-width:180px;min-height:40px;color:#111;background:#fff;font-size:16px;border:0;border-radius:999px;padding:6px 14px}
+.alert button{min-height:40px;border:0;border-radius:999px;background:#111;color:#fff;padding:6px 16px;font-weight:600;cursor:pointer;white-space:nowrap}
+.alert .msg{flex-basis:100%;margin:0;font-size:14px}
+.ctop{display:flex;gap:12px;align-items:flex-start}
+.ico{flex:none;width:52px;height:52px;border-radius:10px;background:var(--soft);display:grid;place-items:center;color:var(--ink)}
+.ico svg{width:30px;height:30px}
+.ico img{width:52px;height:52px;object-fit:contain;border-radius:10px;background:#fff}
 .buy{display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;border-radius:999px;background:var(--red);color:#fff;text-decoration:none;font-weight:600;font-size:15px;padding:8px 14px;margin-top:4px}
 .buy:hover{filter:brightness(.92)}
 .buy.alt{background:var(--ink);color:var(--bg)}
@@ -189,6 +202,18 @@ dialog::backdrop{background:rgb(0 0 0 / .5)}
     <div class="links" id="links"><a href="#deals">Deals</a><a href="#map">Where the discounts are</a><a href="#watch">Watch-outs</a><a href="#calendar">Sale dates</a><a href="#how">How we check</a><a href="#pro">For retailers</a></div>
   </div>
 </nav>
+
+<div class="alert" role="region" aria-label="Email sign-up">
+  <div class="wrap">
+    <span><b>Get the verified list.</b> Thursday night, before the Black Friday rush: only the deals that hold up.</span>
+    <form id="quick" name="verified-list" method="POST" data-netlify="true" netlify-honeypot="bot-field" novalidate>
+      <input type="hidden" name="form-name" value="verified-list"><p hidden><label>Leave blank<input name="bot-field"></label></p>
+      <input id="q-email" name="email" type="email" placeholder="you@email.com" aria-label="Email address" autocomplete="email">
+      <button type="submit">Send it to me</button>
+      <p class="msg" id="q-msg" role="status"></p>
+    </form>
+  </div>
+</div>
 
 <header class="band" id="top">
   <div class="wrap">
@@ -351,10 +376,35 @@ function filtered() {
   return rows.sort(by);
 }
 
+const ICON_PATHS = {
+  'TVs & Home Theatre': '<rect x="3" y="5" width="26" height="17" rx="2"/><path d="M11 27h10M16 22v5"/>',
+  'Headphones & Audio': '<path d="M5 19v-3a11 11 0 0 1 22 0v3"/><rect x="4" y="18" width="6" height="9" rx="2"/><rect x="22" y="18" width="6" height="9" rx="2"/>',
+  'Computing & Gaming': '<rect x="6" y="6" width="20" height="14" rx="1.5"/><path d="M3 25h26l-2-5H5z"/>',
+  'Tablets & eReaders': '<rect x="8" y="3" width="16" height="26" rx="2.5"/><path d="M14 25h4"/>',
+  'Phones & Wearables': '<rect x="10" y="3" width="12" height="26" rx="3"/><path d="M14 6h4"/>',
+  'Smart Home': '<path d="M4 15 16 5l12 10"/><path d="M7 13v14h18V13"/><circle cx="16" cy="19" r="3"/>',
+  'Coffee Machines': '<path d="M7 4h18v6H7z"/><path d="M10 10v4M22 10v4"/><path d="M9 18h12v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4z"/><path d="M21 19h2a2 2 0 0 1 0 4h-2"/>',
+  'Kitchen Appliances': '<path d="M9 4h14l-2 14H11z"/><path d="M8 18h16v9H8z"/><circle cx="16" cy="23" r="1.5"/>',
+  'Vacuums & Floorcare': '<path d="M22 3 12 22"/><path d="M6 22h10a3 3 0 0 1 3 3v2H6z"/><circle cx="8" cy="28" r="1"/>',
+  'Hair & Beauty Tools': '<circle cx="12" cy="11" r="7"/><path d="M19 11h9v5h-9"/><path d="M10 18l-2 10h6l1-8"/>',
+  'Personal Care': '<rect x="13" y="12" width="6" height="17" rx="2"/><path d="M14 12V5h4v7M14 7h4"/>',
+  'Air & Climate': '<circle cx="16" cy="13" r="9"/><path d="M16 13l4-6M16 13l-7 1M16 13l3 7M16 22v6M11 28h10"/>',
+  'Cameras': '<rect x="3" y="9" width="26" height="17" rx="2"/><circle cx="16" cy="17" r="5"/><path d="M11 9l2-4h6l2 4"/>',
+  'Furniture & Bedding': '<path d="M4 25V12h24v13"/><path d="M4 20h24M8 12V8h16v4"/>',
+  'Fashion & Footwear': '<path d="M3 22c6 0 8-6 10-12l6 3c2 1 3 3 8 5 2 1 2 6 0 6H3z"/>',
+  'Toys & LEGO': '<rect x="4" y="13" width="24" height="13" rx="1.5"/><rect x="7" y="8" width="6" height="5" rx="1"/><rect x="19" y="8" width="6" height="5" rx="1"/>',
+  'Large Appliances': '<rect x="7" y="3" width="18" height="26" rx="2"/><path d="M7 12h18M11 7v2M11 16v4"/>',
+};
+const icon = (r) => {
+  if (r.image && /^https:\/\//.test(r.image)) return `<span class="ico"><img src="${esc(r.image)}" alt="" loading="lazy" referrerpolicy="no-referrer"></span>`;
+  const d = ICON_PATHS[r.category] || '<rect x="5" y="9" width="22" height="18" rx="2"/><path d="M5 14h22M16 9v18"/>';
+  return `<span class="ico" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${d}</svg></span>`;
+};
+
 function card(r) {
   const [lab, g] = info(r), padded = Math.abs(r.claimed_pct - r.real_pct) >= 1, picked = S.picks.includes(r.id);
-  return `<article class="card${picked ? ' picked' : ''}"><div class="meta"><span>${esc(r.retailer)}</span><span>${esc(r.category)}</span></div>
-    <button class="pname" type="button" data-open="${esc(r.id)}">${esc(r.product)}</button>
+  return `<article class="card${picked ? ' picked' : ''}" data-id="${esc(r.id)}"><div class="meta"><span>${esc(r.retailer)}</span><span>${esc(r.category)}</span></div>
+    <div class="ctop">${icon(r)}<button class="pname" type="button" data-open="${esc(r.id)}">${esc(r.product)}</button></div>
     <div class="prices"><span class="now">${money(r.now)}</span><span class="was">${money(r.was)}</span></div>
     <div class="pct">${padded ? `Advertised ${Math.round(r.claimed_pct)}% off · <strong>real ${Math.round(r.real_pct)}% off</strong>` : `<strong>${Math.round(r.real_pct)}% off</strong> · save ${money(r.reference - r.now)}`}</div>
     <span class="pill ${g}">${esc(lab)}</span>
@@ -366,8 +416,9 @@ function card(r) {
 function render() {
   const rows = filtered();
   const active = S.group || S.cat || $('#f-ret').value || $('#f-q').value.trim();
-  $('#count').textContent = `Showing ${Math.min(S.shown, rows.length)} of ${rows.length} deal${rows.length === 1 ? '' : 's'}.`;
+  $('#count').textContent = `Showing ${Math.min(S.shown, rows.length)} of ${rows.length} ${S.group === 'good' ? 'verified good ' : ''}deal${rows.length === 1 ? '' : 's'}.`;
   $('#clear').hidden = !active;
+  $('#clear').textContent = S.group === 'good' && !S.cat && !$('#f-ret').value && !$('#f-q').value.trim() ? `Show all ${S.deals.length} deals` : 'Clear filters';
   $('#cards').innerHTML = rows.length ? rows.slice(0, S.shown).map(card).join('') : '<div class="empty">No deals match. Try another category, or clear the filters.</div>';
   $('#more').hidden = rows.length <= S.shown;
   $$('.t').forEach((t) => t.classList.toggle('dim', !!S.group && !t.classList.contains(S.group)));
@@ -427,6 +478,7 @@ function ladder(box, r) {
 function openDeal(id) {
   const r = S.byId[id]; if (!r) return;
   const [lab, g, plain] = info(r), peers = (S.byKey[r.product_key] || []).filter((p) => p.id !== r.id).sort((a, b) => a.now - b.now);
+  $('#dlg-body').dataset.id = r.id;
   $('#dlg-body').innerHTML = `<div class="dhead"><div><div class="meta" style="justify-content:flex-start;gap:14px"><span>${esc(r.retailer)}</span><span>${esc(r.category)}</span></div>
     <h2 class="disp" id="dlg-title" style="font-size:clamp(24px,3vw,34px);margin-top:4px">${esc(r.product)}</h2></div><button class="close" type="button" data-close aria-label="Close">×</button></div>
     <span class="pill ${g}">${esc(lab)}</span> <span class="pct">${esc(plain)}</span>
@@ -601,6 +653,29 @@ $('#dlg').addEventListener('click', (e) => { if (e.target === $('#dlg')) $('#dlg
 $('#dlg').addEventListener('close', () => { if (location.hash.startsWith('#d-')) try { history.replaceState(null, '', location.pathname + location.search); } catch {} });
 addEventListener('hashchange', route);
 ['#f-ret', '#f-sort'].forEach((s) => $(s).addEventListener('change', refresh));
+const GA4 = (window.STRIKETHROUGH_GA4 || '').trim();
+const track = (name, params) => { try { if (window.gtag) window.gtag('event', name, params); } catch {} };
+if (/^G-[A-Z0-9]+$/.test(GA4)) {
+  const s = document.createElement('script'); s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA4; document.head.appendChild(s);
+  window.dataLayer = window.dataLayer || []; window.gtag = function () { dataLayer.push(arguments); };
+  gtag('js', new Date()); gtag('config', GA4);
+}
+document.addEventListener('click', (e) => {
+  const a = e.target.closest('a.buy'); if (!a) return;
+  const card = a.closest('[data-id]'), r = card ? S.byId[card.dataset.id] : null;
+  track('retailer_click', {retailer: r?.retailer || '', product: r?.product || '', verdict: r?.verdict || '', affiliate: a.rel.includes('sponsored') ? 'yes' : 'no', link_kind: r?.link_kind || ''});
+});
+$('#quick').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = $('#q-email').value.trim(), msg = $('#q-msg');
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { msg.textContent = 'Enter a valid email address.'; return; }
+  if (/claude\.ai|claudeusercontent|localhost|127\.0\.0\.1/.test(location.hostname)) { msg.textContent = 'Sign-up only works on the live site, so nothing was sent from this preview.'; return; }
+  try {
+    const res = await fetch('/', {method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'}, body: new URLSearchParams(new FormData($('#quick'))).toString()});
+    msg.textContent = res.ok ? "You're on the list. Watch for it Thursday night." : "That didn't go through. Try again in a minute.";
+    if (res.ok) { $('#quick').reset(); track('sign_up', {method: 'verified_list'}); }
+  } catch { msg.textContent = "That didn't go through. Try again in a minute."; }
+});
 let qt; $('#f-q').addEventListener('input', () => { clearTimeout(qt); qt = setTimeout(refresh, 200); });
 $('#more').addEventListener('click', () => { S.shown += 24; render(); });
 $('#clear').addEventListener('click', () => { S.group = ''; S.cat = ''; $('#f-ret').value = ''; $('#f-q').value = ''; refresh(); });
@@ -645,6 +720,7 @@ Promise.all([fetch(CONFIG.dealsUrl).then((r) => r.json()), fetch(CONFIG.calendar
     const anyAff = S.deals.some((r) => buy(r)?.aff);
     ['#disc', '#disc2'].forEach((s) => { $(s).hidden = !anyAff; $(s).textContent = S.aff.disclosure || ''; });
     $('#fcats').innerHTML = [...new Set(S.deals.map((r) => r.category))].sort().map((c) => `<a href="deals/${slugify(c)}/">${esc(c)}</a>`).join('');
+    if (!location.hash) S.group = 'good';
     drawFilters(); drawHero(); render(); drawHeat(); drawWatch(); drawCal(c.rows || c); drawTray(); route();
   })
   .catch(() => { $('#stamp').textContent = "Deals couldn't load just now. Refresh to try again."; $('#cards').innerHTML = '<div class="empty">Deals couldn\'t load just now. Refresh to try again.</div>'; });

@@ -85,6 +85,18 @@ for cat in cats:
 <p class="m">{e(r['reason'])}</p>
 <p class="l"><a href="/#d-{e(r['slug'])}">Price story</a>{buy}</p></div>
 <div class="p">{money(r['now'])}<span class="was">{money(r['was'])}</span></div></article>""")
+    ld = {"@context": "https://schema.org", "@type": "ItemList", "name": f"Black Friday {cat.lower()} deals, checked",
+          "url": f"{SITE}/deals/{slug}/", "numberOfItems": len(items), "itemListElement": []}
+    for i, r in enumerate(items, 1):
+        prod = {"@type": "Product", "name": r["product"], "brand": {"@type": "Brand", "name": r["brand"]}, "category": cat,
+                "offers": {"@type": "Offer", "price": f"{r['now']:.2f}", "priceCurrency": "AUD",
+                           "seller": {"@type": "Organization", "name": r["retailer"]}}}
+        if r.get("link"):
+            prod["offers"]["url"] = r["link"]
+        if r.get("image"):
+            prod["image"] = r["image"]
+        ld["itemListElement"].append({"@type": "ListItem", "position": i, "url": f"{SITE}/#d-{r['slug']}", "item": prod})
+    ldjson = json.dumps(ld, ensure_ascii=False).replace("</", "<\\/")
     other = "".join(f'<a href="/deals/{slugify(c)}/">{e(c)}</a>' for c in cats if c != cat)
     disc = f'<p class="fine">{e(aff.get("disclosure", ""))}</p>' if any(affiliate(r)[1] for r in items) else ""
     page = f"""<!DOCTYPE html>
@@ -92,7 +104,8 @@ for cat in cats:
 <title>{e(title)}</title><meta name="description" content="{e(desc)}">
 <link rel="canonical" href="{SITE}/deals/{slug}/"><meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet">
-<style>{CSS}</style></head><body><div class="w">
+<style>{CSS}</style>
+<script type="application/ld+json">{ldjson}</script></head><body><div class="w">
 <a class="logo" href="/">Strike<s>through</s></a>
 <h1>Black Friday {e(cat.lower())} deals, checked</h1>
 <p class="lede">We checked {len(items)} {e(cat.lower())} deal{'s' if len(items) != 1 else ''} from {e(', '.join(rets))} against price history and the same product at other stores. {good} hold up. Prices last checked {e(latest_h)}.</p>

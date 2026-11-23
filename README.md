@@ -22,6 +22,10 @@ https://strikethrough.com.au (hosted on Netlify)
 4. **Sign-ups** use Netlify Forms automatically on Netlify: submissions appear under the site's Forms tab, where you can turn on email notifications. To use Mailchimp or Klaviyo instead, paste a form URL into `formEndpoint` near the bottom of `index.html`.
 5. **Analytics.** Paste your GA4 or Plausible snippet into the `<head>`.
 
+## Analytics
+
+Paste your GA4 measurement ID into `window.STRIKETHROUGH_GA4` near the top of `index.html`. Clicks on retailer buttons are sent as a `retailer_click` event (retailer, product, verdict, affiliate yes/no) and email sign-ups as `sign_up`.
+
 ## Affiliate links
 
 Edit `affiliates.json` on GitHub (pencil icon, then Commit changes). The site picks it up within a minute or two.
@@ -33,7 +37,7 @@ Affiliate links get `rel="sponsored"`, and the disclosure line appears automatic
 
 ## Keeping the data fresh
 
-A scheduled refresh runs twice a day and commits new data here. By hand: edit `raw_deals.json` (an optional 12th field on a deal is its exact product URL), then run `python3 build.py && python3 build_calendar.py && python3 build_pages.py`. That writes `data/deals.json`, `data/calendar.json`, appends to `data/history.json` (our own price record), and rebuilds the category pages, `sitemap.xml` and `robots.txt`.
+A scheduled refresh runs twice a day and commits new data here. By hand: edit `raw_deals.json` (optional 12th and 13th fields on a deal are its exact product URL and a product image URL from an affiliate feed), then run `python3 build.py && python3 build_calendar.py && python3 build_pages.py`. That writes `data/deals.json`, `data/calendar.json`, appends to `data/history.json` (our own price record), and rebuilds the category pages, `sitemap.xml` and `robots.txt`.
 
 ## Before launch
 
