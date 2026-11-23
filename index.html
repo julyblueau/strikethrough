@@ -142,7 +142,7 @@ select,input{font:inherit;font-size:16px;color:var(--ink);background:var(--soft)
 .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,4vw,48px);margin-top:20px}
 .scroll{overflow-x:auto}
 table{border-collapse:collapse;width:100%;font-size:15px}
-th{text-align:left;font-weight:600;color:var(--mute);font-size:13px;padding:8px 10px;border-bottom:1px solid #3a3a40}
+th{text-align:left;font-weight:600;color:var(--mute);font-size:13px;padding:8px 10px;border-bottom:1px solid var(--line)}
 td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
 td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .link{border:0;background:none;padding:0;text-align:left;text-decoration:underline;cursor:pointer}
@@ -204,8 +204,30 @@ dialog::backdrop{background:rgb(0 0 0 / .65);-webkit-backdrop-filter:blur(6px);b
 .mini i{position:absolute;inset:0 auto 0 0;background:var(--green)}
 .mini em{position:absolute;inset:0 auto 0 0;background:repeating-linear-gradient(135deg,var(--red) 0 3px,transparent 3px 6px);opacity:.6}
 .totop{position:fixed;right:16px;bottom:84px;z-index:25;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:999px;min-height:44px;padding:0 16px;cursor:pointer}
+
+/* Section themes: each anchor reads like its own page */
+.eye{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin:0 0 14px}
+.eye i{font-style:normal;font-family:"Inter Tight",Inter,sans-serif;font-size:13px;letter-spacing:0;padding:2px 8px;border-radius:999px;background:var(--ink);color:var(--bg)}
+.sheet{border-radius:clamp(22px,3vw,40px);margin:clamp(10px,1.4vw,18px) clamp(6px,1.2vw,16px);background:var(--bg);color:var(--ink)}
+.t-paper{color-scheme:light;--bg:#f7f7f4;--ink:#0d0d0f;--mute:#5a5a62;--line:#e1e1dc;--soft:#ecece7;--card:#fff;--green:#1e9e4b;--greensoft:rgba(30,158,75,.12);--red:#e0362c;--redsoft:rgba(224,54,44,.1);--grey:#9a9aa2}
+.t-cream{color-scheme:light;--bg:#f4eee2;--ink:#1a1410;--mute:#6b5f52;--line:#e2d8c6;--soft:#ebe3d3;--card:#fbf7ef;--green:#1e8f47;--greensoft:rgba(30,143,71,.12);--red:#d4372b;--redsoft:rgba(212,55,43,.1);--grey:#a0958a}
+.t-cream h2{font-size:clamp(34px,5vw,60px)}
+.t-red{--bg:#e0362c;--ink:#fff;--mute:rgba(255,255,255,.85);--line:rgba(255,255,255,.3);--soft:rgba(255,255,255,.14);--card:rgba(255,255,255,.08)}
+.t-red.pro{background:radial-gradient(ellipse 60% 90% at 90% 10%,#ff6a5c 0%,transparent 60%),#e0362c;border-top:0}
+.t-red h2{font-size:clamp(34px,5vw,60px)}
+.t-red .eye i{color:#e0362c}
+.t-red .go{background:#0d0d0f;color:#fff}
+.t-red.pro input,.t-red.pro select{background:#fff;color:#111;border-color:transparent}
+.t-red ::placeholder{color:#777}
+.t-red :focus-visible{outline-color:#fff}
+.t-paper .heat .cell{box-shadow:inset 0 0 0 1px rgba(0,0,0,.04)}
+.t-paper .link,.t-cream .link{text-decoration-color:color-mix(in srgb,var(--ink) 35%,transparent);text-underline-offset:3px}
+.t-cream table{background:var(--card);border-radius:18px;overflow:hidden}
+.t-cream th{background:var(--soft)}
+.t-cream td:first-child,.t-cream th:first-child{padding-left:16px}
 @media(max-width:760px){.two{grid-template-columns:minmax(0,1fr)}.links{margin-left:0;width:100%;overflow-x:auto;flex-wrap:nowrap}.links a{flex:none}.bar{top:101px}html{scroll-padding-top:200px}}
 @media(max-width:600px){table{font-size:13px}th,td{padding:6px 4px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px;border-bottom:1px solid var(--line)}.stack td{display:flex;justify-content:space-between;gap:12px;border:0;padding:3px 0;text-align:right}.stack td::before{content:attr(data-l);color:var(--mute);text-align:left}.stack td:empty{display:none}.field{grid-template-columns:repeat(auto-fill,minmax(16px,1fr));gap:4px}.t{height:22px}.now{font-size:32px}.tray .slot{max-width:46vw}.tray .cta{margin-left:0;width:100%}.tray .cta button{flex:1}.row select{flex:1 1 40%}.row input{flex:1 1 100%}.bar{position:static}.seg button{padding:6px 11px}}
+@media(max-width:600px){.t-cream .stack tr{padding-inline:14px}.t-cream .stack td:first-child{padding-left:0}.sheet{margin-inline:6px}}
 @media(prefers-reduced-motion:no-preference){.t{transition:opacity .25s,transform .15s}html{scroll-behavior:smooth}}
 </style>
 </head>
@@ -248,6 +270,7 @@ dialog::backdrop{background:rgb(0 0 0 / .65);-webkit-backdrop-filter:blur(6px);b
 
 <section class="band" id="deals" style="padding-top:8px">
   <div class="wrap">
+    <p class="eye"><i>01</i>Deals</p>
     <h2 class="disp">Black Friday deals, checked</h2>
     <p class="lede">Tap a product for its price story. Add up to three deals to compare them side by side.</p>
     <p class="disc" id="disc" hidden></p>
@@ -268,8 +291,9 @@ dialog::backdrop{background:rgb(0 0 0 / .65);-webkit-backdrop-filter:blur(6px);b
   </div>
 </section>
 
-<section class="band alt" id="map">
+<section class="band sheet t-paper" id="map">
   <div class="wrap">
+    <p class="eye"><i>02</i>Discount map</p>
     <h2 class="disp" id="map-title">Where the real discounts are</h2>
     <p class="lede">Average real discount for each retailer and category we track. Tap a square to see those deals.</p>
     <div class="scroll"><div class="heat" id="heat"></div></div>
@@ -281,6 +305,7 @@ dialog::backdrop{background:rgb(0 0 0 / .65);-webkit-backdrop-filter:blur(6px);b
 
 <section class="band" id="watch">
   <div class="wrap">
+    <p class="eye"><i>03</i>Watch-outs</p>
     <h2 class="disp">Watch-outs: the headline isn't the whole story</h2>
     <p class="lede">Deals that were cheaper recently, and products another retailer is selling for less right now.</p>
     <div class="two">
@@ -290,8 +315,9 @@ dialog::backdrop{background:rgb(0 0 0 / .65);-webkit-backdrop-filter:blur(6px);b
   </div>
 </section>
 
-<section class="band alt" id="calendar">
+<section class="band sheet t-cream" id="calendar">
   <div class="wrap">
+    <p class="eye"><i>04</i>Sale calendar</p>
     <h2 class="disp">When the sales start</h2>
     <p class="lede">Black Friday is Friday 27 November and Cyber Monday is 30 November. "Estimate" rows are based on last year's patterns.</p>
     <div class="scroll" style="margin-top:16px"><table class="stack"><thead><tr><th>Retailer</th><th>Category</th><th>Sale opens</th><th>Peak days</th><th class="n">Advertised</th><th>Status</th></tr></thead><tbody id="cal"></tbody></table></div>
@@ -300,6 +326,7 @@ dialog::backdrop{background:rgb(0 0 0 / .65);-webkit-backdrop-filter:blur(6px);b
 
 <section class="band" id="how">
   <div class="wrap">
+    <p class="eye"><i>05</i>Method</p>
     <h2 class="disp">How we check a deal</h2>
     <div class="steps">
       <div class="step"><h3>Price history</h3><p>Where trackers have recorded past prices, we mark a deal as a record low, near-record low, a price it often hits, or one that was cheaper recently.</p></div>
@@ -311,9 +338,10 @@ dialog::backdrop{background:rgb(0 0 0 / .65);-webkit-backdrop-filter:blur(6px);b
   </div>
 </section>
 
-<section class="band pro" id="pro">
+<section class="band sheet pro t-red" id="pro">
   <div class="wrap two" style="margin-top:0">
     <div>
+      <p class="eye"><i>06</i>Strikethrough Pro</p>
       <h2 class="disp">Strikethrough Pro, for retailers and brands</h2>
       <p class="lede">See how your competitors are really discounting, every day, across your category.</p>
       <ul>
