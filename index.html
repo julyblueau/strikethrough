@@ -2,10 +2,17 @@
 <html lang="en-AU">
 <head>
 <meta charset="utf-8">
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-N8LGLSV5');</script>
+<!-- End Google Tag Manager -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Strikethrough</title>
 <meta name="description" content="Strikethrough checks Australia's Black Friday deals against price history and other retailers, so you can see which discounts are real.">
-<script>window.STRIKETHROUGH_GA4 = ""; // paste your GA4 measurement ID, e.g. "G-ABC123XYZ"</script>
+<script>window.STRIKETHROUGH_GA4 = ""; // optional: only if not using Google Tag Manager (GTM is installed below)</script>
 <link rel="canonical" href="https://strikethrough.com.au/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://strikethrough.com.au/">
@@ -196,6 +203,9 @@ dialog::backdrop{background:rgb(0 0 0 / .5)}
 </style>
 </head>
 <body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N8LGLSV5" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 <nav class="nav" aria-label="Main">
   <div class="wrap">
     <a class="logo disp" href="#top">Strike<s>through</s></a>
@@ -654,7 +664,10 @@ $('#dlg').addEventListener('close', () => { if (location.hash.startsWith('#d-'))
 addEventListener('hashchange', route);
 ['#f-ret', '#f-sort'].forEach((s) => $(s).addEventListener('change', refresh));
 const GA4 = (window.STRIKETHROUGH_GA4 || '').trim();
-const track = (name, params) => { try { if (window.gtag) window.gtag('event', name, params); } catch {} };
+const track = (name, params) => {
+  try { window.dataLayer = window.dataLayer || []; window.dataLayer.push({event: name, ...params}); } catch {}
+  try { if (GA4 && window.gtag) window.gtag('event', name, params); } catch {}
+};
 if (/^G-[A-Z0-9]+$/.test(GA4)) {
   const s = document.createElement('script'); s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA4; document.head.appendChild(s);
   window.dataLayer = window.dataLayer || []; window.gtag = function () { dataLayer.push(arguments); };

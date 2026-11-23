@@ -24,7 +24,7 @@ https://strikethrough.com.au (hosted on Netlify)
 
 ## Analytics
 
-Paste your GA4 measurement ID into `window.STRIKETHROUGH_GA4` near the top of `index.html`. Clicks on retailer buttons are sent as a `retailer_click` event (retailer, product, verdict, affiliate yes/no) and email sign-ups as `sign_up`.
+Google Tag Manager (GTM-N8LGLSV5) is installed on every page. The site pushes two events to the dataLayer: `retailer_click` (with `retailer`, `product`, `verdict`, `affiliate`, `link_kind`) and `sign_up` (with `method`). Set up GA4 inside Tag Manager: a Google tag with your GA4 Measurement ID on all pages, plus GA4 event tags triggered by those custom events.
 
 ## Affiliate links
 
