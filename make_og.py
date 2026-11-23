@@ -27,7 +27,7 @@ body{{width:1200px;height:630px;background:radial-gradient(ellipse 55% 70% at 80
 .logo s{{text-decoration:none;position:relative}}
 .logo s::after{{content:"";position:absolute;left:-3px;right:-3px;top:52%;height:5px;background:#ff453a;transform:rotate(-4deg)}}
 h1{{font:700 66px/1.02 'Inter Display',Inter;letter-spacing:-.035em;margin:34px 0 22px}}
-p{{font-size:26px;line-height:1.35;color:#a1a1a6;max-width:26ch}}
+p{{font-size:25px;line-height:1.35;color:#a1a1a6;max-width:30ch}}
 .url{{margin-top:34px;font-size:22px;font-weight:600;color:#f5f5f7;display:inline-flex;gap:10px;align-items:center}}
 .url b{{background:#ff453a;color:#fff;border-radius:999px;padding:6px 16px;font-size:20px}}
 .art svg{{width:470px;height:auto;filter:drop-shadow(0 24px 34px rgba(0,0,0,.5))}}
@@ -49,8 +49,10 @@ async def main():
     from playwright.async_api import async_playwright
     rows = json.load(open(ROOT / "data" / "deals.json"))["rows"]
     cats = sorted({r["category"] for r in rows})
+    n_deals = len(rows) // 50 * 50          # rounded down so the card doesn't go stale between refreshes
+    n_rets = len({r["retailer"] for r in rows})
     jobs = [("home", card("Which Black Friday deals are actually real?",
-                          "Every was-price checked against price history and other Australian retailers.", None, "#ff453a"))]
+                          f"{n_deals}+ deals checked against price history and {n_rets} Australian retailers. Free, updated twice a day.", None, "#ff453a"))]
     for c in cats:
         s = slugify(c)
         jobs.append((s, card(f"{c}: Black Friday deals, checked",
