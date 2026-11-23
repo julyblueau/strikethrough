@@ -18,6 +18,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <meta property="og:url" content="https://strikethrough.com.au/">
 <meta property="og:title" content="Strikethrough: which Black Friday deals are real?">
 <meta property="og:description" content="Every deal checked against price history and other Australian retailers.">
+<meta property="og:image" content="https://strikethrough.com.au/og/home.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Strikethrough: which Black Friday deals are actually real?"><meta property="og:site_name" content="Strikethrough"><meta property="og:locale" content="en_AU">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://strikethrough.com.au/og/home.jpg">
 <meta name="theme-color" content="#0a0a0b">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23111'/%3E%3Ctext x='16' y='23' font-family='Arial' font-weight='900' font-size='20' fill='%23fff' text-anchor='middle'%3ES%3C/text%3E%3Cpath d='M5 19 L27 13' stroke='%23e10600' stroke-width='3'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -225,6 +227,27 @@ dialog::backdrop{background:rgb(0 0 0 / .65);-webkit-backdrop-filter:blur(6px);b
 .t-cream table{background:var(--card);border-radius:18px;overflow:hidden}
 .t-cream th{background:var(--soft)}
 .t-cream td:first-child,.t-cream th:first-child{padding-left:16px}
+
+.count{display:inline-flex;gap:10px;align-items:center;font-size:14px;font-weight:600;padding:7px 14px 7px 12px;border-radius:999px;background:var(--redsoft);color:#ff6b61;margin:0 0 18px;border:1px solid rgba(255,69,58,.3)}
+.count i{width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 0 0 rgba(255,69,58,.6)}
+.count.live{background:rgba(48,209,88,.14);color:var(--green);border-color:rgba(48,209,88,.35)}.count.live i{background:var(--green)}
+@media(prefers-reduced-motion:no-preference){.count i{animation:pulse 1.8s infinite}@keyframes pulse{70%{box-shadow:0 0 0 8px rgba(255,69,58,0)}100%{box-shadow:0 0 0 0 rgba(255,69,58,0)}}}
+.top3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.pick{display:grid;grid-template-columns:104px minmax(0,1fr);gap:14px;align-items:center;padding:10px 14px 10px 10px;border:1px solid var(--line);border-radius:20px;background:var(--card);text-align:left;cursor:pointer;transition:transform .2s,border-color .2s}
+.pick:hover{transform:translateY(-2px);border-color:#3a3a40}
+.pick .th{aspect-ratio:1;border-radius:14px;display:grid;place-items:center;background:radial-gradient(ellipse 65% 60% at 50% 45%,var(--glow) 0%,transparent 72%),linear-gradient(180deg,#1d1d21,#111113);position:relative;overflow:hidden}
+.pick .th img{width:84%;filter:drop-shadow(0 8px 12px rgba(0,0,0,.45))}
+.pick .th img.photo{width:78%;background:#fff;border-radius:8px;padding:4px;filter:none}
+.pick .rk{position:absolute;top:6px;left:6px;font:700 12px "Inter Tight",Inter,sans-serif;background:var(--ink);color:var(--bg);border-radius:999px;padding:2px 7px}
+.pick small{display:block;font-size:12px;color:var(--mute)}
+.pick b{display:block;font-size:15px;line-height:1.3;margin:2px 0 6px;font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pick .pp{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.pick .pp em{font:700 24px/1 "Inter Tight",Inter,sans-serif;font-style:normal;letter-spacing:-.02em}
+.pick .pp s{color:var(--mute);font-size:14px;text-decoration-color:var(--red)}
+.pick .pp span{font-size:12px;font-weight:700;color:#fff;background:var(--red);border-radius:999px;padding:2px 8px}
+@media(max-width:900px){.top3{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;margin-inline:calc(-1*max(5vw,16px));padding:0 max(5vw,16px) 6px;scrollbar-width:none}.top3::-webkit-scrollbar{display:none}.pick{flex:0 0 min(84%,360px);scroll-snap-align:start;grid-template-columns:84px minmax(0,1fr)}}
+.totop{width:48px;height:48px;min-height:0;padding:0;display:grid;place-items:center;font-size:20px;bottom:calc(84px + env(safe-area-inset-bottom,0px));box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.totop[hidden]{display:none}
 @media(max-width:760px){.two{grid-template-columns:minmax(0,1fr)}.links{margin-left:0;width:100%;overflow-x:auto;flex-wrap:nowrap}.links a{flex:none}.bar{top:101px}html{scroll-padding-top:200px}}
 @media(max-width:600px){table{font-size:13px}th,td{padding:6px 4px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px;border-bottom:1px solid var(--line)}.stack td{display:flex;justify-content:space-between;gap:12px;border:0;padding:3px 0;text-align:right}.stack td::before{content:attr(data-l);color:var(--mute);text-align:left}.stack td:empty{display:none}.field{grid-template-columns:repeat(auto-fill,minmax(16px,1fr));gap:4px}.t{height:22px}.now{font-size:32px}.tray .slot{max-width:46vw}.tray .cta{margin-left:0;width:100%}.tray .cta button{flex:1}.row select{flex:1 1 40%}.row input{flex:1 1 100%}.bar{position:static}.seg button{padding:6px 11px}}
 @media(max-width:600px){.t-cream .stack tr{padding-inline:14px}.t-cream .stack td:first-child{padding-left:0}.sheet{margin-inline:6px}}
@@ -256,8 +279,10 @@ dialog::backdrop{background:rgb(0 0 0 / .65);-webkit-backdrop-filter:blur(6px);b
 
 <header class="band" id="top">
   <div class="wrap">
+    <p class="count" id="count-chip" hidden><i aria-hidden="true"></i><span id="count-txt"></span></p>
     <h1 class="disp" id="headline">We check the was-price so you don't have to.</h1>
     <p class="lede" id="sub">Every Black Friday deal below has been checked against price history and the same product at other Australian retailers.</p>
+    <div class="top3wrap" id="top3wrap" hidden><p class="eye" style="margin:26px 0 12px"><i>★</i>Today's best 3</p><div class="top3" id="top3"></div></div>
     <div class="field" id="field" role="group" aria-label="Every tracked deal as a ticket. Select one to see its details."></div>
     <div class="legend" id="legend">
       <button class="chip" type="button" data-g="good" aria-pressed="false"><span class="sw good"></span><b id="n-good">–</b>Verified good</button>
@@ -370,7 +395,7 @@ dialog::backdrop{background:rgb(0 0 0 / .65);-webkit-backdrop-filter:blur(6px);b
   <div class="wrap" style="margin-top:18px"><span>Browse checked deals by category</span><div class="fcats" id="fcats"></div><p class="disc" id="disc2" hidden></p></div>
 </footer>
 
-<button class="totop" id="totop" type="button" hidden>Back to top</button>
+<button class="totop" id="totop" type="button" aria-label="Back to top" hidden><span aria-hidden="true">↑</span></button>
 <div class="tray" id="tray" hidden><div class="wrap"><span id="tray-slots" style="display:flex;gap:8px;flex-wrap:wrap"></span><div class="cta"><button class="clear" id="tray-clear" type="button">Clear</button><button class="go" id="tray-go" type="button">Compare</button></div></div></div>
 
 <dialog id="dlg" aria-labelledby="dlg-title"><div class="dlg" id="dlg-body"></div></dialog>
@@ -628,6 +653,41 @@ function openCompare() {
 }
 function showDlg() { const d = $('#dlg'); if (!d.open) { try { d.showModal(); } catch { d.setAttribute('open', ''); } } $('#dlg-body').scrollTop = 0; }
 
+
+function drawTop3() {
+  const save = (r) => Math.max(0, r.reference - r.now);
+  const pool = S.deals.filter((x) => grp(x) === 'good').sort((a, b) => (b.score + Math.min(save(b) / 40, 12)) - (a.score + Math.min(save(a) / 40, 12)));
+  const out = [], cats = new Set(), rets = new Set();
+  for (const strict of [true, false]) for (const r of pool) {
+    if (out.length === 3) break;
+    if (out.includes(r) || cats.has(r.category) || (strict && rets.has(r.retailer))) continue;
+    out.push(r); cats.add(r.category); rets.add(r.retailer);
+  }
+  if (!out.length) return;
+  $('#top3').innerHTML = out.map((r, i) => {
+    const pic = r.image && /^https:\/\//.test(r.image) ? `<img class="photo" src="${esc(r.image)}" alt="" referrerpolicy="no-referrer">` : `<img src="art/${slugify(r.category)}.svg" alt="">`;
+    return `<button class="pick" type="button" data-open="${esc(r.id)}"><span class="th" style="--glow:${(CAT_GLOW[r.category] || '#3a3a50')}66">${pic}<span class="rk">${i + 1}</span></span>
+      <span><small>${esc(info(r)[0])} · ${esc(r.retailer)}</small><b>${esc(r.product)}</b>
+      <span class="pp"><em>${money(r.now)}</em>${r.reference > r.now ? `<s>${money(r.reference)}</s>` : ''}${r.real_pct >= 1 ? `<span>−${Math.round(r.real_pct)}%</span>` : ''}</span></span></button>`;
+  }).join('');
+  $('#top3wrap').hidden = false;
+}
+function drawCountdown() {
+  // Black Friday starts 00:00 Fri 27 Nov AEDT; Cyber Monday ends 23:59 Mon 30 Nov AEDT
+  const start = Date.parse('2026-11-26T13:00:00Z'), end = Date.parse('2026-11-30T13:00:00Z'), now = Date.now();
+  const chip = $('#count-chip'), txt = $('#count-txt');
+  let t = '', live = false;
+  if (now < start) {
+    const h = Math.ceil((start - now) / 36e5), d = Math.floor((start - now) / 864e5);
+    t = h <= 24 ? `Black Friday starts in ${h} hour${h === 1 ? '' : 's'}` : d === 1 ? 'Black Friday is tomorrow' : `Black Friday in ${d} days · Fri 27 Nov`;
+  } else if (now < end) {
+    live = true;
+    const d = Math.floor((end - now) / 864e5);
+    t = d >= 1 ? `On now · sales run to Cyber Monday (${d + 1} days left)` : 'Last day · Cyber Monday ends at midnight';
+  } else return;
+  txt.textContent = t; chip.classList.toggle('live', live); chip.hidden = false;
+}
+
 function drawHero() {
   const order = {good: 0, mid: 1, flag: 2};
   const sorted = S.deals.slice().sort((a, b) => order[grp(a)] - order[grp(b)] || b.score - a.score);
@@ -749,7 +809,8 @@ field.addEventListener('pointerleave', () => { const tip = $('#tip'); if (tip) t
 const secs = ['deals', 'map', 'watch', 'calendar', 'how', 'pro'].map((id) => document.getElementById(id));
 const spy = new IntersectionObserver((es) => { es.forEach((en) => { if (en.isIntersecting) $$('#links a').forEach((a) => a.classList.toggle('on', a.getAttribute('href') === '#' + en.target.id)); }); }, {rootMargin: '-45% 0px -50% 0px'});
 secs.forEach((s) => spy.observe(s));
-addEventListener('scroll', () => { $('#totop').hidden = scrollY < 900; }, {passive: true});
+const nearEnd = () => { const pro = $('#pro'); return pro && pro.getBoundingClientRect().top < innerHeight * 0.85; };
+addEventListener('scroll', () => { $('#totop').hidden = scrollY < 900 || nearEnd(); }, {passive: true});
 
 $('#signup').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -775,7 +836,7 @@ Promise.all([fetch(CONFIG.dealsUrl).then((r) => r.json()), fetch(CONFIG.calendar
     ['#disc', '#disc2'].forEach((s) => { $(s).hidden = !anyAff; $(s).textContent = S.aff.disclosure || ''; });
     $('#fcats').innerHTML = [...new Set(S.deals.map((r) => r.category))].sort().map((c) => `<a href="deals/${slugify(c)}/">${esc(c)}</a>`).join('');
     if (!location.hash) S.group = 'good';
-    drawFilters(); drawHero(); render(); drawHeat(); drawWatch(); drawCal(c.rows || c); drawTray(); route();
+    drawFilters(); drawHero(); drawTop3(); drawCountdown(); render(); drawHeat(); drawWatch(); drawCal(c.rows || c); drawTray(); route();
   })
   .catch(() => { $('#stamp').textContent = "Deals couldn't load just now. Refresh to try again."; $('#cards').innerHTML = '<div class="empty">Deals couldn\'t load just now. Refresh to try again.</div>'; });
 }

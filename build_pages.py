@@ -115,7 +115,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','G-DBGC2DTVBK');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{e(title)}</title><meta name="description" content="{e(desc)}">
-<link rel="canonical" href="{SITE}/deals/{slug}/"><meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}">
+<link rel="canonical" href="{SITE}/deals/{slug}/"><meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:type" content="website"><meta property="og:url" content="{SITE}/deals/{slug}/"><meta property="og:image" content="{SITE}/og/{slug}.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:site_name" content="Strikethrough"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="{SITE}/og/{slug}.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>{CSS}</style>
 <script type="application/ld+json">{ldjson}</script></head><body>

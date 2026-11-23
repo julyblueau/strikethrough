@@ -47,3 +47,7 @@ A scheduled refresh runs twice a day and commits new data here. By hand: edit `r
 
 - Have the "How we check" wording and verdict labels read over for legal risk, since the site names retailers.
 - Once the site is live, apply to the affiliate networks (Commission Factory, Amazon Associates AU and others). They review your live site before approving you.
+
+## Share images
+
+`og/*.jpg` are the 1200x630 preview cards that show when a link is shared (Facebook, LinkedIn, iMessage, Slack). Text is evergreen, so they only need regenerating when a category is added or the design changes: `python3 make_og.py` (needs Playwright).

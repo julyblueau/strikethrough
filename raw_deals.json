@@ -39,6 +39,31 @@
       "name": "BHG – Koala sale 2026",
       "url": "https://www.bhg.com.au/news/koala-sale-items/",
       "date": "2026-11-23"
+    },
+    "TR_LIVE": {
+      "name": "TechRadar AU – Black Friday sales live",
+      "url": "https://techradar.com/seasonal-sales/live/black-friday-sales-australia-live-2",
+      "date": "2026-11-22"
+    },
+    "TR_PHONE": {
+      "name": "TechRadar AU – Black Friday phone deals",
+      "url": "https://www.techradar.com/seasonal-sales/black-friday-phone-deals-au",
+      "date": "2026-11-19"
+    },
+    "TR_TV": {
+      "name": "TechRadar AU – early Black Friday TV deals",
+      "url": "https://www.techradar.com/televisions/ive-already-found-17-early-black-friday-tv-deals-worth-nabbing-save-big-on-lg-samsung-sony-and-more",
+      "date": "2026-11-23"
+    },
+    "BIGW_PR": {
+      "name": "Woolworths Group – BIG W Black Friday 2026 release",
+      "url": "https://woolworthsgroup.com.au/au/en/our-newsroom/media-releases/latest-news/2026/big-w-s-2026-black-friday-sale.html",
+      "date": "2026-11-11"
+    },
+    "PS_BIGW": {
+      "name": "Press Start – Big W Black Friday gaming deals",
+      "url": "https://press-start.com.au/bargains/2026/11/15/big-ws-black-friday-sale-has-some-cracking-gaming-deals/",
+      "date": "2026-11-15"
     }
   },
   "house_brands": {
@@ -61,8 +86,7 @@
       "search": "https://www.thegoodguys.com.au/SearchDisplay?searchTerm={q}"
     },
     "JB Hi-Fi": {
-      "home": "https://www.jbhifi.com.au/pages/black-friday-sale",
-      "home_label": "Shop JB Hi-Fi Black Friday"
+      "search": "https://www.jbhifi.com.au/search?query={q}"
     },
     "Kogan": {
       "home": "https://www.kogan.com/au/",
@@ -75,6 +99,13 @@
     "Dyson AU": {
       "home": "https://www.dyson.com.au/",
       "home_label": "Shop Dyson"
+    },
+    "Big W": {
+      "search": "https://www.bigw.com.au/search?text={q}"
+    },
+    "Sonos AU": {
+      "home": "https://www.sonos.com/en-au",
+      "home_label": "Shop Sonos"
     }
   },
   "deals": [
@@ -1241,12 +1272,12 @@
       "Dyson",
       "Vacuums & Floorcare",
       "The Good Guys",
-      1399,
-      949,
+      1349,
+      898,
       "none",
       "",
-      "Price Beat takes it to $935",
-      "TG_TGG"
+      "Dropped from $949 earlier in the sale; Price Beat may lower it further",
+      "TR_LIVE"
     ],
     [
       "dyson-v16-piston",
@@ -2014,6 +2045,409 @@
       "",
       "",
       "TR_KOG"
+    ],
+    [
+      "pixel-11",
+      "Google Pixel 11 (256GB)",
+      "Google",
+      "Phones & Wearables",
+      "JB Hi-Fi",
+      1499,
+      997,
+      "none",
+      "",
+      "",
+      "TR_PHONE"
+    ],
+    [
+      "pixel-11-pro",
+      "Google Pixel 11 Pro (256GB)",
+      "Google",
+      "Phones & Wearables",
+      "JB Hi-Fi",
+      1849,
+      1347,
+      "none",
+      "",
+      "",
+      "TR_PHONE"
+    ],
+    [
+      "pixel-10a",
+      "Google Pixel 10a (128GB)",
+      "Google",
+      "Phones & Wearables",
+      "JB Hi-Fi",
+      949,
+      697,
+      "none",
+      "",
+      "",
+      "TR_PHONE"
+    ],
+    [
+      "honor-magic-8-pro",
+      "Honor Magic 8 Pro (512GB)",
+      "Honor",
+      "Phones & Wearables",
+      "JB Hi-Fi",
+      1999,
+      1498,
+      "none",
+      "",
+      "",
+      "TR_PHONE"
+    ],
+    [
+      "honor-x9d",
+      "Honor X9d (256GB)",
+      "Honor",
+      "Phones & Wearables",
+      "JB Hi-Fi",
+      699,
+      487,
+      "none",
+      "",
+      "",
+      "TR_PHONE"
+    ],
+    [
+      "nothing-phone-4a",
+      "Nothing Phone (4a) (256GB)",
+      "Nothing",
+      "Phones & Wearables",
+      "JB Hi-Fi",
+      749,
+      599,
+      "none",
+      "",
+      "",
+      "TR_PHONE"
+    ],
+    [
+      "nothing-phone-3a-pro",
+      "Nothing Phone (3a) Pro (256GB)",
+      "Nothing",
+      "Phones & Wearables",
+      "JB Hi-Fi",
+      849,
+      619,
+      "none",
+      "",
+      "",
+      "TR_PHONE"
+    ],
+    [
+      "nothing-phone-3",
+      "Nothing Phone 3 (256GB)",
+      "Nothing",
+      "Phones & Wearables",
+      "The Good Guys",
+      1509,
+      994,
+      "none",
+      "",
+      "",
+      "TR_PHONE"
+    ],
+    [
+      "iphone-air-256",
+      "Apple iPhone Air (256GB)",
+      "Apple",
+      "Phones & Wearables",
+      "Amazon AU",
+      1899,
+      1247,
+      "none",
+      "",
+      "",
+      "TR_PHONE"
+    ],
+    [
+      "galaxy-s26-ultra",
+      "Samsung Galaxy S26 Ultra (256GB)",
+      "Samsung",
+      "Phones & Wearables",
+      "Amazon AU",
+      2299,
+      1697,
+      "none",
+      "",
+      "",
+      "TR_PHONE"
+    ],
+    [
+      "galaxy-s26-fe",
+      "Samsung Galaxy S26 FE (256GB)",
+      "Samsung",
+      "Phones & Wearables",
+      "Amazon AU",
+      1299,
+      897,
+      "none",
+      "",
+      "",
+      "TR_PHONE"
+    ],
+    [
+      "galaxy-z-flip8",
+      "Samsung Galaxy Z Flip 8 (256GB)",
+      "Samsung",
+      "Phones & Wearables",
+      "Amazon AU",
+      1949,
+      1446,
+      "none",
+      "",
+      "",
+      "TR_PHONE"
+    ],
+    [
+      "galaxy-a37",
+      "Samsung Galaxy A37 (128GB)",
+      "Samsung",
+      "Phones & Wearables",
+      "Amazon AU",
+      649,
+      427,
+      "none",
+      "",
+      "Lavender colour",
+      "TR_PHONE"
+    ],
+    [
+      "lg-65-c6",
+      "LG 65\" C6 OLED",
+      "LG",
+      "TVs & Home Theatre",
+      "The Good Guys",
+      3995,
+      2741,
+      "none",
+      "",
+      "Price Beat may lower it further",
+      "TR_LIVE"
+    ],
+    [
+      "lg-65-g6",
+      "LG 65\" G6 OLED",
+      "LG",
+      "TVs & Home Theatre",
+      "The Good Guys",
+      4995,
+      3295,
+      "none",
+      "",
+      "",
+      "TR_TV"
+    ],
+    [
+      "lg-42-c6",
+      "LG 42\" C6 OLED",
+      "LG",
+      "TVs & Home Theatre",
+      "The Good Guys",
+      1995,
+      1464,
+      "none",
+      "",
+      "",
+      "TR_TV"
+    ],
+    [
+      "lg-48-b6",
+      "LG 48\" B6 OLED",
+      "LG",
+      "TVs & Home Theatre",
+      "Amazon AU",
+      1999,
+      1295,
+      "none",
+      "",
+      "",
+      "TR_TV"
+    ],
+    [
+      "lg-65-b6",
+      "LG 65\" B6 OLED",
+      "LG",
+      "TVs & Home Theatre",
+      "The Good Guys",
+      3295,
+      2388,
+      "higher_before",
+      "1995",
+      "Was $1,995 at JB Hi-Fi on 10 September (TechRadar)",
+      "TR_TV"
+    ],
+    [
+      "tcl-75-c8l",
+      "TCL 75\" C8L QD-Mini LED",
+      "TCL",
+      "TVs & Home Theatre",
+      "The Good Guys",
+      3995,
+      2466,
+      "higher_before",
+      "2195",
+      "Was $2,195 at JB Hi-Fi on 10 September (TechRadar)",
+      "TR_TV"
+    ],
+    [
+      "tcl-65-c7l",
+      "TCL 65\" C7L SQD-Mini LED",
+      "TCL",
+      "TVs & Home Theatre",
+      "The Good Guys",
+      2495,
+      1445,
+      "none",
+      "",
+      "",
+      "TR_TV"
+    ],
+    [
+      "sony-65-bravia5",
+      "Sony 65\" Bravia 5",
+      "Sony",
+      "TVs & Home Theatre",
+      "The Good Guys",
+      3399,
+      2177,
+      "none",
+      "",
+      "",
+      "TR_TV"
+    ],
+    [
+      "sony-65-bravia8ii",
+      "Sony 65\" Bravia 8 II QD-OLED",
+      "Sony",
+      "TVs & Home Theatre",
+      "The Good Guys",
+      5299,
+      3855,
+      "none",
+      "",
+      "",
+      "TR_TV"
+    ],
+    [
+      "sonos-beam-2",
+      "Sonos Beam (Gen 2)",
+      "Sonos",
+      "TVs & Home Theatre",
+      "Sonos AU",
+      799,
+      549,
+      "none",
+      "",
+      "",
+      "TR_LIVE"
+    ],
+    [
+      "sonos-arc-ultra",
+      "Sonos Arc Ultra",
+      "Sonos",
+      "TVs & Home Theatre",
+      "Sonos AU",
+      1799,
+      1399,
+      "none",
+      "",
+      "",
+      "TR_LIVE"
+    ],
+    [
+      "dyson-pencilwash",
+      "Dyson PencilWash (Copper)",
+      "Dyson",
+      "Vacuums & Floorcare",
+      "Dyson AU",
+      549,
+      379,
+      "none",
+      "",
+      "",
+      "TR_LIVE"
+    ],
+    [
+      "dyson-v8-advanced",
+      "Dyson V8 Advanced",
+      "Dyson",
+      "Vacuums & Floorcare",
+      "Big W",
+      649,
+      324,
+      "none",
+      "",
+      "Half price",
+      "BIGW_PR"
+    ],
+    [
+      "airpods-pro-3",
+      "Apple AirPods Pro 3",
+      "Apple",
+      "Headphones & Audio",
+      "Big W",
+      429,
+      299,
+      "none",
+      "",
+      "",
+      "BIGW_PR"
+    ],
+    [
+      "switch-2",
+      "Nintendo Switch 2 console",
+      "Nintendo",
+      "Computing & Gaming",
+      "Big W",
+      769,
+      688,
+      "none",
+      "",
+      "",
+      "BIGW_PR"
+    ],
+    [
+      "switch-2-pro-controller",
+      "Nintendo Switch 2 Pro Controller",
+      "Nintendo",
+      "Computing & Gaming",
+      "Big W",
+      109,
+      94,
+      "none",
+      "",
+      "",
+      "PS_BIGW"
+    ],
+    [
+      "switch-2-camera",
+      "Nintendo Switch 2 Camera",
+      "Nintendo",
+      "Computing & Gaming",
+      "Big W",
+      59,
+      29,
+      "none",
+      "",
+      "",
+      "PS_BIGW"
+    ],
+    [
+      "breville-duo-temp-pro",
+      "Breville Duo Temp Pro (BES810)",
+      "Breville",
+      "Coffee Machines",
+      "Big W",
+      359,
+      269,
+      "none",
+      "",
+      "",
+      "BIGW_PR"
     ]
   ]
 }
