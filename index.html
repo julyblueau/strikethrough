@@ -823,7 +823,7 @@ $('#signup').addEventListener('submit', async (e) => {
       ? await fetch(CONFIG.formEndpoint, {method: 'POST', headers: {'Content-Type': 'application/json', Accept: 'application/json'}, body: JSON.stringify({email, type: $('#s-type').value})})
       : await fetch('/', {method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'}, body: new URLSearchParams(new FormData($('#signup'))).toString()});
     msg.textContent = res.ok ? "You're on the list." : "That didn't go through. Try again in a minute.";
-    if (res.ok) $('#signup').reset();
+    if (res.ok) { track('sign_up', {method: 'pro_form', signup_type: $('#s-type').value}); $('#signup').reset(); }
   } catch { msg.textContent = "That didn't go through. Try again in a minute."; }
 });
 
