@@ -22,6 +22,10 @@ https://strikethrough.com.au (hosted on Netlify)
 4. **Sign-ups** use Netlify Forms automatically on Netlify: submissions appear under the site's Forms tab, where you can turn on email notifications. To use Mailchimp or Klaviyo instead, paste a form URL into `formEndpoint` near the bottom of `index.html`.
 5. **Analytics.** Paste your GA4 or Plausible snippet into the `<head>`.
 
+## Product art
+
+`art/` holds one drawing per category (made by `make_art.py`), shown on cards until a deal has a real product image from an affiliate feed (the 13th field in `raw_deals.json`). New categories need a drawing added to `make_art.py`.
+
 ## Analytics
 
 Google Tag Manager (GTM-N8LGLSV5) is installed on every page. The site pushes two events to the dataLayer: `retailer_click` (with `retailer`, `product`, `verdict`, `affiliate`, `link_kind`) and `sign_up` (with `method`). GA4 (G-DBGC2DTVBK) loads directly on every page and receives the same two events, so don't also add a Google tag for that ID inside Tag Manager or visits will be counted twice. Tag Manager is there for other tags (Meta pixel, ad conversions).

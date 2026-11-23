@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 180" role="img" aria-label=""><defs>
+<linearGradient id="m" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a4a50"/><stop offset=".5" stop-color="#2a2a2f"/><stop offset="1" stop-color="#151518"/></linearGradient>
+<linearGradient id="mh" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1a1a1d"/><stop offset=".45" stop-color="#5b5b62"/><stop offset="1" stop-color="#1a1a1d"/></linearGradient>
+<linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e9e9ee"/><stop offset="1" stop-color="#a7a7ae"/></linearGradient>
+<linearGradient id="sh" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9d9da4"/><stop offset=".5" stop-color="#f4f4f7"/><stop offset="1" stop-color="#9d9da4"/></linearGradient>
+<linearGradient id="a" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff9f0a"/><stop offset="1" stop-color="#bf5af2"/></linearGradient>
+<linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".35"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></linearGradient>
+<radialGradient id="f" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#000" stop-opacity=".55"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+</defs><ellipse cx="120" cy="160" rx="78" ry="9" fill="url(#f)"/>
+<rect x="56" y="24" width="128" height="34" rx="8" fill="url(#m)"/><rect x="56" y="54" width="34" height="96" fill="url(#m)"/><rect x="150" y="54" width="34" height="96" fill="url(#m)"/>
+<rect x="52" y="146" width="136" height="10" rx="4" fill="url(#mh)"/><rect x="90" y="58" width="60" height="8" fill="#141417"/>
+<rect x="96" y="66" width="48" height="10" rx="3" fill="url(#sh)"/><rect x="144" y="68" width="26" height="6" rx="3" fill="#1b1b1e"/>
+<path d="M98 108h44l-4 34h-36z" fill="#f2f2f5"/><path d="M142 114h6a6 6 0 0 1 0 14h-8" fill="none" stroke="#f2f2f5" stroke-width="4"/>
+<ellipse cx="120" cy="108" rx="22" ry="4" fill="#6b3d1e"/><path d="M114 80v22M126 80v22" stroke="url(#a)" stroke-width="3" stroke-linecap="round"/>
+<circle cx="72" cy="40" r="6" fill="url(#a)"/><rect x="60" y="28" width="120" height="6" rx="3" fill="url(#g)"/></svg>
