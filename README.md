@@ -51,3 +51,7 @@ A scheduled refresh runs twice a day and commits new data here. By hand: edit `r
 ## Share images
 
 `og/*.jpg` are the 1200x630 preview cards that show when a link is shared (Facebook, LinkedIn, iMessage, Slack). Text is evergreen, so they only need regenerating when a category is added or the design changes: `python3 make_og.py` (needs Playwright).
+
+## Community votes (OzBargain)
+
+`raw_deals.json` has a `community` block keyed `"<product key>|<retailer>"`, each `{votes, url, posted, checked}` pointing at the OzBargain post. `build.py` turns it into `community_votes` / `community_url` on each row and adds a small score boost (+1, +3 at 100+ votes, +5 at 300+) unless the deal already has a price catch. The site shows an "On OzBargain" badge (🔥 "Hot" at 300+), links to the discussion, and has a "Most votes on OzBargain" sort. The scheduled refresh updates vote counts from https://www.ozbargain.com.au/deals.

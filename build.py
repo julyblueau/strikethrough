@@ -13,6 +13,9 @@ Checks:
                       lowest "was" price quoted by another retailer for the same
                       product? (a sign the claimed discount is padded)
 
+Community: OzBargain vote counts (raw["community"]) add a small score boost
+and a badge; they never override a price-based catch.
+
 Real discount = 1 - now / reference, where reference is the lower of:
   - the lowest "was" price any tracked retailer quotes for the product
   - a known recent typical price, when the source gives one
@@ -34,6 +37,8 @@ COLS = ["key", "product", "brand", "category", "retailer", "was", "now",
         "history", "prior_price", "note", "src"]
 
 RETAILERS = raw.get("retailers", {})
+# OzBargain community signal, keyed "product_key|retailer": {"votes", "url", "posted", "checked"}
+COMMUNITY = raw.get("community", {})
 deals = [dict(zip(COLS + ["url", "image"], d + [""] * (13 - len(d)))) for d in raw["deals"]]
 RUN = datetime.datetime.now(ZoneInfo("Australia/Sydney"))
 RUN_TS = RUN.strftime("%Y-%m-%dT%H:%M")
@@ -126,9 +131,11 @@ for d in deals:
     elif h == "near_low":
         verdict = "Near record low"
         reason = note or "Close to the lowest tracked price."
-    elif others and best is d and real >= 0.10:
+    elif others and now <= best_now + 0.01 and real >= 0.10:
         verdict = "Cheapest tracked"
-        reason = f"Lowest price of the {len(peers)} retailers tracked for this product."
+        tied = [p["retailer"] for p in others if abs(float(p["now"]) - now) <= 0.01]
+        reason = (f"Same lowest price as {', '.join(tied)}, out of the {len(peers)} retailers tracked." if tied
+                  else f"Lowest price of the {len(peers)} retailers tracked for this product.")
     elif house and claimed >= 0.40:
         verdict = "Check the RRP"
         reason = "Retailer's own brand, so there's no other store to compare the was-price against."
@@ -162,6 +169,10 @@ for d in deals:
     score = base + span * max(0.0, min(real / 0.5, 1.0))
     if was_check.startswith("Inflated"):
         score -= 8
+    comm = COMMUNITY.get(f"{d['key']}|{d['retailer']}") or {}
+    votes = int(comm.get("votes") or 0)
+    if votes and verdict not in ("Beaten elsewhere", "Cheaper before"):
+        score += 5 if votes >= 300 else 3 if votes >= 100 else 1
     score = int(round(max(0, min(100, score))))
 
     src = SOURCES[d["src"]]
@@ -184,6 +195,9 @@ for d in deals:
         "slug": slugify(d["key"] + "-" + d["retailer"]),
         "image": d["image"] if str(d["image"]).startswith("https://") else "",
         "link": link_for(d)[0], "link_label": link_for(d)[1], "link_kind": link_for(d)[2],
+        "community_votes": votes,
+        "community_url": comm.get("url", "") if str(comm.get("url", "")).startswith("https://www.ozbargain.com.au/") else "",
+        "community_checked": comm.get("checked", ""),
         "tracked_since": (HISTORY.get(did) or [[RUN_TS]])[0][0][:10],
     })
 

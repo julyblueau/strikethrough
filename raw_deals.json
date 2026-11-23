@@ -64,6 +64,16 @@
       "name": "Press Start – Big W Black Friday gaming deals",
       "url": "https://press-start.com.au/bargains/2026/11/15/big-ws-black-friday-sale-has-some-cracking-gaming-deals/",
       "date": "2026-11-15"
+    },
+    "OZB": {
+      "name": "OzBargain – community deal posts",
+      "url": "https://www.ozbargain.com.au/deals",
+      "date": "2026-11-22"
+    },
+    "STV_SW2": {
+      "name": "Stevivor – every Switch 2 price in Australia (RRP $839.95 bundle)",
+      "url": "https://stevivor.com/features/nintendo-switch-2-price-australia/",
+      "date": "2026-10-23"
     }
   },
   "house_brands": {
@@ -93,8 +103,7 @@
       "home_label": "Shop Kogan"
     },
     "Harvey Norman": {
-      "home": "https://www.harveynorman.com.au/",
-      "home_label": "Shop Harvey Norman"
+      "search": "https://www.harveynorman.com.au/catalogsearch/result/?q={q}"
     },
     "Dyson AU": {
       "home": "https://www.dyson.com.au/",
@@ -106,6 +115,16 @@
     "Sonos AU": {
       "home": "https://www.sonos.com/en-au",
       "home_label": "Shop Sonos"
+    },
+    "Kmart": {
+      "search": "https://www.kmart.com.au/search/?searchTerm={q}"
+    },
+    "Scorptec": {
+      "home": "https://www.scorptec.com.au/",
+      "home_label": "Shop Scorptec"
+    },
+    "Target": {
+      "search": "https://www.target.com.au/search?text={q}"
     }
   },
   "deals": [
@@ -2448,6 +2467,103 @@
       "",
       "",
       "BIGW_PR"
+    ],
+    [
+      "switch-2-mkw-bundle",
+      "Nintendo Switch 2 + Mario Kart World bundle",
+      "Nintendo",
+      "Computing & Gaming",
+      "Kmart",
+      839.95,
+      629,
+      "none",
+      "",
+      "RRP $839.95 since Nintendo's September price rise. Kmart first announced $649, now $629. From 8am 25 Nov (OnePass early access), in stores 26 Nov",
+      "OZB"
+    ],
+    [
+      "jbl-partybox-encore-essential",
+      "JBL PartyBox Encore Essential",
+      "JBL",
+      "Headphones & Audio",
+      "Amazon AU",
+      349,
+      199.95,
+      "none",
+      "",
+      "",
+      "OZB"
+    ],
+    [
+      "kingston-fury-renegade-2tb",
+      "Kingston Fury Renegade 2TB NVMe SSD (heatsink)",
+      "Kingston",
+      "Computing & Gaming",
+      "Scorptec",
+      999,
+      469,
+      "none",
+      "",
+      "",
+      "OZB"
+    ],
+    [
+      "razr-60-swarovski",
+      "Motorola Razr 60 Swarovski (256GB)",
+      "Motorola",
+      "Phones & Wearables",
+      "Harvey Norman",
+      1499,
+      747,
+      "none",
+      "",
+      "",
+      "OZB"
+    ],
+    [
+      "switch-2-mkw-bundle",
+      "Nintendo Switch 2 + Mario Kart World bundle",
+      "Nintendo",
+      "Computing & Gaming",
+      "Target",
+      839.95,
+      629,
+      "none",
+      "",
+      "From 27 Nov. RRP $839.95 since Nintendo's September price rise",
+      "OZB"
     ]
-  ]
+  ],
+  "community": {
+    "switch-2-mkw-bundle|Kmart": {
+      "votes": 410,
+      "url": "https://www.ozbargain.com.au/node/984763",
+      "posted": "2026-11-22",
+      "checked": "2026-11-23"
+    },
+    "jbl-partybox-encore-essential|Amazon AU": {
+      "votes": 30,
+      "url": "https://www.ozbargain.com.au/node/984770",
+      "posted": "2026-11-22",
+      "checked": "2026-11-23"
+    },
+    "kingston-fury-renegade-2tb|Scorptec": {
+      "votes": 80,
+      "url": "https://www.ozbargain.com.au/node/984760",
+      "posted": "2026-11-22",
+      "checked": "2026-11-23"
+    },
+    "razr-60-swarovski|Harvey Norman": {
+      "votes": 180,
+      "url": "https://www.ozbargain.com.au/node/984732",
+      "posted": "2026-11-22",
+      "checked": "2026-11-23"
+    },
+    "switch-2-mkw-bundle|Target": {
+      "votes": 480,
+      "url": "https://www.ozbargain.com.au/node/984768",
+      "posted": "2026-11-22",
+      "checked": "2026-11-23"
+    }
+  }
 }

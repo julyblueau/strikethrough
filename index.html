@@ -249,6 +249,10 @@ dialog::backdrop{background:rgb(0 0 0 / .65);-webkit-backdrop-filter:blur(6px);b
 @media(max-width:900px){.top3{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;margin-inline:calc(-1*max(5vw,16px));padding:0 max(5vw,16px) 6px;scrollbar-width:none}.top3::-webkit-scrollbar{display:none}.pick{flex:0 0 min(84%,360px);scroll-snap-align:start;grid-template-columns:84px minmax(0,1fr)}}
 .totop{width:48px;height:48px;min-height:0;padding:0;display:grid;place-items:center;font-size:20px;bottom:calc(84px + env(safe-area-inset-bottom,0px));box-shadow:0 8px 24px rgba(0,0,0,.4)}
 .totop[hidden]{display:none}
+
+.comm{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;padding:4px 10px;border-radius:999px;background:rgba(255,159,10,.12);color:#ffb340;text-decoration:none;border:1px solid rgba(255,159,10,.28)}
+.comm:hover{background:rgba(255,159,10,.2)}
+.comm.hot{background:rgba(255,107,53,.16);color:#ff8a4c;border-color:rgba(255,107,53,.4)}
 @media(max-width:760px){.two{grid-template-columns:minmax(0,1fr)}.links{margin-left:0;width:100%;overflow-x:auto;flex-wrap:nowrap}.links a{flex:none}.bar{top:101px}html{scroll-padding-top:200px}}
 @media(max-width:600px){table{font-size:13px}th,td{padding:6px 4px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px;border-bottom:1px solid var(--line)}.stack td{display:flex;justify-content:space-between;gap:12px;border:0;padding:3px 0;text-align:right}.stack td::before{content:attr(data-l);color:var(--mute);text-align:left}.stack td:empty{display:none}.field{grid-template-columns:repeat(auto-fill,minmax(16px,1fr));gap:4px}.t{height:22px}.now{font-size:32px}.tray .slot{max-width:46vw}.tray .cta{margin-left:0;width:100%}.tray .cta button{flex:1}.row select{flex:1 1 40%}.row input{flex:1 1 100%}.bar{position:static}.seg button{padding:6px 11px}}
 @media(max-width:600px){.t-cream .stack tr{padding-inline:14px}.t-cream .stack td:first-child{padding-left:0}.sheet{margin-inline:6px}}
@@ -307,7 +311,7 @@ dialog::backdrop{background:rgb(0 0 0 / .65);-webkit-backdrop-filter:blur(6px);b
           <button type="button" data-g="" aria-pressed="true">All</button><button type="button" data-g="good" aria-pressed="false">Verified good</button><button type="button" data-g="mid" aria-pressed="false">Not yet verified</button><button type="button" data-g="flag" aria-pressed="false">Watch out</button>
         </div>
         <select id="f-ret" aria-label="Retailer"><option value="">All retailers</option></select>
-        <select id="f-sort" aria-label="Sort"><option value="score">Best deals first</option><option value="real">Biggest real discount</option><option value="save">Biggest dollar saving</option><option value="low">Lowest price</option></select>
+        <select id="f-sort" aria-label="Sort"><option value="score">Best deals first</option><option value="real">Biggest real discount</option><option value="save">Biggest dollar saving</option><option value="low">Lowest price</option><option value="votes">Most votes on OzBargain</option></select>
         <input id="f-q" type="search" placeholder="Search: Dyson, air fryer, AirPods" aria-label="Search products or brands" autocomplete="off">
       </div>
     </div>
@@ -358,7 +362,8 @@ dialog::backdrop{background:rgb(0 0 0 / .65);-webkit-backdrop-filter:blur(6px);b
       <div class="step"><h3>Price history</h3><p>Where trackers have recorded past prices, we mark a deal as a record low, near-record low, a price it often hits, or one that was cheaper recently.</p></div>
       <div class="step"><h3>Other retailers</h3><p>When several stores sell the same product, we compare them. A deal more than 2% above the cheapest is marked "Lower elsewhere".</p></div>
       <div class="step"><h3>The was-price</h3><p>If one store's was-price is more than 10% above another's for the same product, we measure the discount from the lower one. That's the "real" discount.</p></div>
-      <div class="step"><h3>The score</h3><p>Each deal gets a score out of 100: mostly from the verdict, then up to 28 points for how deep the real discount is.</p></div>
+      <div class="step"><h3>Community votes</h3><p>We also check OzBargain, where thousands of Australian bargain hunters post and vote on deals. Popular deals get a badge and a small score boost, but votes never override a price catch.</p></div>
+      <div class="step"><h3>The score</h3><p>Each deal gets a score out of 100: mostly from the verdict, then up to 28 points for how deep the real discount is, plus up to 5 for community votes.</p></div>
     </div>
     <p class="fine">"Not yet verified" means the maths is right against the quoted was-price, but we haven't found price history or a second retailer to confirm it. It's not a judgment on the retailer. Very deep discounts with no history, and discounts on a store's own brand, are marked "Was-price unconfirmed" for the same reason. Prices come from retailer pages and dated deal reports, change through the day, and may be member-only or colour-specific. Always confirm the price at checkout. Strikethrough is independent and isn't paid by the retailers listed.</p>
   </div>
@@ -434,6 +439,11 @@ function buy(r) {
   if (!safe(href)) return null;
   return {href, aff, label: r.link_label || 'View deal', rel: aff ? 'sponsored nofollow noopener' : 'nofollow noopener'};
 }
+const commHtml = (r, long = false) => {
+  if (!r.community_votes || !r.community_url) return '';
+  const hot = r.community_votes >= 300;
+  return `<a class="comm${hot ? ' hot' : ''}" href="${esc(r.community_url)}" target="_blank" rel="nofollow noopener" title="Vote count when we checked${r.community_checked ? ' on ' + esc(fmtDate(r.community_checked)) : ''}"><span aria-hidden="true">${hot ? '🔥' : '▲'}</span>${hot ? 'Hot on OzBargain' : 'On OzBargain'} · ${r.community_votes} votes${long ? ' · read the discussion ↗' : ''}</a>`;
+};
 const buyHtml = (r, cls = '') => { const b = buy(r); return b ? `<a class="buy ${cls}" href="${esc(b.href)}" target="_blank" rel="${b.rel}">${esc(b.label)} <span aria-hidden="true">↗</span></a>` : ''; };
 try { S.picks = JSON.parse(localStorage.getItem('st-picks') || '[]'); } catch { S.picks = []; }
 const savePicks = () => { try { localStorage.setItem('st-picks', JSON.stringify(S.picks)); } catch {} };
@@ -443,7 +453,7 @@ function filtered() {
   const rows = S.deals.filter((r) => (!S.group || grp(r) === S.group) && (!S.cat || r.category === S.cat) && (!ret || r.retailer === ret) &&
     (!q || (r.product + ' ' + r.brand + ' ' + r.category + ' ' + r.retailer).toLowerCase().includes(q)));
   const by = {score: (a, b) => b.score - a.score, real: (a, b) => b.real_pct - a.real_pct, low: (a, b) => a.now - b.now,
-    save: (a, b) => (b.reference - b.now) - (a.reference - a.now)}[sort];
+    save: (a, b) => (b.reference - b.now) - (a.reference - a.now), votes: (a, b) => (b.community_votes || 0) - (a.community_votes || 0) || b.score - a.score}[sort];
   return rows.sort(by);
 }
 
@@ -484,6 +494,7 @@ function card(r) {
     <div class="meta"><span>${esc(r.retailer)}</span><span>${esc(r.category)}</span></div>
     <button class="pname" type="button" data-open="${esc(r.id)}">${esc(r.product)}</button>
     <div class="prices"><span class="now">${money(r.now)}</span><span class="was">${money(r.was)}</span></div>
+    ${commHtml(r)}
     <div class="pct">${padded ? `Advertised ${Math.round(r.claimed_pct)}% off · <strong>real ${Math.round(r.real_pct)}% off</strong>` : `<strong>${Math.round(r.real_pct)}% off</strong> · save ${money(r.reference - r.now)}`}</div>
     <p class="why">${esc(r.reason)}</p>
     ${buyHtml(r)}
@@ -569,6 +580,7 @@ function openDeal(id) {
       <div class="fact"><span>Deal score</span><b>${r.score}/100</b></div>
     </div>
     <p>${esc(r.reason)}</p>
+    ${r.community_votes ? `<p class="pct" style="margin-top:-4px">${commHtml(r, true)}</p>` : ''}
     <h3>Price over time</h3>
     <div class="hist" id="hist"></div>
     <p class="pct" id="hist-note" style="margin:0"></p>
