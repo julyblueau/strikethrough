@@ -256,6 +256,79 @@ dialog::backdrop{background:rgb(0 0 0 / .65);-webkit-backdrop-filter:blur(6px);b
 @media(max-width:760px){.two{grid-template-columns:minmax(0,1fr)}.links{margin-left:0;width:100%;overflow-x:auto;flex-wrap:nowrap}.links a{flex:none}.bar{top:101px}html{scroll-padding-top:200px}}
 @media(max-width:600px){table{font-size:13px}th,td{padding:6px 4px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px;border-bottom:1px solid var(--line)}.stack td{display:flex;justify-content:space-between;gap:12px;border:0;padding:3px 0;text-align:right}.stack td::before{content:attr(data-l);color:var(--mute);text-align:left}.stack td:empty{display:none}.field{grid-template-columns:repeat(auto-fill,minmax(16px,1fr));gap:4px}.t{height:22px}.now{font-size:32px}.tray .slot{max-width:46vw}.tray .cta{margin-left:0;width:100%}.tray .cta button{flex:1}.row select{flex:1 1 40%}.row input{flex:1 1 100%}.bar{position:static}.seg button{padding:6px 11px}}
 @media(max-width:600px){.t-cream .stack tr{padding-inline:14px}.t-cream .stack td:first-child{padding-left:0}.sheet{margin-inline:6px}}
+
+.alert .short,.ax{display:none}
+.tabbar{display:none}
+.showall{display:none}
+@media(max-width:760px){
+  .links{display:none}
+  .nav{padding-block:12px}
+  .bar{top:50px}
+  html{scroll-padding-top:64px}
+  body{padding-bottom:calc(64px + env(safe-area-inset-bottom,0px))}
+  .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:28;background:rgba(14,14,16,.9);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-top:1px solid var(--line);padding:0 4px env(safe-area-inset-bottom,0px)}
+  .tabbar a,.tabbar button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 0 8px;font-size:11px;font-weight:500;color:var(--mute);text-decoration:none;background:none;border:0;cursor:pointer;position:relative}
+  .tabbar svg{width:23px;height:23px}
+  .tabbar a.on{color:var(--ink)}
+  .tabbar a.on::before{content:"";position:absolute;top:0;left:30%;right:30%;height:2px;border-radius:2px;background:var(--red)}
+  .tray{bottom:calc(60px + env(safe-area-inset-bottom,0px));border-radius:18px 18px 0 0}
+  .totop{display:none!important}
+  footer{padding-bottom:40px}
+  .alert{padding-block:10px}
+  .alert .long{display:none}.alert .short{display:inline}
+  .alert .wrap{position:relative;padding-right:34px;gap:8px}
+  .alert .wrap>span{flex:1 1 100%;font-size:14px}
+  .alert form{max-width:none}
+  .alert .ax{display:grid;place-items:center;position:absolute;right:-8px;top:-6px;width:36px;height:36px;min-height:0;padding:0;border:0;border-radius:50%;background:none;color:var(--mute);font-size:22px;font-weight:400;cursor:pointer}
+  .alert form{flex:1 1 100%;flex-wrap:wrap}
+  .alert input{flex:1 1 0;min-width:0}
+  .alert button[type=submit]{flex:none;padding-inline:14px}
+  .showall{display:block;margin:12px 0 0;width:100%;min-height:44px;border-radius:999px;border:1px solid var(--line);background:var(--soft);color:var(--ink);font-size:15px;cursor:pointer}
+  .clip tr:nth-child(n+6){display:none!important}
+  #cal.clip tr:nth-child(n+9){display:none!important}
+  #cal.clip tr:nth-child(-n+8){display:flex!important}
+}
+@media(max-width:600px){
+  .card{display:grid;grid-template-columns:104px minmax(0,1fr);gap:3px 12px;padding:10px;border-radius:18px;align-items:start}
+  .card>*:not(.art){margin-inline:0;grid-column:2}
+  .card .art{grid-column:1;grid-row:1/span 6;aspect-ratio:1;border-radius:12px;align-self:start}
+  .card .art img{width:86%}
+  .card .art .stk{top:5px;left:5px;font-size:10px;padding:2px 7px;max-width:calc(100% - 10px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .card .art .off{top:auto;bottom:5px;right:5px;font-size:12px;padding:2px 7px}
+  .card .meta span:last-child{display:none}
+  .card .pname{font-size:15px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .card .now{font-size:24px}.card .was{font-size:15px}
+  .card .pct{font-size:13px}
+  .card .why{display:none}
+  .card .comm{font-size:11.5px;padding:3px 8px}
+  .card .buy{grid-column:1/-1;min-height:40px;margin-top:6px;font-size:14px}
+  .card .acts{grid-column:1/-1;border-top:0;padding-top:0;margin-top:0}
+  .card .acts button{min-height:36px;font-size:13px}
+  .cards{gap:10px}
+  .scores .score{grid-template-columns:minmax(0,1fr) auto;gap:6px 10px}
+  .score .r{grid-row:1;grid-column:1}.score .v{grid-row:1;grid-column:2;font-size:12px}
+  .score .sbar{grid-row:2;grid-column:1/-1}
+  .wrows tr{display:flex!important;flex-wrap:wrap;align-items:baseline;gap:2px 12px;padding:10px 0!important}
+  .wrows td{display:block!important;padding:0!important;border:0;text-align:left!important}
+  .wrows td::before{display:none}
+  .wrows td:first-child{flex:1 1 60%;font-weight:600}
+  .wrows td.n{order:2;margin-left:auto;font-weight:600}
+  .wrows td:not(:first-child):not(.n){order:3;flex-basis:100%;font-size:13px;color:var(--mute)}
+  #w-h2h td[data-l="Cheapest at"]{flex-basis:auto}
+  #w-h2h td[data-l="Cheapest at"]::before{content:"Cheapest at "!important;display:inline!important;color:inherit}
+  #w-h2h td.n:last-child{order:3;margin-left:0;font-size:13px;color:var(--green);font-weight:600}
+  #w-h2h td.n:last-child::before{content:"· save "!important;display:inline!important;color:var(--mute);font-weight:400}
+  .calrows tr{display:flex!important;flex-wrap:wrap;align-items:baseline;gap:2px 12px;padding:10px 0!important}
+  .calrows td{display:block!important;padding:0!important;border:0;text-align:left!important}
+  .calrows td::before{display:none}
+  .calrows td[data-l=Retailer]{flex:1 1 60%;font-weight:600;font-size:15px}
+  .calrows td[data-l=Advertised]{order:2;margin-left:auto;font-weight:600}
+  .calrows td[data-l=Category]{display:none!important}
+  .calrows td[data-l=Opens],.calrows td[data-l=Peak],.calrows td[data-l=Status]{order:3;font-size:13px;color:var(--mute)}
+  .calrows td[data-l=Opens]::before{content:"Opens "!important;display:inline!important;color:inherit}
+  .calrows td[data-l=Peak]::before{content:"· Peak "!important;display:inline!important;color:inherit}
+  .calrows td[data-l=Status]::before{content:"· "!important;display:inline!important;color:inherit}
+}
 @media(prefers-reduced-motion:no-preference){.t{transition:opacity .25s,transform .15s}html{scroll-behavior:smooth}}
 </style>
 </head>
@@ -272,13 +345,14 @@ dialog::backdrop{background:rgb(0 0 0 / .65);-webkit-backdrop-filter:blur(6px);b
 
 <div class="alert" role="region" aria-label="Email sign-up">
   <div class="wrap">
-    <span><b>Get the verified list.</b> Thursday night, before the Black Friday rush: only the deals that hold up.</span>
+    <span><b>Get the verified list.</b> <span class="long">Thursday night, before the Black Friday rush: only the deals that hold up.</span><span class="short">Thursday night, only deals that hold up.</span></span>
     <form id="quick" name="verified-list" method="POST" data-netlify="true" netlify-honeypot="bot-field" novalidate>
       <input type="hidden" name="form-name" value="verified-list"><p hidden><label>Leave blank<input name="bot-field"></label></p>
       <input id="q-email" name="email" type="email" placeholder="you@email.com" aria-label="Email address" autocomplete="email">
-      <button type="submit">Send it to me</button>
+      <button type="submit"><span class="long">Send it to me</span><span class="short">Get it</span></button>
       <p class="msg" id="q-msg" role="status"></p>
     </form>
+    <button class="ax" id="alert-x" type="button" aria-label="Hide sign-up bar">×</button>
   </div>
 </div>
 
@@ -339,8 +413,8 @@ dialog::backdrop{background:rgb(0 0 0 / .65);-webkit-backdrop-filter:blur(6px);b
     <h2 class="disp">Watch-outs: the headline isn't the whole story</h2>
     <p class="lede">Deals that were cheaper recently, and products another retailer is selling for less right now.</p>
     <div class="two">
-      <div><h3>Was cheaper recently</h3><div class="scroll"><table class="stack"><thead><tr><th>Product</th><th>Retailer</th><th class="n">Now</th><th>What we found</th></tr></thead><tbody id="w-before"></tbody></table></div></div>
-      <div><h3>Same product, lower elsewhere</h3><div class="scroll"><table class="stack"><thead><tr><th>Product</th><th>Cheapest at</th><th class="n">Price</th><th class="n">You'd save</th></tr></thead><tbody id="w-h2h"></tbody></table></div></div>
+      <div><h3>Was cheaper recently</h3><div class="scroll"><table class="stack"><thead><tr><th>Product</th><th>Retailer</th><th class="n">Now</th><th>What we found</th></tr></thead><tbody id="w-before" class="wrows"></tbody></table></div></div>
+      <div><h3>Same product, lower elsewhere</h3><div class="scroll"><table class="stack"><thead><tr><th>Product</th><th>Cheapest at</th><th class="n">Price</th><th class="n">You'd save</th></tr></thead><tbody id="w-h2h" class="wrows"></tbody></table></div></div>
     </div>
   </div>
 </section>
@@ -350,7 +424,7 @@ dialog::backdrop{background:rgb(0 0 0 / .65);-webkit-backdrop-filter:blur(6px);b
     <p class="eye"><i>04</i>Sale calendar</p>
     <h2 class="disp">When the sales start</h2>
     <p class="lede">Black Friday is Friday 27 November and Cyber Monday is 30 November. "Estimate" rows are based on last year's patterns.</p>
-    <div class="scroll" style="margin-top:16px"><table class="stack"><thead><tr><th>Retailer</th><th>Category</th><th>Sale opens</th><th>Peak days</th><th class="n">Advertised</th><th>Status</th></tr></thead><tbody id="cal"></tbody></table></div>
+    <div class="scroll" style="margin-top:16px"><table class="stack"><thead><tr><th>Retailer</th><th>Category</th><th>Sale opens</th><th>Peak days</th><th class="n">Advertised</th><th>Status</th></tr></thead><tbody id="cal" class="calrows"></tbody></table></div>
   </div>
 </section>
 
@@ -401,6 +475,7 @@ dialog::backdrop{background:rgb(0 0 0 / .65);-webkit-backdrop-filter:blur(6px);b
   <div class="wrap" style="margin-top:18px"><span>Browse checked deals by category</span><div class="fcats" id="fcats"></div><p class="disc" id="disc2" hidden></p></div>
 </footer>
 
+<nav class="tabbar" aria-label="Sections"><a href="#deals" data-tab="deals"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d='M20 12.5 12.5 20a1.5 1.5 0 0 1-2.1 0L3 12.6V4h8.6l8.4 8.4a1.5 1.5 0 0 1 0 2.1z'/><circle cx='7.5' cy='8.5' r='1.5'/></svg><span>Deals</span></a><a href="#map" data-tab="map"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x='3' y='3' width='7' height='7' rx='1.5'/><rect x='14' y='3' width='7' height='7' rx='1.5'/><rect x='3' y='14' width='7' height='7' rx='1.5'/><rect x='14' y='14' width='7' height='7' rx='1.5'/></svg><span>Map</span></a><a href="#watch" data-tab="watch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d='M12 3 2.5 20h19z'/><path d='M12 10v4.5M12 17.5v.01'/></svg><span>Watch-outs</span></a><a href="#calendar" data-tab="calendar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x='3' y='5' width='18' height='16' rx='2'/><path d='M3 10h18M8 3v4M16 3v4'/></svg><span>Dates</span></a><button type="button" id="tab-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx='11' cy='11' r='7'/><path d='m20 20-3.5-3.5'/></svg><span>Search</span></button></nav>
 <button class="totop" id="totop" type="button" aria-label="Back to top" hidden><span aria-hidden="true">↑</span></button>
 <div class="tray" id="tray" hidden><div class="wrap"><span id="tray-slots" style="display:flex;gap:8px;flex-wrap:wrap"></span><div class="cta"><button class="clear" id="tray-clear" type="button">Clear</button><button class="go" id="tray-go" type="button">Compare</button></div></div></div>
 
@@ -428,7 +503,7 @@ const safe = (u) => /^https?:\/\//.test(u || '');
 const info = (r) => V[r.verdict] || [r.verdict, 'mid', ''];
 const grp = (r) => info(r)[1];
 const fmtDate = (d) => new Date(d + 'T00:00:00Z').toLocaleDateString('en-AU', {weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC'});
-const S = {deals: [], byId: {}, byKey: {}, bySlug: {}, hist: {}, aff: {retailers: {}}, shown: 24, group: '', cat: '', picks: []};
+const S = {deals: [], byId: {}, byKey: {}, bySlug: {}, hist: {}, aff: {retailers: {}}, shown: innerWidth < 600 ? 12 : 24, group: '', cat: '', picks: []};
 const slugify = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 function buy(r) {
   if (!r.link) return null;
@@ -514,7 +589,8 @@ function render() {
   $$('#seg button').forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.g === S.group)));
   $$('#cats .chip').forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.c === S.cat)));
 }
-function refresh() { S.shown = 24; render(); }
+const PAGE = () => (innerWidth < 600 ? 12 : 24);
+function refresh() { S.shown = PAGE(); render(); }
 function goDeals() { $('#deals').scrollIntoView(); }
 
 function drawTray() {
@@ -753,10 +829,18 @@ function drawWatch() {
   const h2h = Object.values(S.byKey).filter((g) => g.length > 1).map((g) => g.slice().sort((a, b) => a.now - b.now))
     .map((s) => ({r: s[0], worst: s[s.length - 1]})).filter((x) => x.worst.now - x.r.now > 0.5).sort((a, b) => (b.worst.now - b.r.now) - (a.worst.now - a.r.now));
   $('#w-h2h').innerHTML = h2h.map((x) => `<tr><td data-l="Product"><button class="link" type="button" data-open="${esc(x.r.id)}">${esc(x.r.product)}</button></td><td data-l="Cheapest at">${esc(x.r.retailer)}</td><td class="n" data-l="Price">${money(x.r.now)}</td><td class="n" data-l="You'd save">up to ${money(x.worst.now - x.r.now)}</td></tr>`).join('');
+  clipRows('w-before', 5, 'deals'); clipRows('w-h2h', 5, 'products');
 }
 
+function clipRows(id, n, noun) {
+  const tb = $('#' + id), total = tb.children.length, wrap = tb.closest('.scroll');
+  wrap.parentElement.querySelectorAll(`[data-unclip="${id}"]`).forEach((b) => b.remove());
+  tb.classList.toggle('clip', total > n); tb.style.setProperty('--clip', n);
+  if (total > n) wrap.insertAdjacentHTML('afterend', `<button class="showall" type="button" data-unclip="${id}">Show all ${total} ${noun}</button>`);
+}
 function drawCal(rows) {
   $('#cal').innerHTML = rows.map((r) => `<tr><td data-l="Retailer">${esc(r.retailer)}</td><td data-l="Category">${esc(r.sector)}</td><td data-l="Opens">${esc(fmtDate(r.start))}</td><td data-l="Peak">${esc(r.peak)}</td><td class="n" data-l="Advertised">${r.min_pct}–${r.max_pct}%</td><td data-l="Status">${r.confirmed === 'Yes' ? 'Confirmed' : 'Estimate'}</td></tr>`).join('');
+  clipRows('cal', 8, 'retailers');
 }
 
 document.addEventListener('click', (e) => {
@@ -804,11 +888,15 @@ $('#quick').addEventListener('submit', async (e) => {
   } catch { msg.textContent = "That didn't go through. Try again in a minute."; }
 });
 let qt; $('#f-q').addEventListener('input', () => { clearTimeout(qt); qt = setTimeout(refresh, 200); });
-$('#more').addEventListener('click', () => { S.shown += 24; render(); });
+$('#more').addEventListener('click', () => { S.shown += PAGE(); render(); });
 $('#clear').addEventListener('click', () => { S.group = ''; S.cat = ''; $('#f-ret').value = ''; $('#f-q').value = ''; refresh(); });
 $('#tray-clear').addEventListener('click', () => { S.picks = []; savePicks(); drawTray(); render(); });
 $('#tray-go').addEventListener('click', openCompare);
 $('#totop').addEventListener('click', () => scrollTo({top: 0}));
+$('#tab-search').addEventListener('click', () => { $('#deals').scrollIntoView(); setTimeout(() => $('#f-q').focus({preventScroll: true}), 350); });
+document.addEventListener('click', (e) => { const b = e.target.closest('[data-unclip]'); if (!b) return; $('#' + b.dataset.unclip).classList.remove('clip'); b.remove(); });
+try { if (localStorage.getItem('st-alert-x') === '1') $('.alert').hidden = true; } catch {}
+$('#alert-x').addEventListener('click', () => { $('.alert').hidden = true; try { localStorage.setItem('st-alert-x', '1'); } catch {} });
 
 const field = $('#field');
 field.addEventListener('pointerover', (e) => {
@@ -820,7 +908,7 @@ field.addEventListener('pointerover', (e) => {
 field.addEventListener('pointerleave', () => { const tip = $('#tip'); if (tip) tip.hidden = true; });
 
 const secs = ['deals', 'map', 'watch', 'calendar', 'how', 'pro'].map((id) => document.getElementById(id));
-const spy = new IntersectionObserver((es) => { es.forEach((en) => { if (en.isIntersecting) $$('#links a').forEach((a) => a.classList.toggle('on', a.getAttribute('href') === '#' + en.target.id)); }); }, {rootMargin: '-45% 0px -50% 0px'});
+const spy = new IntersectionObserver((es) => { es.forEach((en) => { if (en.isIntersecting) { $$('#links a').forEach((a) => a.classList.toggle('on', a.getAttribute('href') === '#' + en.target.id)); $$('.tabbar a').forEach((a) => a.classList.toggle('on', a.dataset.tab === en.target.id || (en.target.id === 'top' && a.dataset.tab === 'deals'))); } }); }, {rootMargin: '-45% 0px -50% 0px'});
 secs.forEach((s) => spy.observe(s));
 const nearEnd = () => { const pro = $('#pro'); return pro && pro.getBoundingClientRect().top < innerHeight * 0.85; };
 addEventListener('scroll', () => { $('#totop').hidden = scrollY < 900 || nearEnd(); }, {passive: true});
