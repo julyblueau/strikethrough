@@ -24,7 +24,7 @@ https://strikethrough.com.au (hosted on Netlify)
 
 ## Analytics
 
-Google Tag Manager (GTM-N8LGLSV5) is installed on every page. The site pushes two events to the dataLayer: `retailer_click` (with `retailer`, `product`, `verdict`, `affiliate`, `link_kind`) and `sign_up` (with `method`). Set up GA4 inside Tag Manager: a Google tag with your GA4 Measurement ID on all pages, plus GA4 event tags triggered by those custom events.
+Google Tag Manager (GTM-N8LGLSV5) is installed on every page. The site pushes two events to the dataLayer: `retailer_click` (with `retailer`, `product`, `verdict`, `affiliate`, `link_kind`) and `sign_up` (with `method`). GA4 (G-DBGC2DTVBK) loads directly on every page and receives the same two events, so don't also add a Google tag for that ID inside Tag Manager or visits will be counted twice. Tag Manager is there for other tags (Meta pixel, ad conversions).
 
 ## Affiliate links
 
