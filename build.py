@@ -136,6 +136,9 @@ for d in deals:
         tied = [p["retailer"] for p in others if abs(float(p["now"]) - now) <= 0.01]
         reason = (f"Same lowest price as {', '.join(tied)}, out of the {len(peers)} retailers tracked." if tied
                   else f"Lowest price of the {len(peers)} retailers tracked for this product.")
+    elif others and now <= best_now * BEATEN and real >= 0.10:
+        verdict = "Cheapest tracked"
+        reason = f"Within {money(now - best_now)} of the lowest price tracked ({best['retailer']}, {money(best_now)}), out of {len(peers)} retailers."
     elif house and claimed >= 0.40:
         verdict = "Check the RRP"
         reason = "Retailer's own brand, so there's no other store to compare the was-price against."
