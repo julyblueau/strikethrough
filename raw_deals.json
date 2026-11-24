@@ -68,7 +68,7 @@
     "OZB": {
       "name": "OzBargain – community deal posts",
       "url": "https://www.ozbargain.com.au/deals",
-      "date": "2026-11-22"
+      "date": "2026-11-24"
     },
     "STV_SW2": {
       "name": "Stevivor – every Switch 2 price in Australia (RRP $839.95 bundle)",
@@ -84,6 +84,11 @@
       "name": "Bing Lee – Black Friday TV deals",
       "url": "https://www.binglee.com.au/categories/promotions/black-friday-tv-deals",
       "date": "2026-11-24"
+    },
+    "TR_HUB": {
+      "name": "TechRadar AU – Black Friday 2026 deals hub",
+      "url": "https://www.techradar.com/au/black-friday/best-black-friday-deals-2020",
+      "date": "2026-11-18"
     }
   },
   "house_brands": {
@@ -3612,6 +3617,71 @@
       "239.99",
       "Was $239.99 in July per Tom's Guide",
       "TG_AMZ"
+    ],
+    [
+      "galaxy-s26-fe-128",
+      "Samsung Galaxy S26 FE (128GB)",
+      "Samsung",
+      "Phones & Wearables",
+      "Amazon AU",
+      1149,
+      747,
+      "none",
+      "",
+      "Graphite only",
+      "TR_HUB"
+    ],
+    [
+      "marshall-acton-3",
+      "Marshall Acton III speaker",
+      "Marshall",
+      "Headphones & Audio",
+      "Amazon AU",
+      499.99,
+      299,
+      "none",
+      "",
+      "Black or Cream",
+      "TR_HUB"
+    ],
+    [
+      "kogan-75-qled-144",
+      "Kogan 75\" QLED 4K 144Hz Google TV",
+      "Kogan",
+      "TVs & Home Theatre",
+      "Kogan",
+      1599,
+      1129,
+      "none",
+      "",
+      "",
+      "TR_KOG"
+    ],
+    [
+      "kogan-55-led-4k",
+      "Kogan 55\" LED 4K Google TV",
+      "Kogan",
+      "TVs & Home Theatre",
+      "Kogan",
+      749.99,
+      459,
+      "none",
+      "",
+      "",
+      "TR_KOG"
+    ],
+    [
+      "hot-wheels-10-pack",
+      "Hot Wheels 10-pack basic cars",
+      "Hot Wheels",
+      "Toys & LEGO",
+      "Target",
+      19,
+      9,
+      "none",
+      "",
+      "Ends 30 Nov",
+      "OZB"
     ]
   ],
   "community": {
@@ -3655,6 +3725,12 @@
       "votes": 170,
       "url": "https://www.ozbargain.com.au/node/984748",
       "posted": "2026-11-24",
+      "checked": "2026-11-24"
+    },
+    "hot-wheels-10-pack|Target": {
+      "votes": 1000,
+      "url": "https://www.ozbargain.com.au/node/984848",
+      "posted": "2026-11-23",
       "checked": "2026-11-24"
     }
   }
