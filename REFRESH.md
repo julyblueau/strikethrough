@@ -13,5 +13,5 @@ Stop after 1 December 2026 (Australia/Sydney).
    - Remove ended deals. Existing categories only. Neutral wording, never "fake/misleading/scam".
 5. Never edit affiliates.json (holds the Amazon tag strikethrough-22). `python3 build.py && python3 build_calendar.py && python3 build_pages.py`. Don't hand-edit data/history.json.
 6. Commit "Deal data refresh <YYYY-MM-DD HH:MM AEDT>" (with the session attribution lines) and `git push origin main`; confirm `git status -sb` shows in sync.
-7. Preview artifact 01eeea10-df26-478c-a70e-f1a30ea58e4a: get_artifact for version, publish_files patch with data/deals.json, data/calendar.json, data/history.json and deals/*/index.html.
+7. Skip the preview artifact on scheduled runs (publishing it can wait on an approval). The live site strikethrough.com.au is the source of truth.
 8. Report to Cameron: deal and retailer counts, what was added (with OzBargain votes), notable price moves (record lows, prices that went up), sales that opened, and that the push succeeded.
