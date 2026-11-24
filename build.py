@@ -91,7 +91,12 @@ for d in deals:
             h, prior = "higher_before", float(lowest[1])
             when = datetime.date.fromisoformat(lowest[0][:10]).strftime("%-d %b")
             note = f"Strikethrough tracked it at {money(lowest[1])} on {when}"
-        elif len(past) >= 3 and len(days) >= 2 and now <= lowest[1] and h in ("none", "repeat"):
+        # Only call it a record low from our own data when we have a real track record
+        # (30+ days) AND the price actually fell to its lowest while we watched it.
+        # An unchanged price over a few days is not a record low.
+        elif (h in ("none", "repeat") and len(past) >= 3 and now <= lowest[1]
+              and (datetime.date.fromisoformat(RUN_TS[:10]) - datetime.date.fromisoformat(min(days))).days >= 30
+              and max(pt[1] for pt in past) > now * 1.01):
             h = "low"
             first = datetime.date.fromisoformat(min(days)).strftime("%-d %b")
             note = f"Lowest price Strikethrough has tracked since {first}"
