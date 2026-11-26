@@ -12,5 +12,5 @@ netlify.toml
 __pycache__
 README.md
 REFRESH.md
-deals.json
-calendar.json
+/deals.json
+/calendar.json
