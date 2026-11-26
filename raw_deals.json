@@ -119,6 +119,11 @@
       "name": "The Good Guys – Daily deals page",
       "url": "https://www.thegoodguys.com.au/deals",
       "date": "2026-11-27"
+    },
+    "META_AL": {
+      "name": "Meta Ad Library – active retailer ads (read 27 Nov, 10am AEDT)",
+      "url": "https://www.facebook.com/ads/library/",
+      "date": "2026-11-27"
     }
   },
   "house_brands": {
@@ -127,7 +132,8 @@
       "Advwin",
       "SmarterHome",
       "GoPlay",
-      "NC45"
+      "NC45",
+      "Ergolux"
     ],
     "Koala": [
       "Koala"
@@ -3907,6 +3913,97 @@
       "",
       "",
       "TGG_DEALS"
+    ],
+    [
+      "ergolux-elite-bamboo-queen",
+      "Ergolux Elite Bamboo Queen Mattress",
+      "Ergolux",
+      "Furniture & Bedding",
+      "Kogan",
+      749,
+      289,
+      "none",
+      "",
+      "Another active ad shows $319",
+      "META_AL"
+    ],
+    [
+      "ergolux-elite-bamboo-single",
+      "Ergolux Elite Bamboo Single Mattress",
+      "Ergolux",
+      "Furniture & Bedding",
+      "Kogan",
+      549,
+      179,
+      "none",
+      "",
+      "",
+      "META_AL"
+    ],
+    [
+      "moto-edge-70-fusion-128",
+      "Motorola Edge 70 Fusion 5G (128GB)",
+      "Motorola",
+      "Phones & Wearables",
+      "JB Hi-Fi",
+      699,
+      494,
+      "none",
+      "",
+      "Was price = ad sale price + stated saving",
+      "META_AL"
+    ],
+    [
+      "moto-g37-128",
+      "Motorola g37 5G (128GB)",
+      "Motorola",
+      "Phones & Wearables",
+      "JB Hi-Fi",
+      399,
+      197,
+      "none",
+      "",
+      "Was price = ad sale price + stated saving",
+      "META_AL"
+    ],
+    [
+      "bw-px7-s3",
+      "Bowers & Wilkins PX7 S3 headphones",
+      "Bowers & Wilkins",
+      "Headphones & Audio",
+      "JB Hi-Fi",
+      699,
+      569,
+      "none",
+      "",
+      "Was price = ad sale price + stated saving",
+      "META_AL"
+    ],
+    [
+      "jlab-jbuds-lux-anc",
+      "JLab JBuds Lux ANC headphones",
+      "JLab",
+      "Headphones & Audio",
+      "JB Hi-Fi",
+      179,
+      97,
+      "none",
+      "",
+      "Was price = ad sale price + stated saving",
+      "META_AL"
+    ],
+    [
+      "meta-quest-s3",
+      "Meta Quest S3",
+      "Meta",
+      "Computing & Gaming",
+      "JB Hi-Fi",
+      569,
+      478,
+      "none",
+      "",
+      "Was price = ad sale price + stated saving",
+      "META_AL"
     ]
   ],
   "community": {
