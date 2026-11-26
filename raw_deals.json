@@ -104,6 +104,21 @@
       "name": "TechRadar AU – Black Friday laptop deals",
       "url": "https://www.techradar.com/seasonal-sales/live/black-friday-australia-laptop-deals-2026-live",
       "date": "2026-11-26"
+    },
+    "BIGW_BF": {
+      "name": "Big W – Black Friday 2026 page",
+      "url": "https://www.bigw.com.au/collection/black-friday",
+      "date": "2026-11-27"
+    },
+    "GG_TGG": {
+      "name": "Gadget Guy – Good Guys Black Friday 2026 best tech deals",
+      "url": "https://www.gadgetguy.com.au/the-good-guys-black-friday-2026-best-tech-deals/",
+      "date": "2026-11-26"
+    },
+    "TGG_DEALS": {
+      "name": "The Good Guys – Daily deals page",
+      "url": "https://www.thegoodguys.com.au/deals",
+      "date": "2026-11-27"
     }
   },
   "house_brands": {
@@ -2512,7 +2527,7 @@
       629,
       "none",
       "",
-      "RRP $839.95 since Nintendo's September price rise. Kmart first announced $649, now $629. From 8am 25 Nov (OnePass early access), in stores 26 Nov",
+      "RRP $839.95 since Nintendo's September price rise. On sale from 25 Nov (OnePass early access), in stores from 26 Nov. Big W is revealing its bundle price today",
       "OZB"
     ],
     [
@@ -3827,6 +3842,71 @@
       "",
       "",
       "TR_LAP"
+    ],
+    [
+      "ipad-air-m4",
+      "Apple iPad Air 11\" (M4, 128GB)",
+      "Apple",
+      "Tablets & eReaders",
+      "Big W",
+      1249,
+      999,
+      "none",
+      "",
+      "",
+      "BIGW_BF"
+    ],
+    [
+      "iphone-17e",
+      "Apple iPhone 17e",
+      "Apple",
+      "Phones & Wearables",
+      "Big W",
+      1149,
+      999,
+      "none",
+      "",
+      "",
+      "BIGW_BF"
+    ],
+    [
+      "samsung-77-s90h",
+      "Samsung 77\" S90H OLED",
+      "Samsung",
+      "TVs & Home Theatre",
+      "The Good Guys",
+      5495,
+      3595,
+      "none",
+      "",
+      "",
+      "GG_TGG"
+    ],
+    [
+      "sony-85-bravia7ii",
+      "Sony 85\" Bravia 7 II True RGB TV",
+      "Sony",
+      "TVs & Home Theatre",
+      "The Good Guys",
+      7495,
+      4263,
+      "none",
+      "",
+      "",
+      "GG_TGG"
+    ],
+    [
+      "samsung-100-m90h",
+      "Samsung 100\" M90H Mini LED TV",
+      "Samsung",
+      "TVs & Home Theatre",
+      "The Good Guys",
+      4495,
+      2946,
+      "none",
+      "",
+      "",
+      "TGG_DEALS"
     ]
   ],
   "community": {
