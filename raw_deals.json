@@ -48,7 +48,7 @@
     "TR_PHONE": {
       "name": "TechRadar AU – Black Friday phone deals",
       "url": "https://www.techradar.com/seasonal-sales/black-friday-phone-deals-au",
-      "date": "2026-11-19"
+      "date": "2026-11-26"
     },
     "TR_TV": {
       "name": "TechRadar AU – early Black Friday TV deals",
@@ -89,6 +89,21 @@
       "name": "TechRadar AU – Black Friday 2026 deals hub",
       "url": "https://www.techradar.com/au/black-friday/best-black-friday-deals-2020",
       "date": "2026-11-18"
+    },
+    "JB_BF": {
+      "name": "JB Hi-Fi – Black Friday deals page",
+      "url": "https://www.jbhifi.com.au/collections/prices-blitzed-deals",
+      "date": "2026-11-26"
+    },
+    "PS_JB": {
+      "name": "Press Start – JB Hi-Fi's 100 half price Black Friday deals",
+      "url": "https://press-start.com.au/bargains/2026/11/26/jb-hi-fi-has-100-half-price-deals-for-black-friday/",
+      "date": "2026-11-26"
+    },
+    "TR_LAP": {
+      "name": "TechRadar AU – Black Friday laptop deals",
+      "url": "https://www.techradar.com/seasonal-sales/live/black-friday-australia-laptop-deals-2026-live",
+      "date": "2026-11-26"
     }
   },
   "house_brands": {
@@ -453,11 +468,11 @@
       "Computing & Gaming",
       "Amazon AU",
       1049,
-      997,
+      987,
       "low",
       "",
       "Best discount so far, after a recent price rise",
-      "TR_AMZ"
+      "TR_LAP"
     ],
     [
       "lenovo-legion-5i",
@@ -2208,7 +2223,7 @@
       "Phones & Wearables",
       "Amazon AU",
       2299,
-      1697,
+      1689,
       "none",
       "",
       "",
@@ -3682,6 +3697,136 @@
       "",
       "Ends 30 Nov",
       "OZB"
+    ],
+    [
+      "garmin-vivoactive-5",
+      "Garmin Vivoactive 5",
+      "Garmin",
+      "Phones & Wearables",
+      "JB Hi-Fi",
+      499,
+      248,
+      "none",
+      "",
+      "",
+      "JB_BF"
+    ],
+    [
+      "galaxy-watch8-40",
+      "Samsung Galaxy Watch8 40mm",
+      "Samsung",
+      "Phones & Wearables",
+      "JB Hi-Fi",
+      649,
+      299,
+      "none",
+      "",
+      "",
+      "JB_BF"
+    ],
+    [
+      "nespresso-vertuo-next-bundle",
+      "Breville Nespresso Vertuo Next bundle",
+      "Nespresso",
+      "Coffee Machines",
+      "JB Hi-Fi",
+      389,
+      148,
+      "none",
+      "",
+      "Matte Black",
+      "JB_BF"
+    ],
+    [
+      "beats-solo-4",
+      "Beats Solo 4 on-ear headphones",
+      "Beats",
+      "Headphones & Audio",
+      "JB Hi-Fi",
+      329,
+      164.5,
+      "none",
+      "",
+      "Matte Black",
+      "JB_BF"
+    ],
+    [
+      "logitech-g305",
+      "Logitech G305 Lightspeed mouse",
+      "Logitech",
+      "Computing & Gaming",
+      "JB Hi-Fi",
+      99,
+      49,
+      "none",
+      "",
+      "",
+      "PS_JB"
+    ],
+    [
+      "dreame-aero-straight-pro",
+      "Dreame Aero Straight Pro",
+      "Dreame",
+      "Hair & Beauty Tools",
+      "JB Hi-Fi",
+      749,
+      374,
+      "none",
+      "",
+      "",
+      "PS_JB"
+    ],
+    [
+      "ring-doorbell-2k-battery",
+      "Ring Battery Video Doorbell 2K",
+      "Ring",
+      "Smart Home",
+      "JB Hi-Fi",
+      149,
+      74,
+      "none",
+      "",
+      "",
+      "PS_JB"
+    ],
+    [
+      "nothing-phone-4a",
+      "Nothing Phone (4a) (256GB)",
+      "Nothing",
+      "Phones & Wearables",
+      "Amazon AU",
+      849,
+      551.31,
+      "none",
+      "",
+      "",
+      "TR_PHONE"
+    ],
+    [
+      "galaxy-a26",
+      "Samsung Galaxy A26 (128GB)",
+      "Samsung",
+      "Phones & Wearables",
+      "Amazon AU",
+      499,
+      299,
+      "none",
+      "",
+      "",
+      "TR_PHONE"
+    ],
+    [
+      "macbook-air-m5-1tb",
+      "Apple MacBook Air 13\" (M5, 16GB/1TB)",
+      "Apple",
+      "Computing & Gaming",
+      "Amazon AU",
+      2549,
+      2297,
+      "none",
+      "",
+      "",
+      "TR_LAP"
     ]
   ],
   "community": {
