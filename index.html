@@ -346,7 +346,7 @@ dialog::backdrop{background:rgb(0 0 0 / .65);-webkit-backdrop-filter:blur(6px);b
 <div class="alert" role="region" aria-label="Email sign-up">
   <div class="wrap">
     <span><b>Get the verified list.</b> <span class="long">Thursday night, before the Black Friday rush: only the deals that hold up.</span><span class="short">Thursday night, only deals that hold up.</span></span>
-    <form id="quick" name="verified-list" method="POST" data-netlify="true" netlify-honeypot="bot-field" novalidate>
+    <form id="quick" name="verified-list" method="POST" novalidate>
       <input type="hidden" name="form-name" value="verified-list"><p hidden><label>Leave blank<input name="bot-field"></label></p>
       <input id="q-email" name="email" type="email" placeholder="you@email.com" aria-label="Email address" autocomplete="email">
       <button type="submit"><span class="long">Send it to me</span><span class="short">Get it</span></button>
@@ -456,7 +456,7 @@ dialog::backdrop{background:rgb(0 0 0 / .65);-webkit-backdrop-filter:blur(6px);b
         <li>Sale timing, so you can plan your own promotions</li>
       </ul>
     </div>
-    <form id="signup" name="signup" method="POST" data-netlify="true" netlify-honeypot="bot-field" novalidate>
+    <form id="signup" name="signup" method="POST" novalidate>
       <input type="hidden" name="form-name" value="signup"><p hidden><label>Leave blank<input name="bot-field"></label></p>
       <label for="s-email">Email<input id="s-email" name="email" type="email" required placeholder="name@company.com.au" autocomplete="email"></label>
       <label for="s-type">I'm a<select id="s-type" name="type"><option>Shopper who wants the verified list</option><option>Retailer or brand interested in Pro</option><option>Journalist</option></select></label>
@@ -882,7 +882,7 @@ $('#quick').addEventListener('submit', async (e) => {
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { msg.textContent = 'Enter a valid email address.'; return; }
   if (/claude\.ai|claudeusercontent|localhost|127\.0\.0\.1/.test(location.hostname)) { msg.textContent = 'Sign-up only works on the live site, so nothing was sent from this preview.'; return; }
   try {
-    const res = await fetch('/', {method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'}, body: new URLSearchParams(new FormData($('#quick'))).toString()});
+    const res = await fetch('/api/subscribe', {method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'}, body: new URLSearchParams(new FormData($('#quick'))).toString()});
     msg.textContent = res.ok ? "You're on the list. Watch for it Thursday night." : "That didn't go through. Try again in a minute.";
     if (res.ok) { $('#quick').reset(); track('sign_up', {method: 'verified_list'}); }
   } catch { msg.textContent = "That didn't go through. Try again in a minute."; }
@@ -917,12 +917,12 @@ $('#signup').addEventListener('submit', async (e) => {
   e.preventDefault();
   const email = $('#s-email').value.trim(), msg = $('#s-msg');
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { msg.textContent = 'Enter a valid email address.'; return; }
-  const onNetlify = !/claude\.ai|claudeusercontent|localhost|127\.0\.0\.1/.test(location.hostname);
-  if (!CONFIG.formEndpoint && !onNetlify) { msg.textContent = "Sign-up only works on the live site, so nothing was sent from this preview."; return; }
+  const onLiveSite = !/claude\.ai|claudeusercontent|localhost|127\.0\.0\.1/.test(location.hostname);
+  if (!CONFIG.formEndpoint && !onLiveSite) { msg.textContent = "Sign-up only works on the live site, so nothing was sent from this preview."; return; }
   try {
     const res = CONFIG.formEndpoint
       ? await fetch(CONFIG.formEndpoint, {method: 'POST', headers: {'Content-Type': 'application/json', Accept: 'application/json'}, body: JSON.stringify({email, type: $('#s-type').value})})
-      : await fetch('/', {method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'}, body: new URLSearchParams(new FormData($('#signup'))).toString()});
+      : await fetch('/api/subscribe', {method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'}, body: new URLSearchParams(new FormData($('#signup'))).toString()});
     msg.textContent = res.ok ? "You're on the list." : "That didn't go through. Try again in a minute.";
     if (res.ok) { track('sign_up', {method: 'pro_form', signup_type: $('#s-type').value}); $('#signup').reset(); }
   } catch { msg.textContent = "That didn't go through. Try again in a minute."; }
