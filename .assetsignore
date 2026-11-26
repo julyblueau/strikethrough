@@ -1,0 +1,16 @@
+.git/
+.git
+.github
+.wrangler
+node_modules
+worker
+wrangler.jsonc
+.assetsignore
+.gitignore
+netlify.toml
+*.py
+__pycache__
+README.md
+REFRESH.md
+deals.json
+calendar.json

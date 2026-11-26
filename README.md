@@ -56,9 +56,9 @@ A scheduled refresh runs twice a day and commits new data here. By hand: edit `r
 
 `raw_deals.json` has a `community` block keyed `"<product key>|<retailer>"`, each `{votes, url, posted, checked}` pointing at the OzBargain post. `build.py` turns it into `community_votes` / `community_url` on each row and adds a small score boost (+1, +3 at 100+ votes, +5 at 300+) unless the deal already has a price catch. The site shows an "On OzBargain" badge (🔥 "Hot" at 300+), links to the discussion, and has a "Most votes on OzBargain" sort. The scheduled refresh updates vote counts from https://www.ozbargain.com.au/deals.
 
-## Hosting on Cloudflare Pages (from 27 Nov 2026)
+## Hosting on Cloudflare Workers (from 27 Nov 2026)
 
-- Pages project connected to this repo, production branch `main`, build command `exit 0`, build output directory `/` (repo root). Cloudflare redeploys on every push.
-- `_headers` replaces netlify.toml (5-minute cache on /data/*).
-- Sign-up forms post to `/api/subscribe` (functions/api/subscribe.js), which stores each sign-up in a Workers KV namespace bound as `SIGNUPS`.
-- Download sign-ups: `https://strikethrough.com.au/api/export?key=<EXPORT_KEY>` (add `&form=verified-list` or `&form=signup` to filter). EXPORT_KEY is a secret set in the Pages project's variables.
+- Worker "strikethrough", connected to this repo (Workers Builds): build command `exit 0`, deploy command `npx wrangler deploy`. Every push to `main` redeploys.
+- `wrangler.jsonc` serves the repo root as static assets; `.assetsignore` keeps internal files (worker code, Python, README, runbook) from being served. `_headers` sets the 5-minute cache on /data/*.
+- Sign-up forms post to `/api/subscribe` (worker/api/subscribe.js), stored in the KV namespace bound as `SIGNUPS` (auto-created on first deploy).
+- Download sign-ups: `https://strikethrough.com.au/api/export?key=<EXPORT_KEY>` (add `&form=verified-list` or `&form=signup`). EXPORT_KEY is a secret set under the Worker's Settings → Variables and Secrets.

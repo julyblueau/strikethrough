@@ -1,0 +1,14 @@
+{
+  // Strikethrough on Cloudflare Workers (static site + two small API routes)
+  "name": "strikethrough",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-11-20",
+  "assets": {
+    "directory": "./",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  },
+  // Sign-ups. No id: Wrangler creates the namespace on first deploy and reuses it after.
+  "kv_namespaces": [{ "binding": "SIGNUPS" }],
+  "observability": { "enabled": true }
+}

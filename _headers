@@ -1,5 +1,5 @@
 /data/*
   Cache-Control: public, max-age=300
 
-/functions/*
+/worker/*
   X-Robots-Tag: noindex
