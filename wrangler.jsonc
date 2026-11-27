@@ -10,5 +10,6 @@
   },
   // Sign-ups. No id: Wrangler creates the namespace on first deploy and reuses it after.
   "kv_namespaces": [{ "binding": "SIGNUPS" }],
-  "observability": { "enabled": true }
+  "observability": { "enabled": true },
+  "keep_vars": true
 }
