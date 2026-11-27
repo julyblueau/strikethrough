@@ -68,7 +68,7 @@
     "OZB": {
       "name": "OzBargain – community deal posts",
       "url": "https://www.ozbargain.com.au/deals",
-      "date": "2026-11-27"
+      "date": "2026-11-28"
     },
     "STV_SW2": {
       "name": "Stevivor – every Switch 2 price in Australia (RRP $839.95 bundle)",
@@ -359,11 +359,11 @@
       "Headphones & Audio",
       "Amazon AU",
       429.0,
-      284.0,
+      279.99,
       "low",
       "",
-      "New record low per TechRadar; biggest AirPods Pro 3 discount seen to date",
-      "TG_AMZ"
+      "New low: $279.99, down from $284 on 27 Nov (OzBargain)",
+      "OZB"
     ],
     [
       "airpods-max-2",
@@ -5473,6 +5473,71 @@
       "",
       "",
       "TR_LIVE3"
+    ],
+    [
+      "airpods-max-2",
+      "Apple AirPods Max 2",
+      "Apple",
+      "Headphones & Audio",
+      "JB Hi-Fi",
+      999,
+      789,
+      "none",
+      "",
+      "",
+      "OZB"
+    ],
+    [
+      "kitchenaid-kf8",
+      "KitchenAid KF8 fully automatic espresso machine",
+      "KitchenAid",
+      "Coffee Machines",
+      "Amazon AU",
+      2599,
+      1399,
+      "none",
+      "",
+      "",
+      "OZB"
+    ],
+    [
+      "vornado-683dc",
+      "Vornado 683DC pedestal fan",
+      "Vornado",
+      "Air & Climate",
+      "Amazon AU",
+      339,
+      199.99,
+      "none",
+      "",
+      "",
+      "OZB"
+    ],
+    [
+      "redmi-buds-6-play",
+      "Xiaomi Redmi Buds 6 Play",
+      "Xiaomi",
+      "Headphones & Audio",
+      "Amazon AU",
+      29.5,
+      14.2,
+      "none",
+      "",
+      "",
+      "OZB"
+    ],
+    [
+      "meross-outdoor-plug",
+      "meross outdoor smart plug",
+      "meross",
+      "Smart Home",
+      "Amazon AU",
+      59.99,
+      47.99,
+      "none",
+      "",
+      "",
+      "OZB"
     ]
   ],
   "community": {
@@ -5547,6 +5612,48 @@
       "url": "https://www.ozbargain.com.au/node/984894",
       "posted": "2026-11-24",
       "checked": "2026-11-27"
+    },
+    "airpods-pro-3|Amazon AU": {
+      "votes": 210,
+      "url": "https://www.ozbargain.com.au/node/986164",
+      "posted": "2026-11-28",
+      "checked": "2026-11-28"
+    },
+    "airpods-max-2|JB Hi-Fi": {
+      "votes": 100,
+      "url": "https://www.ozbargain.com.au/node/986006",
+      "posted": "2026-11-27",
+      "checked": "2026-11-28"
+    },
+    "kitchenaid-kf8|Amazon AU": {
+      "votes": 110,
+      "url": "https://www.ozbargain.com.au/node/986121",
+      "posted": "2026-11-28",
+      "checked": "2026-11-28"
+    },
+    "vornado-683dc|Amazon AU": {
+      "votes": 120,
+      "url": "https://www.ozbargain.com.au/node/986062",
+      "posted": "2026-11-27",
+      "checked": "2026-11-28"
+    },
+    "redmi-buds-6-play|Amazon AU": {
+      "votes": 400,
+      "url": "https://www.ozbargain.com.au/node/986148",
+      "posted": "2026-11-28",
+      "checked": "2026-11-28"
+    },
+    "meross-outdoor-plug|Amazon AU": {
+      "votes": 130,
+      "url": "https://www.ozbargain.com.au/node/986107",
+      "posted": "2026-11-28",
+      "checked": "2026-11-28"
+    },
+    "breville-creatista-plus|Amazon AU": {
+      "votes": 80,
+      "url": "https://www.ozbargain.com.au/node/986055",
+      "posted": "2026-11-27",
+      "checked": "2026-11-28"
     }
   }
 }
