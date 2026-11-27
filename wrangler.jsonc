@@ -11,5 +11,10 @@
   // Sign-ups. No id: Wrangler creates the namespace on first deploy and reuses it after.
   "kv_namespaces": [{ "binding": "SIGNUPS" }],
   "observability": { "enabled": true },
-  "keep_vars": true
+  "keep_vars": true,
+  // Domains: apex is a Custom Domain; www is served through a route (DNS: proxied A record 192.0.2.1).
+  "routes": [
+    { "pattern": "strikethrough.com.au", "custom_domain": true },
+    { "pattern": "www.strikethrough.com.au/*", "zone_name": "strikethrough.com.au" }
+  ]
 }
