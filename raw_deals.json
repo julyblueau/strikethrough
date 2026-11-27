@@ -68,7 +68,7 @@
     "OZB": {
       "name": "OzBargain – community deal posts",
       "url": "https://www.ozbargain.com.au/deals",
-      "date": "2026-11-24"
+      "date": "2026-11-27"
     },
     "STV_SW2": {
       "name": "Stevivor – every Switch 2 price in Australia (RRP $839.95 bundle)",
@@ -215,6 +215,10 @@
     "Ted's Cameras": {
       "home": "https://www.teds.com.au/",
       "home_label": "Shop Ted's"
+    },
+    "Sony AU": {
+      "home": "https://www.sony.com.au/",
+      "home_label": "Shop Sony"
     }
   },
   "deals": [
@@ -888,11 +892,11 @@
       "Smart Home",
       "Amazon AU",
       99,
-      27.98,
+      25.64,
       "low",
       "",
-      "Matches Prime Day low",
-      "TR_AMZ"
+      "TechRadar: matches its all-time low; subscription extra",
+      "TR_LIVE3"
     ],
     [
       "echo-dot-5",
@@ -1031,7 +1035,7 @@
       "Coffee Machines",
       "Amazon AU",
       999,
-      549,
+      538,
       "none",
       "",
       "Charcoal colour only at this price",
@@ -1226,7 +1230,7 @@
       "Kitchen Appliances",
       "Amazon AU",
       449.99,
-      285,
+      284,
       "none",
       "",
       "",
@@ -2409,11 +2413,11 @@
       "TVs & Home Theatre",
       "The Good Guys",
       2495,
-      1445,
+      1345,
       "none",
       "",
       "",
-      "TR_TV"
+      "TR_LIVE3"
     ],
     [
       "sony-65-bravia5",
@@ -2474,11 +2478,11 @@
       "Vacuums & Floorcare",
       "Dyson AU",
       549,
-      379,
+      349,
       "none",
       "",
       "",
-      "TR_LIVE"
+      "TR_LIVE3"
     ],
     [
       "dyson-v8-advanced",
@@ -2838,11 +2842,11 @@
       "TVs & Home Theatre",
       "JB Hi-Fi",
       2995,
-      1992,
+      1895,
       "none",
       "",
       "",
-      "JB_CAT"
+      "OZB"
     ],
     [
       "samsung-77-s90h",
@@ -4050,7 +4054,7 @@
       268,
       "none",
       "",
-      "",
+      "TechRadar: lowest price; check whether code SAV7 is needed at checkout",
       "TR_LIVE3"
     ],
     [
@@ -4060,7 +4064,7 @@
       "Vacuums & Floorcare",
       "Dyson AU",
       1299,
-      787,
+      745,
       "none",
       "",
       "",
@@ -4086,7 +4090,7 @@
       "Coffee Machines",
       "Amazon AU",
       949,
-      598.99,
+      489,
       "none",
       "",
       "",
@@ -5404,6 +5408,71 @@
       "",
       "",
       "BFS_AU"
+    ],
+    [
+      "sony-wh1000xm6",
+      "Sony WH-1000XM6",
+      "Sony",
+      "Headphones & Audio",
+      "Sony AU",
+      697,
+      419.95,
+      "none",
+      "",
+      "Price with code SONYSAVE at checkout",
+      "TR_LIVE3"
+    ],
+    [
+      "samsung-music-studio-7",
+      "Samsung Music Studio 7 speaker",
+      "Samsung",
+      "Headphones & Audio",
+      "Amazon AU",
+      749,
+      374,
+      "none",
+      "",
+      "",
+      "TR_LIVE3"
+    ],
+    [
+      "samsung-music-studio-5",
+      "Samsung Music Studio 5 speaker",
+      "Samsung",
+      "Headphones & Audio",
+      "Amazon AU",
+      499,
+      249,
+      "none",
+      "",
+      "",
+      "TR_LIVE3"
+    ],
+    [
+      "fujifilm-xm5-1545",
+      "Fujifilm X-M5 + XC 15-45mm",
+      "Fujifilm",
+      "Cameras",
+      "Amazon AU",
+      1649,
+      1159.2,
+      "none",
+      "",
+      "",
+      "TR_LIVE3"
+    ],
+    [
+      "bose-tv-speaker",
+      "Bose TV Speaker",
+      "Bose",
+      "TVs & Home Theatre",
+      "The Good Guys",
+      419.95,
+      289,
+      "none",
+      "",
+      "",
+      "TR_LIVE3"
     ]
   ],
   "community": {
@@ -5447,13 +5516,37 @@
       "votes": 170,
       "url": "https://www.ozbargain.com.au/node/984748",
       "posted": "2026-11-24",
-      "checked": "2026-11-24"
+      "checked": "2026-11-27"
     },
     "hot-wheels-10-pack|Target": {
       "votes": 1000,
       "url": "https://www.ozbargain.com.au/node/984848",
       "posted": "2026-11-23",
       "checked": "2026-11-24"
+    },
+    "logitech-g305|Amazon AU": {
+      "votes": 920,
+      "url": "https://www.ozbargain.com.au/node/984635",
+      "posted": "2026-11-24",
+      "checked": "2026-11-27"
+    },
+    "ninja-luxe-cafe-premier|Amazon AU": {
+      "votes": 410,
+      "url": "https://www.ozbargain.com.au/node/984645",
+      "posted": "2026-11-24",
+      "checked": "2026-11-27"
+    },
+    "samsung-55-s90h|JB Hi-Fi": {
+      "votes": 150,
+      "url": "https://www.ozbargain.com.au/node/984603",
+      "posted": "2026-11-24",
+      "checked": "2026-11-27"
+    },
+    "garmin-vivoactive-5|JB Hi-Fi": {
+      "votes": 90,
+      "url": "https://www.ozbargain.com.au/node/984894",
+      "posted": "2026-11-24",
+      "checked": "2026-11-27"
     }
   }
 }
