@@ -123,6 +123,7 @@ select,input{font:inherit;font-size:16px;color:var(--ink);background:var(--soft)
 .alert input{flex:1 1 200px;min-width:180px;min-height:40px;color:var(--ink);background:#1c1c1f;border:1px solid #333;font-size:16px;border:0;border-radius:999px;padding:6px 14px}
 .alert button{min-height:40px;border:0;border-radius:999px;background:linear-gradient(180deg,#ff5a4f,#e0362c);color:#fff;padding:6px 16px;font-weight:600;cursor:pointer;white-space:nowrap}
 .alert .msg{flex-basis:100%;margin:0;font-size:14px}
+.alert .acta{min-height:40px;display:inline-flex;align-items:center;gap:6px;border-radius:999px;background:linear-gradient(180deg,#ff5a4f,#e0362c);color:#fff;padding:6px 16px;font-weight:600;text-decoration:none;white-space:nowrap}
 .ctop{display:flex;gap:12px;align-items:flex-start}
 .ico{flex:none;width:52px;height:52px;border-radius:10px;background:var(--soft);display:grid;place-items:center;color:var(--ink)}
 .ico svg{width:30px;height:30px}
@@ -278,6 +279,7 @@ dialog::backdrop{background:rgb(0 0 0 / .65);-webkit-backdrop-filter:blur(6px);b
   .alert .long{display:none}.alert .short{display:inline}
   .alert .wrap{position:relative;padding-right:34px;gap:8px}
   .alert .wrap>span{flex:1 1 100%;font-size:14px}
+  .alert .acta{min-height:36px;padding-inline:14px;font-size:14px}
   .alert form{max-width:none}
   .alert .ax{display:grid;place-items:center;position:absolute;right:-8px;top:-6px;width:36px;height:36px;min-height:0;padding:0;border:0;border-radius:50%;background:none;color:var(--mute);font-size:22px;font-weight:400;cursor:pointer}
   .alert form{flex:1 1 100%;flex-wrap:wrap}
@@ -343,16 +345,11 @@ dialog::backdrop{background:rgb(0 0 0 / .65);-webkit-backdrop-filter:blur(6px);b
   </div>
 </nav>
 
-<div class="alert" role="region" aria-label="Email sign-up">
+<div class="alert" role="region" aria-label="Strikethrough Pro">
   <div class="wrap">
-    <span><b>Get the verified list.</b> <span class="long">Thursday night, before the Black Friday rush: only the deals that hold up.</span><span class="short">Thursday night, only deals that hold up.</span></span>
-    <form id="quick" name="verified-list" method="POST" novalidate>
-      <input type="hidden" name="form-name" value="verified-list"><p hidden><label>Leave blank<input name="bot-field"></label></p>
-      <input id="q-email" name="email" type="email" placeholder="you@email.com" aria-label="Email address" autocomplete="email">
-      <button type="submit"><span class="long">Send it to me</span><span class="short">Get it</span></button>
-      <p class="msg" id="q-msg" role="status"></p>
-    </form>
-    <button class="ax" id="alert-x" type="button" aria-label="Hide sign-up bar">×</button>
+    <span><b>New: Strikethrough Pro.</b> <span class="long">Daily tracking of how your competitors really discount, for retailers and brands.</span><span class="short">Competitor discount tracking for retailers.</span></span>
+    <a class="acta" href="#pro">See what's in it <span aria-hidden="true">→</span></a>
+    <button class="ax" id="alert-x" type="button" aria-label="Hide banner">×</button>
   </div>
 </div>
 
@@ -483,7 +480,7 @@ dialog::backdrop{background:rgb(0 0 0 / .65);-webkit-backdrop-filter:blur(6px);b
 
 <script>
 {
-const CONFIG = {formEndpoint: '', dealsUrl: 'data/deals.json', calendarUrl: 'data/calendar.json', historyUrl: 'data/history.json', affiliatesUrl: 'affiliates.json'};
+const CONFIG = {formEndpoint: '', dealsUrl: 'data/deals.json', calendarUrl: 'data/calendar.json', historyUrl: 'data/history.json', affiliatesUrl: 'affiliates.json', featuredUrl: 'data/featured.json'};
 const V = {
   'Record low': ['Record low', 'good', 'The lowest price trackers have recorded for it.'],
   'Near record low': ['Near record low', 'good', 'Within a whisker of its lowest recorded price.'],
@@ -745,8 +742,11 @@ function showDlg() { const d = $('#dlg'); if (!d.open) { try { d.showModal(); } 
 
 function drawTop3() {
   const save = (r) => Math.max(0, r.reference - r.now);
-  const pool = S.deals.filter((x) => grp(x) === 'good').sort((a, b) => (b.score + Math.min(save(b) / 40, 12)) - (a.score + Math.min(save(a) / 40, 12)));
-  const out = [], cats = new Set(), rets = new Set();
+  const latest = S.deals.reduce((m, r) => (r.seen > m ? r.seen : m), '');
+  const rank = (r) => r.score + Math.min(save(r) / 40, 12) + (r.seen === latest ? 8 : 0) + (r.retailers_tracked >= 2 ? 4 : 0);
+  const pool = S.deals.filter((x) => grp(x) === 'good').sort((a, b) => rank(b) - rank(a));
+  const out = (S.featured || []).map((id) => S.byId[id]).filter((r) => r && grp(r) === 'good').slice(0, 3);
+  const cats = new Set(out.map((r) => r.category)), rets = new Set(out.map((r) => r.retailer));
   for (const strict of [true, false]) for (const r of pool) {
     if (out.length === 3) break;
     if (out.includes(r) || cats.has(r.category) || (strict && rets.has(r.retailer))) continue;
@@ -876,17 +876,6 @@ document.addEventListener('click', (e) => {
   const card = a.closest('[data-id]'), r = card ? S.byId[card.dataset.id] : null;
   track('retailer_click', {retailer: r?.retailer || '', product: r?.product || '', verdict: r?.verdict || '', affiliate: a.rel.includes('sponsored') ? 'yes' : 'no', link_kind: r?.link_kind || ''});
 });
-$('#quick').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const email = $('#q-email').value.trim(), msg = $('#q-msg');
-  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { msg.textContent = 'Enter a valid email address.'; return; }
-  if (/claude\.ai|claudeusercontent|localhost|127\.0\.0\.1/.test(location.hostname)) { msg.textContent = 'Sign-up only works on the live site, so nothing was sent from this preview.'; return; }
-  try {
-    const res = await fetch('/api/subscribe', {method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'}, body: new URLSearchParams(new FormData($('#quick'))).toString()});
-    msg.textContent = res.ok ? "You're on the list. Watch for it Thursday night." : "That didn't go through. Try again in a minute.";
-    if (res.ok) { $('#quick').reset(); track('sign_up', {method: 'verified_list'}); }
-  } catch { msg.textContent = "That didn't go through. Try again in a minute."; }
-});
 let qt; $('#f-q').addEventListener('input', () => { clearTimeout(qt); qt = setTimeout(refresh, 200); });
 $('#more').addEventListener('click', () => { S.shown += PAGE(); render(); });
 $('#clear').addEventListener('click', () => { S.group = ''; S.cat = ''; $('#f-ret').value = ''; $('#f-q').value = ''; refresh(); });
@@ -895,8 +884,9 @@ $('#tray-go').addEventListener('click', openCompare);
 $('#totop').addEventListener('click', () => scrollTo({top: 0}));
 $('#tab-search').addEventListener('click', () => { $('#deals').scrollIntoView(); setTimeout(() => $('#f-q').focus({preventScroll: true}), 350); });
 document.addEventListener('click', (e) => { const b = e.target.closest('[data-unclip]'); if (!b) return; $('#' + b.dataset.unclip).classList.remove('clip'); b.remove(); });
-try { if (localStorage.getItem('st-alert-x') === '1') $('.alert').hidden = true; } catch {}
-$('#alert-x').addEventListener('click', () => { $('.alert').hidden = true; try { localStorage.setItem('st-alert-x', '1'); } catch {} });
+try { if (localStorage.getItem('st-pro-x') === '1') $('.alert').hidden = true; } catch {}
+document.querySelector('.alert .acta').addEventListener('click', () => track('pro_banner_click', {}));
+$('#alert-x').addEventListener('click', () => { $('.alert').hidden = true; try { localStorage.setItem('st-pro-x', '1'); track('pro_banner_dismiss', {}); } catch {} });
 
 const field = $('#field');
 field.addEventListener('pointerover', (e) => {
@@ -929,8 +919,9 @@ $('#signup').addEventListener('submit', async (e) => {
 });
 
 const optional = (u, dflt) => fetch(u).then((r) => (r.ok ? r.json() : dflt)).catch(() => dflt);
-Promise.all([fetch(CONFIG.dealsUrl).then((r) => r.json()), fetch(CONFIG.calendarUrl).then((r) => r.json()), optional(CONFIG.historyUrl, {}), optional(CONFIG.affiliatesUrl, {retailers: {}})])
-  .then(([d, c, h, a]) => {
+Promise.all([fetch(CONFIG.dealsUrl).then((r) => r.json()), fetch(CONFIG.calendarUrl).then((r) => r.json()), optional(CONFIG.historyUrl, {}), optional(CONFIG.affiliatesUrl, {retailers: {}}), optional(CONFIG.featuredUrl, {ids: []})])
+  .then(([d, c, h, a, f]) => {
+    S.featured = (f && f.ids) || [];
     S.deals = d.rows || d; S.hist = h || {}; S.aff = a && a.retailers ? a : {retailers: {}};
     S.deals.forEach((r) => { r.slug = r.slug || slugify(r.product_key + '-' + r.retailer); S.byId[r.id] = r; S.bySlug[r.slug] = r; (S.byKey[r.product_key] = S.byKey[r.product_key] || []).push(r); });
     const anyAff = S.deals.some((r) => buy(r)?.aff);

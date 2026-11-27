@@ -11,6 +11,7 @@ Stop after 1 December 2026 (Australia/Sydney).
    - Price fell to a stated record low → history "low" with the source's wording in the note.
    - Reuse keys across retailers; add sources with today's date; retailers block only with URLs actually seen.
    - Remove ended deals. Existing categories only. Neutral wording, never "fake/misleading/scam".
+4b. Today's best 3: check data/featured.json. Its ids (product_key@Retailer) must still be live and 'Record low'/'Cheapest tracked'; swap in stronger, cross-checked deals across 3 different categories and retailers when better ones appear, and update "updated".
 5. Never edit affiliates.json (holds the Amazon tag strikethrough-22). `python3 build.py && python3 build_calendar.py && python3 build_pages.py`. Don't hand-edit data/history.json.
 6. Commit "Deal data refresh <YYYY-MM-DD HH:MM AEDT>" (with the session attribution lines) LOCALLY ONLY. Do NOT push to GitHub: every push triggers a Netlify deploy and the Netlify account is out of credits (27 Nov). Cameron reviews in the preview first and says when to push.
 7. Publish the update to the preview artifact 01eeea10-df26-478c-a70e-f1a30ea58e4a for review (get_artifact for version, publish_files mode patch with data/deals.json, data/calendar.json, data/history.json and deals/*/index.html). If the publish waits on an approval, say so in the report.
