@@ -16,3 +16,5 @@ Stop after 1 December 2026 (Australia/Sydney).
 6. Commit "Deal data refresh <YYYY-MM-DD HH:MM AEDT>" (with the session attribution lines) and push to origin main. The site is on Cloudflare Workers (no deploy limit); the push deploys strikethrough.com.au within a couple of minutes. Cameron approved pushing live on 27 Nov. If the push fails, retry once, then report it.
 7. (Optional) Publish the same files to the preview artifact 01eeea10-df26-478c-a70e-f1a30ea58e4a. Skip if it waits on an approval.
 8. Report to Cameron: deal and retailer counts, what was added (with OzBargain votes), notable price moves (record lows, prices that went up), sales that opened, and that the push to the live site succeeded.
+
+**OzBargain feed:** after `git pull`, `data/ozb_feed.json` holds OzBargain's latest deals (node, title, votes, posted), fetched every 4 hours by the GitHub Action. Use it as the OzBargain source when the site can't be fetched directly: update `community` votes for tracked deals by node, and consider 100+ vote posts with a stated price for new rows (was-price still needs a real source).

@@ -11,6 +11,8 @@
   // Sign-ups. No id: Wrangler creates the namespace on first deploy and reuses it after.
   "kv_namespaces": [{ "binding": "SIGNUPS" }],
   "observability": { "enabled": true },
+  // Price-drop alert job: 7am and 7pm Sydney (after the twice-daily refreshes). Sends only once RESEND_API_KEY is set.
+  "triggers": { "crons": ["0 20,8 * * *"] },
   "keep_vars": true,
   // Domains: apex is a Custom Domain; www is served through a route (DNS: proxied A record 192.0.2.1).
   "routes": [

@@ -145,6 +145,34 @@ select,input{font:inherit;font-size:16px;color:var(--ink);background:var(--soft)
 .drow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
 .drow>*{flex:1 1 200px}
 .copied{font-size:13px;color:var(--green);min-height:1.2em;margin:6px 0 0}
+/* Check a deal */
+.chk{margin-top:22px;border:1px solid var(--line);background:var(--soft);border-radius:18px;padding:14px;max-width:820px}
+.chk h2{font-size:15px;margin:0 0 10px;font-weight:600;color:var(--ink)}
+.chk form{display:flex;gap:8px;flex-wrap:wrap}
+.chk input[name=q]{flex:1 1 300px;background:var(--bg)}
+.chk input[name=price]{flex:0 1 120px;background:var(--bg)}
+.chk .go{min-height:44px;border:0;border-radius:999px;background:var(--ink);color:var(--bg);font-weight:600;font-size:15px;padding:8px 18px;cursor:pointer}
+.chk-res{display:grid;gap:8px;margin-top:10px}
+.chk-res:empty{display:none}
+.hit{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.hit b{font-size:15px}
+.hit .sub{font-size:13.5px;color:var(--mute);margin:2px 0 0}
+.hit .say{font-size:14px;margin:4px 0 0}
+.hit .say.good{color:var(--green)}.hit .say.flag{color:var(--red)}
+.hit .acts2{display:flex;gap:6px}
+.hit .acts2 button{min-height:36px;border-radius:999px;border:1px solid var(--line);background:var(--soft);color:var(--ink);font-size:13.5px;padding:4px 12px;cursor:pointer}
+.miss{font-size:14px;color:var(--mute);background:var(--bg);border:1px dashed var(--line);border-radius:14px;padding:12px}
+.miss form{margin-top:8px}
+.miss input[type=email]{flex:1 1 220px;background:var(--soft)}
+/* Price-drop alert */
+.wform{border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-top:14px;background:var(--soft)}
+.wform p{margin:0 0 8px;font-size:14.5px}
+.wform form{display:flex;gap:8px;flex-wrap:wrap}
+.wform input[type=email]{flex:1 1 220px;background:var(--bg)}
+.wform button{min-height:44px;border:0;border-radius:999px;background:var(--ink);color:var(--bg);font-weight:600;font-size:15px;padding:8px 18px;cursor:pointer}
+.fmsg{font-size:13.5px;min-height:1.2em;margin:6px 0 0;color:var(--mute)}
+.fmsg.ok{color:var(--green)}
+
 .fcats{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .fcats a{border:1px solid var(--line);border-radius:999px;padding:6px 12px;text-decoration:none;font-size:14px}
 .more{margin:26px auto 0;display:block;min-height:44px;padding:10px 24px;border-radius:999px;border:1px solid var(--line);background:var(--soft);cursor:pointer}
@@ -365,6 +393,15 @@ dialog::backdrop{background:rgb(0 0 0 / .65);-webkit-backdrop-filter:blur(6px);b
     <p class="count" id="count-chip" hidden><i aria-hidden="true"></i><span id="count-txt"></span></p>
     <h1 class="disp" id="headline">We check the was-price so you don't have to.</h1>
     <p class="lede" id="sub">Every Black Friday deal below has been checked against price history and the same product at other Australian retailers.</p>
+    <section class="chk" id="check" aria-labelledby="chk-h">
+      <h2 id="chk-h">Is your deal real? Paste a product link or type what you're looking at.</h2>
+      <form id="chk-f" autocomplete="off">
+        <input name="q" type="search" placeholder="e.g. jbhifi.com.au/products/… or Dyson V15" aria-label="Product name or link" required>
+        <input name="price" inputmode="decimal" placeholder="Price $" aria-label="Price you've been offered, optional">
+        <button class="go" type="submit">Check it</button>
+      </form>
+      <div class="chk-res" id="chk-res" aria-live="polite"></div>
+    </section>
     <div class="top3wrap" id="top3wrap" hidden><p class="eye" style="margin:26px 0 12px"><i>★</i>Today's best 3</p><div class="top3" id="top3"></div></div>
     <div class="field" id="field" role="group" aria-label="Share of checked deals by verdict. Select a part to filter the deals."></div>
     <div class="legend" id="legend">
@@ -668,8 +705,10 @@ function openDeal(id) {
     <p class="pct">Seen ${esc(fmtDate(r.seen))} · ${safe(r.source_url) ? `<a href="${esc(r.source_url)}" target="_blank" rel="noopener">${esc(r.source)}</a>` : esc(r.source)}. Always confirm the price at checkout.</p>
     <div class="drow">${buyHtml(r)}<button class="buy alt" type="button" data-share="${esc(r.slug)}">Share this deal</button></div>
     <p class="copied" id="copied" role="status"></p>
+    ${watchHtml(r)}
     <div class="acts" style="border:0"><button type="button" data-pick="${esc(r.id)}" aria-pressed="${S.picks.includes(r.id)}">${S.picks.includes(r.id) ? 'Added to compare' : '+ Add to compare'}</button></div>`;
   showDlg(); ladder($('#lad'), r); histChart($('#hist'), r);
+  if (S.wantWatch) { S.wantWatch = false; setTimeout(() => { $('#wbox')?.scrollIntoView({block: 'center'}); $('#watch-f')?.email.focus({preventScroll: true}); }, 60); }
   try { history.replaceState(null, '', '#d-' + r.slug); } catch {}
 }
 
@@ -858,7 +897,7 @@ document.addEventListener('click', (e) => {
   const t = e.target.closest('[data-open],[data-pick],[data-unpick],[data-close],[data-share],#legend .chip,.mixb,#seg button,#cats .chip,.cell[data-r],[data-ret]');
   if (!t) return;
   if (t.dataset.share) share(t.dataset.share);
-  else if (t.dataset.open) openDeal(t.dataset.open);
+  else if (t.dataset.open) { S.wantWatch = !!t.dataset.watch; openDeal(t.dataset.open); }
   else if (t.dataset.pick) { togglePick(t.dataset.pick); if ($('#dlg').open) { t.setAttribute('aria-pressed', String(S.picks.includes(t.dataset.pick))); t.textContent = S.picks.includes(t.dataset.pick) ? 'Added to compare' : '+ Add to compare'; } }
   else if (t.dataset.unpick) togglePick(t.dataset.unpick);
   else if (t.hasAttribute('data-close')) $('#dlg').close();
@@ -921,12 +960,116 @@ $('#signup').addEventListener('submit', async (e) => {
   } catch { msg.textContent = "That didn't go through. Try again in a minute."; }
 });
 
+
+/* ---- Check a deal ---- */
+const STOP = new Set('the and for with of an in to au com www https http html htm dp gp product products prod buy shop online black friday cyber monday deal deals sale item items ref en au p s'.split(' '));
+const HOSTS = {'amazon.com.au': 'Amazon AU', 'jbhifi.com.au': 'JB Hi-Fi', 'thegoodguys.com.au': 'The Good Guys', 'harveynorman.com.au': 'Harvey Norman', 'kogan.com': 'Kogan', 'bigw.com.au': 'Big W', 'kmart.com.au': 'Kmart', 'target.com.au': 'Target', 'myer.com.au': 'Myer', 'dyson.com.au': 'Dyson AU', 'binglee.com.au': 'Bing Lee', 'scorptec.com.au': 'Scorptec', 'koala.com': 'Koala', 'sonos.com': 'Sonos AU', 'samsung.com': 'Samsung AU', 'sony.com.au': 'Sony AU', 'kitchenaid.com.au': 'KitchenAid AU', 'crocs.com.au': 'Crocs AU', 'teds.com.au': "Ted's Cameras"};
+const toks = (t) => String(t).toLowerCase().replace(/[^a-z0-9]+/g, ' ').split(' ').filter((w) => w.length > 1 && !STOP.has(w) && !/^b0[a-z0-9]{8}$/.test(w) && !/^\d{6,}$/.test(w));
+function parseCheck(raw) {
+  let text = raw, retailer = '';
+  const looksUrl = /^https?:\/\//i.test(raw) || /^(www\.)?[\w-]+(\.[\w-]+)+\/\S*/i.test(raw);
+  if (looksUrl) {
+    try {
+      const u = new URL(/^https?:\/\//i.test(raw) ? raw : 'https://' + raw);
+      const host = u.hostname.replace(/^www\./, '');
+      retailer = Object.entries(HOSTS).find(([h]) => host === h || host.endsWith('.' + h))?.[1] || '';
+      text = [u.pathname, u.searchParams.get('q'), u.searchParams.get('k'), u.searchParams.get('query')].filter(Boolean).join(' ');
+    } catch {}
+  }
+  return {words: toks(text), retailer};
+}
+function matchDeals(words) {
+  if (!words.length) return [];
+  const out = [];
+  for (const [key, rows] of Object.entries(S.byKey)) {
+    const base = toks(rows[0].product + ' ' + rows[0].brand), name = base.concat(base.slice(1).map((t, i) => base[i] + t));
+    let hit = 0, miss = 0;
+    for (const w of words) {
+      const num = /\d/.test(w);
+      const ok = name.some((n) => n === w || (w.length > 2 && n.length > 2 && (num ? /[a-z]/.test(w) && (n.endsWith(w) || n.startsWith(w)) : (n.startsWith(w) || (n.length > 4 && w.startsWith(n))))));
+      if (ok) hit++; else if (num && name.some((n) => /\d/.test(n))) miss += 1; else miss += 0.35;
+    }
+    const sc = (hit - miss * 0.6) / Math.max(words.length, 2) + (hit >= 2 ? 0.1 : 0);
+    if (hit && sc >= 0.34) out.push({key, rows, sc});
+  }
+  out.sort((a, b) => b.sc - a.sc);
+  return out.filter((m) => m.sc >= out[0].sc * 0.8).slice(0, 3);
+}
+function hitHtml(m, price, retailer) {
+  const rows = m.rows.slice().sort((a, b) => a.now - b.now), best = rows[0];
+  const mine = retailer && rows.find((r) => r.retailer === retailer);
+  const show = mine || best, [lab, g] = info(show);
+  let say = '', sg = '';
+  if (price > 0) {
+    if (price <= best.now * 1.01) { say = `${money(price)} is at or below the lowest price we've tracked (${money(best.now)} at ${best.retailer}).`; sg = 'good'; }
+    else { say = `You can get it for ${money(best.now)} at ${best.retailer}: ${money(price - best.now)} less than ${money(price)}.`; sg = 'flag'; }
+  } else if (mine && mine !== best && mine.now > best.now * 1.01) { say = `${money(best.now)} at ${best.retailer} beats ${retailer}'s ${money(mine.now)}.`; sg = 'flag'; }
+  return `<div class="hit"><div><b>${esc(best.product)}</b> <span class="pill ${g}">${esc(lab)}</span>
+    <p class="sub">Lowest we track: ${money(best.now)} at ${esc(best.retailer)}${rows.length > 1 ? ` · ${rows.length} stores checked` : ''}</p>${say ? `<p class="say ${sg}">${esc(say)}</p>` : ''}</div>
+    <div class="acts2"><button type="button" data-open="${esc(show.id)}">Price story</button><button type="button" data-open="${esc(show.id)}" data-watch="1">Alert me</button></div></div>`;
+}
+$('#chk-f').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const f = e.target, raw = f.q.value.trim(), price = Number(String(f.price.value).replace(/[^0-9.]/g, '')) || 0;
+  if (!raw) return;
+  const {words, retailer} = parseCheck(raw), hits = matchDeals(words), box = $('#chk-res');
+  track('deal_check', {matched: hits.length ? 'yes' : 'no', retailer: retailer || 'none'});
+  if (hits.length) { box.innerHTML = hits.map((m) => hitHtml(m, price, retailer)).join(''); return; }
+  box.innerHTML = `<div class="miss">We don't track that one yet. Want us to check it? We'll look at adding it in the next update.
+    <form id="req-f" class="row"><input type="hidden" name="form-name" value="check-request"><input type="hidden" name="query"><input type="hidden" name="price">
+    <p hidden><label>Leave blank<input name="bot-field"></label></p>
+    <input type="email" name="email" placeholder="Email me the verdict (optional)" aria-label="Email for the verdict, optional"><button class="go" type="submit">Ask us to check it</button></form><p class="fmsg" id="req-msg" role="status"></p></div>`;
+  const rf = $('#req-f'); rf.query.value = raw; rf.price.value = price || '';
+  try { rf.email.value = localStorage.getItem('st-email') || ''; } catch {}
+});
+
+/* ---- shared form sender for the check-request and watch forms ---- */
+async function sendForm(form, msg, okText) {
+  const onLive = !/claude\.ai|claudeusercontent|localhost|127\.0\.0\.1/.test(location.hostname);
+  if (!onLive) { msg.textContent = 'This only works on the live site, so nothing was sent from this preview.'; return false; }
+  try {
+    const res = await fetch('/api/subscribe', {method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'}, body: new URLSearchParams(new FormData(form)).toString()});
+    msg.textContent = res.ok ? okText : "That didn't go through. Try again in a minute.";
+    msg.classList.toggle('ok', res.ok);
+    return res.ok;
+  } catch { msg.textContent = "That didn't go through. Try again in a minute."; return false; }
+}
+document.addEventListener('submit', async (e) => {
+  const f = e.target;
+  if (f.id === 'req-f') {
+    e.preventDefault();
+    const em = f.email.value.trim();
+    if (em && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { $('#req-msg').textContent = 'Check the email address, or leave it blank.'; return; }
+    if (await sendForm(f, $('#req-msg'), em ? "Thanks. We'll email you once we've checked it." : "Thanks. We'll look at adding it.")) {
+      try { if (em) localStorage.setItem('st-email', em); } catch {}
+      track('check_request', {with_email: em ? 'yes' : 'no'}); f.querySelector('button').disabled = true;
+    }
+  } else if (f.id === 'watch-f') {
+    e.preventDefault();
+    const em = f.email.value.trim();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { $('#watch-msg').textContent = 'Enter a valid email address.'; return; }
+    if (await sendForm(f, $('#watch-msg'), `Done. We'll email you if it drops below ${money(Number(f.price.value))}.`)) {
+      try { localStorage.setItem('st-email', em); } catch {}
+      track('price_watch', {product: f.product.value}); f.querySelector('button').disabled = true;
+    }
+  }
+});
+const watchHtml = (r) => {
+  const best = Math.min(...(S.byKey[r.product_key] || [r]).map((p) => p.now));
+  let em = ''; try { em = localStorage.getItem('st-email') || ''; } catch {}
+  return `<div class="wform" id="wbox"><p><b>Price-drop alert.</b> We'll email you if it drops below ${money(best)} at any store we track. One email per drop, and you can stop any time.</p>
+    <form id="watch-f"><input type="hidden" name="form-name" value="watch"><input type="hidden" name="product" value="${esc(r.product_key)}"><input type="hidden" name="deal" value="${esc(r.id)}"><input type="hidden" name="price" value="${best}">
+    <p hidden><label>Leave blank<input name="bot-field"></label></p>
+    <input type="email" name="email" placeholder="Your email" aria-label="Email for price-drop alerts" value="${esc(em)}" required><button type="submit">Alert me</button></form><p class="fmsg" id="watch-msg" role="status"></p></div>`;
+};
+
 const optional = (u, dflt) => fetch(u).then((r) => (r.ok ? r.json() : dflt)).catch(() => dflt);
-Promise.all([fetch(CONFIG.dealsUrl).then((r) => r.json()), fetch(CONFIG.calendarUrl).then((r) => r.json()), optional(CONFIG.historyUrl, {}), optional(CONFIG.affiliatesUrl, {retailers: {}}), optional(CONFIG.featuredUrl, {ids: []})])
-  .then(([d, c, h, a, f]) => {
+Promise.all([fetch(CONFIG.dealsUrl).then((r) => r.json()), fetch(CONFIG.calendarUrl).then((r) => r.json()), optional(CONFIG.historyUrl, {}), optional(CONFIG.affiliatesUrl, {retailers: {}}), optional(CONFIG.featuredUrl, {ids: []}), optional('data/ozb_feed.json', {items: []})])
+  .then(([d, c, h, a, f, oz]) => {
     S.featured = (f && f.ids) || [];
+    const ozv = {}; ((oz && oz.items) || []).forEach((i) => { if (i.node) ozv[i.node] = i.votes; });
     S.deals = d.rows || d; S.hist = h || {}; S.aff = a && a.retailers ? a : {retailers: {}};
-    S.deals.forEach((r) => { r.slug = r.slug || slugify(r.product_key + '-' + r.retailer); S.byId[r.id] = r; S.bySlug[r.slug] = r; (S.byKey[r.product_key] = S.byKey[r.product_key] || []).push(r); });
+    S.deals.forEach((r) => { const nd = (r.community_url || '').match(/node\/(\d+)/); if (nd && ozv[nd[1]] > (r.community_votes || 0)) r.community_votes = ozv[nd[1]]; r.slug = r.slug || slugify(r.product_key + '-' + r.retailer); S.byId[r.id] = r; S.bySlug[r.slug] = r; (S.byKey[r.product_key] = S.byKey[r.product_key] || []).push(r); });
     const anyAff = S.deals.some((r) => buy(r)?.aff);
     ['#disc', '#disc2'].forEach((s) => { $(s).hidden = !anyAff; $(s).textContent = S.aff.disclosure || ''; });
     $('#fcats').innerHTML = [...new Set(S.deals.map((r) => r.category))].sort().map((c) => `<a href="deals/${slugify(c)}/">${esc(c)}</a>`).join('');

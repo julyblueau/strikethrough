@@ -1,0 +1,24 @@
+name: OzBargain feed
+on:
+  schedule:
+    - cron: "23 */4 * * *"   # every 4 hours
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: ozbargain-feed
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch feed
+        run: python3 scripts/ozb_feed.py
+      - name: Commit if changed
+        run: |
+          if git diff --quiet -- data/ozb_feed.json; then echo "No changes"; exit 0; fi
+          git config user.name "strikethrough-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/ozb_feed.json
+          git commit -m "OzBargain feed update"
+          git pull --rebase origin main
+          git push

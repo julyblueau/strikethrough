@@ -62,3 +62,11 @@ A scheduled refresh runs twice a day and commits new data here. By hand: edit `r
 - `wrangler.jsonc` serves the repo root as static assets; `.assetsignore` keeps internal files (worker code, Python, README, runbook) from being served. `_headers` sets the 5-minute cache on /data/*.
 - Sign-up forms post to `/api/subscribe` (worker/api/subscribe.js), stored in the KV namespace bound as `SIGNUPS` (auto-created on first deploy).
 - Download sign-ups: `https://strikethrough.com.au/api/export?key=<EXPORT_KEY>` (add `&form=verified-list` or `&form=signup`). EXPORT_KEY is a secret set under the Worker's Settings → Variables and Secrets.
+
+## Check a deal, price-drop alerts, OzBargain feed
+
+- **Check a deal** (hero): matches a typed product or a pasted retailer link to tracked products, client-side. Misses can be sent as a check request (`form-name=check-request`, email optional) to `/api/subscribe`.
+- **Price-drop alerts**: the deal story has an "Alert me" form (`form-name=watch`). Watches are stored as KV keys `watch:<product_key>:<id>` with the details in metadata. A cron in `wrangler.jsonc` runs `worker/alerts.js` at 7am and 7pm Sydney time and emails anyone whose product is now at least 3% (and $1) below the price when they set the alert, via Resend. Each email has a one-click unsubscribe (`/api/unwatch`).
+  - To switch sending on: create a free Resend account, verify `strikethrough.com.au` there (it gives DNS records to add in Cloudflare), then add Worker secrets `RESEND_API_KEY` and optionally `ALERT_FROM` (default `Strikethrough <alerts@strikethrough.com.au>`). Until then the job does nothing and watches simply accumulate.
+- **Exports**: `/api/export?key=<EXPORT_KEY>&form=check-request` and `&form=watch` list requests and alerts.
+- **OzBargain feed**: `.github/workflows/ozbargain.yml` runs `scripts/ozb_feed.py` every 4 hours and commits `data/ozb_feed.json` when it changes. The site uses it to keep vote counts current.
