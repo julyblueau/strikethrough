@@ -8,7 +8,7 @@ import json, re, sys, urllib.request, xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 
-FEEDS = ["https://www.ozbargain.com.au/deals/feed"]
+FEEDS = ["https://www.ozbargain.com.au/feed", "https://www.ozbargain.com.au/deals/feed"]  # front page (popular) + newest
 OUT = "data/ozb_feed.json"
 OZB = "{https://www.ozbargain.com.au}"
 DC = "{http://purl.org/dc/elements/1.1/}"
@@ -52,10 +52,13 @@ def main():
     got = 0
     for url in FEEDS:
         req = urllib.request.Request(url, headers={"User-Agent": "Strikethrough deal checker (strikethrough.com.au)"})
-        with urllib.request.urlopen(req, timeout=30) as r:
-            for i in parse(r.read()):
-                if i["node"]:
-                    by_node[i["node"]] = i; got += 1
+        try:
+            with urllib.request.urlopen(req, timeout=30) as r:
+                for i in parse(r.read()):
+                    if i["node"]:
+                        by_node[i["node"]] = i; got += 1
+        except Exception as e:
+            print(f"{url}: {e}")
     if not got:
         print("feed returned no items; leaving file unchanged"); return 1
     items = sorted(by_node.values(), key=lambda i: i.get("posted", ""), reverse=True)[:300]
