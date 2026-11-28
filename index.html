@@ -973,18 +973,24 @@ $('#signup').addEventListener('submit', async (e) => {
 const STOP = new Set('the and for with of an in to au com www https http html htm dp gp product products prod buy shop online black friday cyber monday deal deals sale item items ref en au p s'.split(' '));
 const HOSTS = {'amazon.com.au': 'Amazon AU', 'jbhifi.com.au': 'JB Hi-Fi', 'thegoodguys.com.au': 'The Good Guys', 'harveynorman.com.au': 'Harvey Norman', 'kogan.com': 'Kogan', 'bigw.com.au': 'Big W', 'kmart.com.au': 'Kmart', 'target.com.au': 'Target', 'myer.com.au': 'Myer', 'dyson.com.au': 'Dyson AU', 'binglee.com.au': 'Bing Lee', 'scorptec.com.au': 'Scorptec', 'koala.com': 'Koala', 'sonos.com': 'Sonos AU', 'samsung.com': 'Samsung AU', 'sony.com.au': 'Sony AU', 'kitchenaid.com.au': 'KitchenAid AU', 'crocs.com.au': 'Crocs AU', 'teds.com.au': "Ted's Cameras"};
 const toks = (t) => String(t).toLowerCase().replace(/[^a-z0-9]+/g, ' ').split(' ').filter((w) => w.length > 1 && !STOP.has(w) && !/^b0[a-z0-9]{8}$/.test(w) && !/^\d{6,}$/.test(w));
-function parseCheck(raw) {
-  let text = raw, retailer = '';
+const SHORT = /^(search\.app|share\.google|g\.co|goo\.gl|amzn\.to|amzn\.asia|a\.co)$/i;
+const cleanTitle = (t) => String(t || '').replace(/https?:\/\/\S+/g, ' ').replace(/\s[-–|:]\s*(google search|google shopping|google|amazon\.com\.au.*|jb hi-fi|the good guys|harvey norman|kogan(\.com)?|big w|kmart( australia)?|target( australia)?|myer|ebay)\s*$/i, '').trim();
+function parseCheck(raw, hint = '') {
+  let text = raw, retailer = '', short = false, google = false;
   const looksUrl = /^https?:\/\//i.test(raw) || /^(www\.)?[\w-]+(\.[\w-]+)+\/\S*/i.test(raw);
   if (looksUrl) {
     try {
       const u = new URL(/^https?:\/\//i.test(raw) ? raw : 'https://' + raw);
       const host = u.hostname.replace(/^www\./, '');
+      short = SHORT.test(host);
+      google = /(^|\.)google\.[a-z.]+$/i.test(host);
       retailer = Object.entries(HOSTS).find(([h]) => host === h || host.endsWith('.' + h))?.[1] || '';
-      text = [u.pathname, u.searchParams.get('q'), u.searchParams.get('k'), u.searchParams.get('query')].filter(Boolean).join(' ');
+      text = short ? '' : google ? (u.searchParams.get('q') || '') : [u.pathname, u.searchParams.get('q'), u.searchParams.get('k'), u.searchParams.get('query')].filter(Boolean).join(' ');
     } catch {}
   }
-  return {words: toks(text), retailer};
+  let words = toks(text);
+  if ((!words.length || google) && hint) words = toks(cleanTitle(hint)).concat(words);
+  return {words: [...new Set(words)], retailer, short};
 }
 function matchDeals(words) {
   if (!words.length) return [];
@@ -1016,12 +1022,24 @@ function hitHtml(m, price, retailer) {
     <p class="sub">Lowest we track: ${money(best.now)} at ${esc(best.retailer)}${rows.length > 1 ? ` · ${rows.length} stores checked` : ''}</p>${say ? `<p class="say ${sg}">${esc(say)}</p>` : ''}</div>
     <div class="acts2"><button type="button" data-open="${esc(show.id)}">Price story</button><button type="button" data-open="${esc(show.id)}" data-watch="1">Alert me</button></div></div>`;
 }
-$('#chk-f').addEventListener('submit', (e) => {
+$('#chk-f').addEventListener('input', () => { S.checkHint = ''; });
+$('#chk-f').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const f = e.target, raw = f.q.value.trim(), price = Number(String(f.price.value).replace(/[^0-9.]/g, '')) || 0;
+  const f = e.target, price = Number(String(f.price.value).replace(/[^0-9.]/g, '')) || 0, box = $('#chk-res');
+  let raw = f.q.value.trim();
   if (!raw) return;
-  const {words, retailer} = parseCheck(raw), hits = matchDeals(words), box = $('#chk-res');
-  track('deal_check', {matched: hits.length ? 'yes' : 'no', retailer: retailer || 'none'});
+  let {words, retailer, short} = parseCheck(raw, S.checkHint);
+  const onLive = !/claude\.ai|claudeusercontent|localhost|127\.0\.0\.1/.test(location.hostname);
+  if (short && onLive) {
+    // A share link from the Google app or an Amazon short link: find out where it points first.
+    box.innerHTML = '<div class="miss">Opening that link…</div>';
+    try {
+      const r = await fetch('/api/resolve?u=' + encodeURIComponent(raw)).then((x) => x.json());
+      if (r.ok && r.url) ({words, retailer} = parseCheck(r.url, S.checkHint));
+    } catch {}
+  }
+  const hits = matchDeals(words);
+  track('deal_check', {matched: hits.length ? 'yes' : 'no', retailer: retailer || 'none', short_link: short ? 'yes' : 'no'});
   if (hits.length) { box.innerHTML = hits.map((m) => hitHtml(m, price, retailer)).join(''); return; }
   box.innerHTML = `<div class="miss">We don't track that one yet. Want us to check it? We'll look at adding it in the next update.
     <form id="req-f" class="row"><input type="hidden" name="form-name" value="check-request"><input type="hidden" name="query"><input type="hidden" name="price">
@@ -1092,7 +1110,7 @@ addEventListener('appinstalled', () => { $('#tip-install').hidden = true; });
 function runCheckParam() {
   const p = new URLSearchParams(location.search), q = p.get('check');
   if (!q) return;
-  const f = $('#chk-f'); f.q.value = q.slice(0, 500);
+  const f = $('#chk-f'); f.q.value = q.slice(0, 500); S.checkHint = p.get('t') || '';
   f.requestSubmit ? f.requestSubmit() : f.dispatchEvent(new Event('submit', {cancelable: true}));
   track('check_shared', {via: p.get('src') || 'link'});
   setTimeout(() => $('#check').scrollIntoView({block: 'start'}), 80);

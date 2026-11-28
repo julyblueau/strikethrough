@@ -10,6 +10,9 @@
   var url = p.get('url') || '', text = p.get('text') || '', title = p.get('title') || '';
   var found = (text.match(/https?:\/\/\S+/) || [])[0] || '';
   var q = url || found || text || title;
-  location.replace('/?check=' + encodeURIComponent(q.slice(0, 500)) + '&src=share#check');
+  // Keep the shared title (and any words around the link) as a hint: share links from the Google app
+  // don't say what the product is.
+  var hint = (title + ' ' + text.replace(/https?:\/\/\S+/g, ' ')).replace(/\s+/g, ' ').trim();
+  location.replace('/?check=' + encodeURIComponent(q.slice(0, 500)) + (hint && hint !== q ? '&t=' + encodeURIComponent(hint.slice(0, 300)) : '') + '&src=share#check');
 })();
 </script></body></html>
