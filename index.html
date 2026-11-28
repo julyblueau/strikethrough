@@ -972,7 +972,7 @@ $('#signup').addEventListener('submit', async (e) => {
 /* ---- Check a deal ---- */
 const STOP = new Set('the and for with of an in to au com www https http html htm dp gp product products prod buy shop online black friday cyber monday deal deals sale item items ref en au p s'.split(' '));
 const HOSTS = {'amazon.com.au': 'Amazon AU', 'jbhifi.com.au': 'JB Hi-Fi', 'thegoodguys.com.au': 'The Good Guys', 'harveynorman.com.au': 'Harvey Norman', 'kogan.com': 'Kogan', 'bigw.com.au': 'Big W', 'kmart.com.au': 'Kmart', 'target.com.au': 'Target', 'myer.com.au': 'Myer', 'dyson.com.au': 'Dyson AU', 'binglee.com.au': 'Bing Lee', 'scorptec.com.au': 'Scorptec', 'koala.com': 'Koala', 'sonos.com': 'Sonos AU', 'samsung.com': 'Samsung AU', 'sony.com.au': 'Sony AU', 'kitchenaid.com.au': 'KitchenAid AU', 'crocs.com.au': 'Crocs AU', 'teds.com.au': "Ted's Cameras"};
-const toks = (t) => String(t).toLowerCase().replace(/[^a-z0-9]+/g, ' ').split(' ').filter((w) => w.length > 1 && !STOP.has(w) && !/^b0[a-z0-9]{8}$/.test(w) && !/^\d{6,}$/.test(w));
+const toks = (t) => String(t).toLowerCase().replace(/[^a-z0-9]+/g, ' ').split(' ').filter((w) => (w.length > 1 || /^\d$/.test(w)) && !STOP.has(w) && !/^b0[a-z0-9]{8}$/.test(w) && !/^\d{6,}$/.test(w));
 const SHORT = /^(search\.app|share\.google|g\.co|goo\.gl|amzn\.to|amzn\.asia|a\.co)$/i;
 const cleanTitle = (t) => String(t || '').replace(/https?:\/\/\S+/g, ' ').replace(/\s[-–|:]\s*(google search|google shopping|google|amazon\.com\.au.*|jb hi-fi|the good guys|harvey norman|kogan(\.com)?|big w|kmart( australia)?|target( australia)?|myer|ebay)\s*$/i, '').trim();
 function parseCheck(raw, hint = '') {
@@ -993,18 +993,28 @@ function parseCheck(raw, hint = '') {
   return {words: [...new Set(words)], retailer, short};
 }
 function matchDeals(words) {
+  // Score each tracked product by how much of ITS name the query covers, so extra words in a
+  // retailer link (colour, "smart watch", size) don't stop a match. Model numbers must agree.
   if (!words.length) return [];
+  const q = [...new Set(words)], qNums = q.filter((w) => /\d/.test(w));
+  const same = (n, w) => n === w || (w.length > 2 && n.length > 2 && (/\d/.test(w) || /\d/.test(n)
+    ? /[a-z]/.test(w) && /\d/.test(w) && (n.endsWith(w) || n.startsWith(w) || w.endsWith(n))
+    : (w.length > 3 && n.startsWith(w)) || (n.length > 4 && w.startsWith(n))));
   const out = [];
   for (const [key, rows] of Object.entries(S.byKey)) {
-    const base = toks(rows[0].product + ' ' + rows[0].brand), name = base.concat(base.slice(1).map((t, i) => base[i] + t));
-    let hit = 0, miss = 0;
-    for (const w of words) {
-      const num = /\d/.test(w);
-      const ok = name.some((n) => n === w || (w.length > 2 && n.length > 2 && (num ? /[a-z]/.test(w) && (n.endsWith(w) || n.startsWith(w)) : (n.startsWith(w) || (n.length > 4 && w.startsWith(n))))));
-      if (ok) hit++; else if (num && name.some((n) => /\d/.test(n))) miss += 1; else miss += 0.35;
-    }
-    const sc = (hit - miss * 0.6) / Math.max(words.length, 2) + (hit >= 2 ? 0.1 : 0);
-    if (hit && sc >= 0.34) out.push({key, rows, sc});
+    const base = [...new Set(toks(rows[0].product + ' ' + rows[0].brand))];
+    const joined = base.slice(1).map((t, i) => base[i] + t), all = base.concat(joined);
+    const found = base.filter((n) => q.some((w) => same(n, w)) || joined.some((j) => j.includes(n) && q.includes(j)));
+    if (!found.length) continue;
+    const nameNums = base.filter((n) => /\d/.test(n));
+    // A model number in the product (5, 65, V8, Q2600N) has to be in the query when the query has numbers of its own.
+    if (nameNums.length && qNums.length && !nameNums.some((n) => found.includes(n))) continue;
+    if (qNums.some((w) => !all.some((n) => same(n, w))) && nameNums.length && !qNums.some((w) => all.some((n) => same(n, w)))) continue;
+    const coverage = found.length / base.length;
+    const precision = q.filter((w) => all.some((n) => same(n, w))).length / q.length;
+    const sc = coverage * 0.75 + precision * 0.25;
+    const exact1 = found.length === 1 && q.includes(found[0]) && found[0].length > 3;
+    if ((found.length >= 2 && coverage >= 0.5) || (exact1 && (base.length <= 2 || q.length === 1))) out.push({key, rows, sc});
   }
   out.sort((a, b) => b.sc - a.sc);
   return out.filter((m) => m.sc >= out[0].sc * 0.8).slice(0, 3);
