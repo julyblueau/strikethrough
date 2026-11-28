@@ -15,7 +15,7 @@ jobs:
         run: python3 scripts/ozb_feed.py
       - name: Commit if changed
         run: |
-          if git diff --quiet -- data/ozb_feed.json; then echo "No changes"; exit 0; fi
+          if [ -z "$(git status --porcelain -- data/ozb_feed.json)" ]; then echo "No changes"; exit 0; fi
           git config user.name "strikethrough-bot"
           git config user.email "actions@users.noreply.github.com"
           git add data/ozb_feed.json
