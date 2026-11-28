@@ -5538,6 +5538,84 @@
       "",
       "",
       "OZB"
+    ],
+    [
+      "moto-g37-128",
+      "Motorola g37 5G (128GB)",
+      "Motorola",
+      "Phones & Wearables",
+      "Big W",
+      399,
+      199,
+      "none",
+      "",
+      "",
+      "OZB"
+    ],
+    [
+      "lego-blacktron-renegade",
+      "LEGO Icons Blacktron Renegade 10355",
+      "LEGO",
+      "Toys & LEGO",
+      "Amazon AU",
+      179.99,
+      99,
+      "none",
+      "",
+      "",
+      "OZB"
+    ],
+    [
+      "lego-enterprise-d",
+      "LEGO Icons Star Trek U.S.S. Enterprise NCC-1701-D 10356",
+      "LEGO",
+      "Toys & LEGO",
+      "Amazon AU",
+      599.99,
+      449,
+      "none",
+      "",
+      "",
+      "OZB"
+    ],
+    [
+      "delonghi-magnifica-evo-next",
+      "De'Longhi Magnifica Evo Next",
+      "De'Longhi",
+      "Coffee Machines",
+      "Amazon AU",
+      1399,
+      714.6,
+      "none",
+      "",
+      "",
+      "OZB"
+    ],
+    [
+      "philips-multigroom-5000",
+      "Philips Multigroom 5000 13-piece trimmer",
+      "Philips",
+      "Personal Care",
+      "Amazon AU",
+      119,
+      59,
+      "none",
+      "",
+      "",
+      "OZB"
+    ],
+    [
+      "logitech-mx-anywhere-3s",
+      "Logitech MX Anywhere 3S (Graphite)",
+      "Logitech",
+      "Computing & Gaming",
+      "Amazon AU",
+      139.95,
+      72.27,
+      "none",
+      "",
+      "",
+      "OZB"
     ]
   ],
   "community": {
@@ -5560,10 +5638,10 @@
       "checked": "2026-11-24"
     },
     "razr-60-swarovski|Harvey Norman": {
-      "votes": 180,
+      "votes": 240,
       "url": "https://www.ozbargain.com.au/node/984732",
-      "posted": "2026-11-22",
-      "checked": "2026-11-23"
+      "posted": "2026-11-23",
+      "checked": "2026-11-28"
     },
     "switch-2-mkw-bundle|Target": {
       "votes": 2020,
@@ -5572,10 +5650,10 @@
       "checked": "2026-11-24"
     },
     "razr-fold|JB Hi-Fi": {
-      "votes": 110,
+      "votes": 150,
       "url": "https://www.ozbargain.com.au/node/984741",
-      "posted": "2026-11-22",
-      "checked": "2026-11-23"
+      "posted": "2026-11-23",
+      "checked": "2026-11-28"
     },
     "samsung-55-qn80h|The Good Guys": {
       "votes": 170,
@@ -5653,6 +5731,54 @@
       "votes": 80,
       "url": "https://www.ozbargain.com.au/node/986055",
       "posted": "2026-11-27",
+      "checked": "2026-11-28"
+    },
+    "moto-g37-128|Big W": {
+      "votes": 140,
+      "url": "https://www.ozbargain.com.au/node/984863",
+      "posted": "2026-11-24",
+      "checked": "2026-11-28"
+    },
+    "lego-blacktron-renegade|Amazon AU": {
+      "votes": 180,
+      "url": "https://www.ozbargain.com.au/node/984906",
+      "posted": "2026-11-24",
+      "checked": "2026-11-28"
+    },
+    "lego-enterprise-d|Amazon AU": {
+      "votes": 500,
+      "url": "https://www.ozbargain.com.au/node/984530",
+      "posted": "2026-11-22",
+      "checked": "2026-11-28"
+    },
+    "delonghi-magnifica-evo-next|Amazon AU": {
+      "votes": 540,
+      "url": "https://www.ozbargain.com.au/node/984644",
+      "posted": "2026-11-23",
+      "checked": "2026-11-28"
+    },
+    "philips-multigroom-5000|Amazon AU": {
+      "votes": 850,
+      "url": "https://www.ozbargain.com.au/node/984450",
+      "posted": "2026-11-22",
+      "checked": "2026-11-28"
+    },
+    "logitech-mx-anywhere-3s|Amazon AU": {
+      "votes": 250,
+      "url": "https://www.ozbargain.com.au/node/984489",
+      "posted": "2026-11-22",
+      "checked": "2026-11-28"
+    },
+    "shark-powerpro|Amazon AU": {
+      "votes": 80,
+      "url": "https://www.ozbargain.com.au/node/984893",
+      "posted": "2026-11-24",
+      "checked": "2026-11-28"
+    },
+    "galaxy-a26|Amazon AU": {
+      "votes": 120,
+      "url": "https://www.ozbargain.com.au/node/984499",
+      "posted": "2026-11-22",
       "checked": "2026-11-28"
     }
   }
