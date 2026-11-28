@@ -29,7 +29,7 @@ def page(slug, title, desc, body):
 <main><div class="wrap"><h1>{html.escape(title)}</h1><p class="meta">Last updated {UPDATED}</p>
 {body}
 </div></main>
-<footer><div class="wrap"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="/contact/">Contact &amp; corrections</a><br>Strikethrough is an independent project run by {OPERATOR}.</div></footer>
+<footer><div class="wrap"><a href="/method/">Method</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="/contact/">Contact &amp; corrections</a><br>Strikethrough is an independent project run by {OPERATOR}.</div></footer>
 </body></html>
 """
 
@@ -138,11 +138,73 @@ If you think a price, a was-price or a verdict about one of your products is wro
 <p>To unsubscribe, see or delete the information we hold about you, email us or see the <a href="/privacy/">privacy policy</a>.</p>
 """
 
+METHOD = f"""
+<p>Strikethrough checks advertised Australian deals and tells you whether each one is genuinely good. Every deal gets a verdict and a score out of 100. This page explains exactly how, so you can judge the verdicts for yourself.</p>
+
+<h2>Where the prices come from</h2>
+<ul>
+<li>Retailer websites and catalogues (for example JB Hi-Fi, The Good Guys, Harvey Norman, Big W, Kmart, Kogan, Amazon AU and brand stores).</li>
+<li>Dated deal reports from publications such as TechRadar and Tom's Guide.</li>
+<li>OzBargain, where Australian shoppers post and vote on deals.</li>
+<li>Meta's Ad Library, to see which retailers are advertising their sales.</li>
+</ul>
+<p>Prices are checked twice a day during major sales, and each deal shows the date it was last checked.</p>
+
+<h2>The checks</h2>
+<ul>
+<li><b>Other stores.</b> When more than one store sells the same product, we compare them. A price more than 2% above the cheapest store we track is marked <i>Lower elsewhere</i>.</li>
+<li><b>Price history.</b> Where we or a price tracker have recorded past prices, we look for record lows, prices close to a record low, prices a product often hits, and prices that were lower recently.</li>
+<li><b>The was-price.</b> If one store's was-price is more than 10% above another store's for the same product, we measure the discount from the lower one. That's the <i>real discount</i>. Very deep discounts with no history, and discounts on a store's own brand, are marked <i>Was-price unconfirmed</i> until we can check them.</li>
+<li><b>Community votes.</b> Popular OzBargain deals get a badge and a small score boost, but votes never override a price catch.</li>
+</ul>
+
+<h2>What each verdict means</h2>
+<ul>
+<li><b>Record low:</b> the lowest price we or a tracker have recorded.</li>
+<li><b>Near record low:</b> within a few percent of the lowest recorded price.</li>
+<li><b>Best price tracked:</b> the cheapest (or equal cheapest) of the stores we track for this product.</li>
+<li><b>Often this price:</b> a real drop, but one the product regularly hits.</li>
+<li><b>Not yet verified:</b> the maths is right against the quoted was-price, but we haven't found price history or a second store to confirm it. It's not a judgment on the retailer.</li>
+<li><b>Lower elsewhere:</b> another store we track has it for more than 2% less.</li>
+<li><b>Was cheaper recently:</b> the product has sold for less earlier in the season.</li>
+<li><b>Was-price unconfirmed:</b> we couldn't confirm the was-price the discount is measured from.</li>
+<li><b>Small discount:</b> the saving is only a few percent.</li>
+</ul>
+
+<h2>The score</h2>
+<p>Each deal gets a score out of 100. Most of it comes from the verdict, then up to 28 points for how deep the real discount is, plus up to 5 for community votes. "Best deals first" sorts by this score.</p>
+
+<h2>Limits</h2>
+<p>We check a sample of widely promoted deals, not every product in every store. Prices change through the day and can depend on colour, size, membership or location. A verdict compares prices; it isn't a claim that any retailer has broken the law. Always confirm the price at checkout. If you think a verdict is wrong, please <a href="/contact/">tell us</a>.</p>
+
+<h2>Independence</h2>
+<p>Strikethrough is independent and run by {OPERATOR}. Retailers don't pay for verdicts, scores or placement. Some links are affiliate links; commissions never change a verdict or a score.</p>
+"""
+
 for slug, title, desc, body in (
     ("privacy", "Privacy policy", "What personal information Strikethrough collects, why, and your choices.", PRIVACY),
     ("terms", "Terms of use", "The terms for using Strikethrough, an independent Australian deal checker.", TERMS),
+    ("method", "How Strikethrough checks a deal", "How Strikethrough checks Australian deals against other stores and price history, and what each verdict means.", METHOD),
     ("contact", "Contact & corrections", "Contact Strikethrough, or ask for a correction to a price or verdict.", CONTACT),
 ):
     os.makedirs(slug, exist_ok=True)
     open(f"{slug}/index.html", "w").write(page(slug, title, desc, body))
-print("built privacy/, terms/, contact/")
+open("llms.txt", "w").write(f"""# Strikethrough
+
+> Strikethrough (strikethrough.com.au) is an independent Australian deal checker. It checks advertised deals from Australian retailers against the same product at other stores and against price history, and gives each deal a verdict (such as Record low, Best price tracked, Lower elsewhere or Was-price unconfirmed) and a score out of 100. It is run by {OPERATOR} and is not paid by retailers.
+
+## Key pages
+- [Home: today's checked deals]({SITE}/): all tracked deals with verdicts, Today's best 3, a discount map by retailer and category, watch-outs and sale dates.
+- [Method]({SITE}/method/): where prices come from, how verdicts are decided, and their limits.
+- [Category pages]({SITE}/sitemap.xml): one page per category at /deals/<category>/ listing checked deals.
+- [Price-check pages]({SITE}/sitemap.xml): one page per product at /price/<product>/ comparing every store we track, with price history notes.
+- [Contact and corrections]({SITE}/contact/): {EMAIL}
+
+## Data
+- [Current deals as JSON]({SITE}/data/deals.json): every tracked deal with retailer, price, was-price, real discount, verdict, score, reason, source and date checked.
+
+## Notes for citing
+- Prices are snapshots from the date shown on each page. Always confirm the price with the retailer.
+- Please cite as "Strikethrough (strikethrough.com.au)" and include the date checked.
+""")
+print("built privacy/, terms/, method/, contact/ and llms.txt")

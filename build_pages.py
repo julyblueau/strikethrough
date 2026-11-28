@@ -60,6 +60,15 @@ def head_common():
             '<meta property="og:site_name" content="Strikethrough"><meta property="og:locale" content="en_AU">')
 
 
+def faq_html(qas):
+    return '<h2 class="s">Questions</h2>' + "".join(f'<details class="qa"><summary>{e(q)}</summary><p>{e(a)}</p></details>' for q, a in qas)
+
+
+def faq_ld(qas):
+    return {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
+        {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in qas]}
+
+
 history = json.loads((HERE / "data" / "history.json").read_text()) if (HERE / "data" / "history.json").exists() else {}
 CSS = """:root{color-scheme:dark;--bg:#0a0a0b;--ink:#f5f5f7;--mute:#a1a1a6;--line:#26262a;--red:#ff453a;--green:#30d158;--card:#121214}
 *{box-sizing:border-box;min-width:0}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
@@ -77,7 +86,7 @@ h1{font-family:"Inter Tight",Inter,sans-serif;font-weight:700;font-size:clamp(34
 .bc{color:var(--mute);font-size:14px;margin-top:22px}.bc a{color:var(--mute)}.d h2 a{text-decoration:none}.d h2 a:hover{text-decoration:underline}
 table{width:100%;border-collapse:collapse;margin:14px 0;font-size:15px}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line)}th{color:var(--mute);font-weight:500;font-size:13px}td.n{white-space:nowrap;font-variant-numeric:tabular-nums}
 .sum{border:1px solid var(--line);background:var(--card);border-radius:20px;padding:16px 18px;margin:8px 0 18px}.sum .big{font-family:"Inter Tight",Inter,sans-serif;font-weight:700;font-size:34px}
-h2.s{font-size:20px;margin:30px 0 6px}.rel{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:10px}.rel a{border:1px solid var(--line);background:var(--card);border-radius:14px;padding:10px 12px;text-decoration:none;font-size:14px}.rel b{display:block;font-size:16px;margin-top:2px}
+h2.s{font-size:20px;margin:30px 0 6px}.qa{border-bottom:1px solid var(--line);padding:10px 0}.qa summary{cursor:pointer;font-weight:600;list-style:none}.qa summary::-webkit-details-marker{display:none}.qa summary::after{content:" +";color:var(--mute)}.qa[open] summary::after{content:" –"}.qa p{color:var(--mute);margin:8px 0 2px}.rel{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:10px}.rel a{border:1px solid var(--line);background:var(--card);border-radius:14px;padding:10px 12px;text-decoration:none;font-size:14px}.rel b{display:block;font-size:16px;margin-top:2px}
 @media(max-width:600px){.d{grid-template-columns:72px minmax(0,1fr)}.pic{width:72px;height:56px}.p{grid-column:2;text-align:left}}"""
 
 cats = sorted({r["category"] for r in rows})
@@ -92,7 +101,7 @@ for cat in cats:
     rets = sorted({r["retailer"] for r in items})
     best = items[0]
     title = f"Black Friday {cat} Deals, Checked | Strikethrough"
-    desc = clip(f"{len(items)} {cat.lower()} deals from {len(rets)} Australian retailers, checked against price history "
+    desc = clip(f"{len(items)} {cat} deals from {len(rets)} Australian retailers, checked against price history "
                 f"and other stores. {good} hold up. Best right now: {best['product']}, {money(best['now'])}.")
     body = []
     for r in items:
@@ -107,7 +116,7 @@ for cat in cats:
 <p class="m">{e(r['reason'])}</p>
 <p class="l"><a href="/price/{e(r['product_key'])}/">Price check</a><a href="/#d-{e(r['slug'])}">Price story</a>{buy}</p></div>
 <div class="p">{money(r['now'])}<span class="was">{money(r['was'])}</span></div></article>""")
-    ld = {"@context": "https://schema.org", "@type": "ItemList", "name": f"Black Friday {cat.lower()} deals, checked",
+    ld = {"@context": "https://schema.org", "@type": "ItemList", "name": f"Black Friday {cat} deals, checked",
           "url": f"{SITE}/deals/{slug}/", "numberOfItems": len(items), "itemListElement": []}
     for i, r in enumerate(items, 1):
         prod = {"@type": "Product", "name": r["product"], "brand": {"@type": "Brand", "name": r["brand"]}, "category": cat,
@@ -121,7 +130,22 @@ for cat in cats:
     crumbs = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
         {"@type": "ListItem", "position": 1, "name": "Strikethrough", "item": f"{SITE}/"},
         {"@type": "ListItem", "position": 2, "name": f"{cat} deals", "item": f"{SITE}/deals/{slug}/"}]}
-    ldjson = json.dumps([ld, crumbs], ensure_ascii=False).replace("</", "<\\/")
+    flag = sum(1 for r in items if LABEL.get(r["verdict"], ("", ""))[1] == "flag")
+    agg = {}
+    for r in items:
+        a = agg.setdefault(r["retailer"], [0, 0]); a[0] += r["real_pct"]; a[1] += 1
+    ranked = sorted(((v[0] / v[1], k, v[1]) for k, v in agg.items() if v[1] >= 3), reverse=True)
+    best_good = next((r for r in items if LABEL.get(r["verdict"], ("", ""))[1] == "good"), None)
+    qas = [(f"How many Black Friday {cat} deals are genuine?",
+            f"Of {len(items)} {cat} deals we checked, {good} hold up (a record low or the best price at any store we track) "
+            f"and {flag} come with a catch, such as being cheaper at another store or a was-price we couldn't confirm. Checked {latest_h}.")]
+    if ranked:
+        top3 = ", ".join(f"{k} ({round(a)}% average real discount across {n} deals)" for a, k, n in ranked[:3])
+        qas.append((f"Which retailer has the best {cat} discounts?", f"By average real discount, measured from the lowest was-price any store uses: {top3}."))
+    if best_good:
+        qas.append((f"What's the best {cat} deal right now?",
+                    f"{best_good['product']} for {money(best_good['now'])} at {best_good['retailer']}: {best_good['reason']}"))
+    ldjson = json.dumps([ld, crumbs, faq_ld(qas)], ensure_ascii=False).replace("</", "<\\/")
     other = "".join(f'<a href="/deals/{slugify(c)}/">{e(c)}</a>' for c in cats if c != cat)
     disc = f'<p class="fine">{e(aff.get("disclosure", ""))}</p>' if any(affiliate(r)[1] for r in items) else ""
     page = f"""<!DOCTYPE html>
@@ -147,12 +171,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <a class="logo" href="/">Strike<s>through</s></a>
 <nav class="bc" aria-label="Breadcrumb"><a href="/">Home</a> › <span>{e(cat)}</span></nav>
 <h1>Black Friday {e(cat)} deals, checked</h1>
-<p class="lede">We checked {len(items)} {e(cat.lower())} deal{'s' if len(items) != 1 else ''} from {e(', '.join(rets))} against price history and the same product at other stores. {good} hold up. Prices last checked {e(latest_h)}.</p>
+<p class="lede">We checked {len(items)} {e(cat)} deal{'s' if len(items) != 1 else ''} from {e(', '.join(rets))} against price history and the same product at other stores. {good} hold up. Prices last checked {e(latest_h)}.</p>
 <a class="cta" href="/#c-{slug}">Filter, compare and see price stories</a>
 {''.join(body)}
+{faq_html(qas)}
 <div class="cats">{other}</div>
 {disc}
-<p class="fine">Prices come from retailer pages and dated deal reports, change through the day, and may be member-only or colour-specific. Always confirm the price at checkout. Strikethrough is independent and isn't paid by the retailers listed. <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a> · <a href="/contact/">Contact &amp; corrections</a></p>
+<p class="fine">Prices come from retailer pages and dated deal reports, change through the day, and may be member-only or colour-specific. Always confirm the price at checkout. Strikethrough is independent and isn't paid by the retailers listed. <a href="/method/">Method</a> · <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a> · <a href="/contact/">Contact &amp; corrections</a></p>
 </div></body></html>"""
     out = HERE / "deals" / slug
     out.mkdir(parents=True, exist_ok=True)
@@ -241,7 +266,20 @@ for key, rs in by_key.items():
         {"@type": "ListItem", "position": 1, "name": "Strikethrough", "item": f"{SITE}/"},
         {"@type": "ListItem", "position": 2, "name": f"{cat} deals", "item": f"{SITE}/deals/{cslug}/"},
         {"@type": "ListItem", "position": 3, "name": name, "item": f"{SITE}/price/{key}/"}]}
-    ldjson = json.dumps([prod, crumbs], ensure_ascii=False).replace("</", "<\\/")
+    qas = [(f"What's the cheapest price for {name} in Australia right now?",
+            f"{money(best['now'])} at {best['retailer']}, as of {seen_h}." + (f" Across the {n} stores we track, prices range from {money(lo)} to {money(hi)}." if n > 1 else ""))]
+    before = [r for r in rs if r["verdict"] == "Cheaper before"]
+    if before:
+        b = before[0]
+        qas.append((f"Has {name} been cheaper before?", f"Yes. {b['retailer']} has had it for less earlier this season. {b.get('reason') or ''}".strip()))
+    elif len(hist) >= 2:
+        qas.append((f"Has {name} been cheaper before?", f"Not in our tracking. {best['retailer']}'s lowest price since {first} is {money(min(ph))}, and it's {money(best['now'])} now."))
+    if best.get("claimed_pct") and best.get("real_pct") is not None:
+        same = abs(best["claimed_pct"] - best["real_pct"]) < 2
+        qas.append((f"Is the advertised discount on {name} real?",
+                    f"{best['retailer']} advertises {round(best['claimed_pct'])}% off. " + ("That matches what we measure against other stores' was-prices." if same else
+                    f"Measured from the lowest was-price any store uses for this product, the real discount is {round(best['real_pct'])}%.")))
+    ldjson = json.dumps([prod, crumbs, faq_ld(qas)], ensure_ascii=False).replace("</", "<\\/")
     has_aff = any(affiliate(r)[1] for r in rs)
     disc = f'<p class="fine">{e(aff.get("disclosure", ""))}</p>' if has_aff else ""
     page = f"""<!DOCTYPE html>
@@ -262,13 +300,14 @@ for key, rs in by_key.items():
 <a class="cta" href="/#d-{e(top['slug'])}">See the price story and set a price-drop alert</a>
 <h2 class="s">Prices at {'each store' if n > 1 else best['retailer']}</h2>
 <table><thead><tr><th>Store</th><th>Now</th><th>Was</th><th>Real discount</th><th>Verdict</th><th></th></tr></thead><tbody>{''.join(trs)}</tbody></table>
-<p class="m">Prices last checked {e(seen_h)}. "Real discount" is measured from the lowest was-price any store uses for this product, not each store's own.</p>
+<p class="m">Prices last checked <time datetime="{seen}">{e(seen_h)}</time>. "Real discount" is measured from the lowest was-price any store uses for this product, not each store's own.</p>
 {f'<h2 class="s">Notes</h2><ul class="m">{reasons}</ul>' if reasons else ''}
+{faq_html(qas)}
 <h2 class="s">How we check</h2>
-<p class="m">We compare the same product across Australian retailers and against its recent price history. A price more than 2% above the cheapest store is marked "Lower elsewhere". If one store's was-price is more than 10% above another's, we measure the discount from the lower one. <a href="/#how">More on our method</a>.</p>
-{f'<h2 class="s">More {e(cat.lower())} price checks</h2><div class="rel">{rel_html}</div>' if rel_html else ''}
+<p class="m">We compare the same product across Australian retailers and against its recent price history. A price more than 2% above the cheapest store is marked "Lower elsewhere". If one store's was-price is more than 10% above another's, we measure the discount from the lower one. <a href="/method/">More on our method</a>.</p>
+{f'<h2 class="s">More {e(cat)} price checks</h2><div class="rel">{rel_html}</div>' if rel_html else ''}
 {disc}
-<p class="fine">Prices change through the day and may be member-only or colour-specific. Always confirm the price at checkout. Strikethrough is independent and isn't paid by the retailers listed. <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a> · <a href="/contact/">Contact &amp; corrections</a></p>
+<p class="fine">Prices change through the day and may be member-only or colour-specific. Always confirm the price at checkout. Strikethrough is independent and isn't paid by the retailers listed. <a href="/method/">Method</a> · <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a> · <a href="/contact/">Contact &amp; corrections</a></p>
 </div></body></html>"""
     d = price_dir / key
     d.mkdir(exist_ok=True)
@@ -291,6 +330,11 @@ links = ('<details class="fl"><summary>Browse deals by category</summary><p>'
          + " · ".join(f'<a href="/deals/{slugify(c)}/">{e(c)}</a>' for c in cats) + '</p></details>'
          + '<details class="fl"><summary>Popular price checks</summary><p>'
          + " · ".join(f'<a href="/price/{e(k)}/">{e(by_key[k][0]["product"])}</a>' for k in top_keys) + '</p></details>')
+ng = sum(1 for r in rows if LABEL.get(r["verdict"], ("", ""))[1] == "good")
+nf = sum(1 for r in rows if LABEL.get(r["verdict"], ("", ""))[1] == "flag")
+nret = len({r["retailer"] for r in rows})
+ih = re.sub(r'(<h1 class="disp" id="headline">).*?(</h1>)', lambda m: m.group(1) + f"{len(rows)} Black Friday deals checked. {ng} hold up." + m.group(2), ih, count=1, flags=re.S)
+ih = re.sub(r'(<p class="lede" id="sub">).*?(</p>)', lambda m: m.group(1) + f"Every deal from {nret} Australian retailers, checked against price history and other stores. {nf} come with a catch. Prices last checked {latest_h}." + m.group(2), ih, count=1, flags=re.S)
 ih = re.sub(r"<!--SEO-LINKS-->.*?<!--/SEO-LINKS-->", lambda m: "<!--SEO-LINKS-->" + links + "<!--/SEO-LINKS-->", ih, flags=re.S)
 idx.write_text(ih)
 print(len(made), "product pages")
@@ -302,7 +346,7 @@ for d in (HERE / "deals").iterdir():
             f.unlink()
         d.rmdir()
 
-urls += [f"{SITE}/{p}/" for p in ("privacy", "terms", "contact")]
+urls += [f"{SITE}/{p}/" for p in ("method", "privacy", "terms", "contact")]
 (HERE / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
                                   + "".join(f"  <url><loc>{u}</loc><lastmod>{latest}</lastmod></url>\n" for u in urls) + "</urlset>\n")
 (HERE / "robots.txt").write_text(f"User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /share/\n\nSitemap: {SITE}/sitemap.xml\n")

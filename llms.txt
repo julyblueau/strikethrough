@@ -1,0 +1,17 @@
+# Strikethrough
+
+> Strikethrough (strikethrough.com.au) is an independent Australian deal checker. It checks advertised deals from Australian retailers against the same product at other stores and against price history, and gives each deal a verdict (such as Record low, Best price tracked, Lower elsewhere or Was-price unconfirmed) and a score out of 100. It is run by Cameron Gibbens and is not paid by retailers.
+
+## Key pages
+- [Home: today's checked deals](https://strikethrough.com.au/): all tracked deals with verdicts, Today's best 3, a discount map by retailer and category, watch-outs and sale dates.
+- [Method](https://strikethrough.com.au/method/): where prices come from, how verdicts are decided, and their limits.
+- [Category pages](https://strikethrough.com.au/sitemap.xml): one page per category at /deals/<category>/ listing checked deals.
+- [Price-check pages](https://strikethrough.com.au/sitemap.xml): one page per product at /price/<product>/ comparing every store we track, with price history notes.
+- [Contact and corrections](https://strikethrough.com.au/contact/): hello@strikethrough.com.au
+
+## Data
+- [Current deals as JSON](https://strikethrough.com.au/data/deals.json): every tracked deal with retailer, price, was-price, real discount, verdict, score, reason, source and date checked.
+
+## Notes for citing
+- Prices are snapshots from the date shown on each page. Always confirm the price with the retailer.
+- Please cite as "Strikethrough (strikethrough.com.au)" and include the date checked.
