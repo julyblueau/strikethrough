@@ -56,7 +56,13 @@ h2{font-size:clamp(28px,3.4vw,40px);margin:0 0 8px;text-wrap:balance}
 h3{margin:0 0 8px;font-size:19px}
 .lede{font-size:17px;max-width:62ch;color:var(--mute);margin:0}
 .stamp{font-size:14px;color:var(--mute);margin:14px 0 0}
-.field{margin-top:26px;display:grid;grid-template-columns:repeat(auto-fill,minmax(22px,1fr));gap:5px;position:relative}
+.field{margin-top:28px;display:flex;gap:4px;height:18px;position:relative}
+.mixb{border:0;padding:0;cursor:pointer;border-radius:5px;min-width:14px;transition:opacity .2s}
+.mixb.good{background:var(--green);box-shadow:0 0 16px rgba(48,209,88,.35)}
+.mixb.mid{background:transparent;box-shadow:inset 0 0 0 1.5px var(--grey)}
+.mixb.flag{background:repeating-linear-gradient(-55deg,var(--redsoft) 0 7px,rgba(255,69,58,.55) 7px 9px);box-shadow:inset 0 0 0 1.5px var(--red)}
+.mixb.dim{opacity:.22}
+.mixb:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 .t{height:30px;border-radius:3px 3px 6px 6px;position:relative;border:0;padding:0;cursor:pointer;background:none}
 .t::before{content:"";position:absolute;left:50%;top:5px;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--bg)}
 .t.good{background:var(--green);box-shadow:0 0 14px rgba(48,209,88,.35)}
@@ -68,6 +74,7 @@ h3{margin:0 0 8px;font-size:19px}
 .tip{position:absolute;z-index:4;pointer-events:none;background:#f5f5f7;color:#111;font-size:13px;line-height:1.35;padding:8px 10px;border-radius:8px;max-width:240px}
 :focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.legend .sm{display:none}
 .chip{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:8px 16px;border-radius:999px;border:1px solid var(--line);background:var(--soft);font-size:15px;cursor:pointer;white-space:nowrap}
 .chip[aria-pressed=true]{border-color:var(--ink);background:var(--ink);color:var(--bg)}
 .chip b{font-family:"Inter Tight",Inter,sans-serif;font-size:22px;font-weight:700}
@@ -255,7 +262,7 @@ dialog::backdrop{background:rgb(0 0 0 / .65);-webkit-backdrop-filter:blur(6px);b
 .comm:hover{background:rgba(255,159,10,.2)}
 .comm.hot{background:rgba(255,107,53,.16);color:#ff8a4c;border-color:rgba(255,107,53,.4)}
 @media(max-width:760px){.two{grid-template-columns:minmax(0,1fr)}.links{margin-left:0;width:100%;overflow-x:auto;flex-wrap:nowrap}.links a{flex:none}.bar{top:101px}html{scroll-padding-top:200px}}
-@media(max-width:600px){table{font-size:13px}th,td{padding:6px 4px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px;border-bottom:1px solid var(--line)}.stack td{display:flex;justify-content:space-between;gap:12px;border:0;padding:3px 0;text-align:right}.stack td::before{content:attr(data-l);color:var(--mute);text-align:left}.stack td:empty{display:none}.field{grid-template-columns:repeat(auto-fill,minmax(16px,1fr));gap:4px}.t{height:22px}.now{font-size:32px}.tray .slot{max-width:46vw}.tray .cta{margin-left:0;width:100%}.tray .cta button{flex:1}.row select{flex:1 1 40%}.row input{flex:1 1 100%}.bar{position:static}.seg button{padding:6px 11px}}
+@media(max-width:600px){table{font-size:13px}th,td{padding:6px 4px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px;border-bottom:1px solid var(--line)}.stack td{display:flex;justify-content:space-between;gap:12px;border:0;padding:3px 0;text-align:right}.stack td::before{content:attr(data-l);color:var(--mute);text-align:left}.stack td:empty{display:none}.field{height:14px;margin-top:22px}.legend{gap:6px;flex-wrap:nowrap}.legend .chip{min-height:38px;padding:6px 8px;font-size:12px;gap:5px;flex:1 1 0;justify-content:center;white-space:normal;line-height:1.15;text-align:left}.legend .chip b{font-size:17px}.legend .lg{display:none}.legend .sm{display:inline}.legend .chip{white-space:nowrap}.t{height:22px}.now{font-size:32px}.tray .slot{max-width:46vw}.tray .cta{margin-left:0;width:100%}.tray .cta button{flex:1}.row select{flex:1 1 40%}.row input{flex:1 1 100%}.bar{position:static}.seg button{padding:6px 11px}}
 @media(max-width:600px){.t-cream .stack tr{padding-inline:14px}.t-cream .stack td:first-child{padding-left:0}.sheet{margin-inline:6px}}
 
 .alert .short,.ax{display:none}
@@ -359,11 +366,11 @@ dialog::backdrop{background:rgb(0 0 0 / .65);-webkit-backdrop-filter:blur(6px);b
     <h1 class="disp" id="headline">We check the was-price so you don't have to.</h1>
     <p class="lede" id="sub">Every Black Friday deal below has been checked against price history and the same product at other Australian retailers.</p>
     <div class="top3wrap" id="top3wrap" hidden><p class="eye" style="margin:26px 0 12px"><i>★</i>Today's best 3</p><div class="top3" id="top3"></div></div>
-    <div class="field" id="field" role="group" aria-label="Every tracked deal as a ticket. Select one to see its details."></div>
+    <div class="field" id="field" role="group" aria-label="Share of checked deals by verdict. Select a part to filter the deals."></div>
     <div class="legend" id="legend">
-      <button class="chip" type="button" data-g="good" aria-pressed="false"><span class="sw good"></span><b id="n-good">–</b>Verified good</button>
-      <button class="chip" type="button" data-g="mid" aria-pressed="false"><span class="sw mid"></span><b id="n-mid">–</b>Not yet verified</button>
-      <button class="chip" type="button" data-g="flag" aria-pressed="false"><span class="sw flag"></span><b id="n-flag">–</b>Watch out</button>
+      <button class="chip" type="button" data-g="good" aria-pressed="false"><span class="sw good"></span><b id="n-good">–</b><span class="lg">Verified good</span><span class="sm">Good</span></button>
+      <button class="chip" type="button" data-g="mid" aria-pressed="false"><span class="sw mid"></span><b id="n-mid">–</b><span class="lg">Not yet verified</span><span class="sm">Pending</span></button>
+      <button class="chip" type="button" data-g="flag" aria-pressed="false"><span class="sw flag"></span><b id="n-flag">–</b><span class="lg">Watch out</span><span class="sm">Catch</span></button>
     </div>
     <p class="stamp" id="stamp">Loading deals…</p>
   </div>
@@ -581,7 +588,7 @@ function render() {
   $('#clear').textContent = S.group === 'good' && !S.cat && !$('#f-ret').value && !$('#f-q').value.trim() ? `Show all ${S.deals.length} deals` : 'Clear filters';
   $('#cards').innerHTML = rows.length ? rows.slice(0, S.shown).map(card).join('') : '<div class="empty">No deals match. Try another category, or clear the filters.</div>';
   $('#more').hidden = rows.length <= S.shown;
-  $$('.t').forEach((t) => t.classList.toggle('dim', !!S.group && !t.classList.contains(S.group)));
+  $$('.mixb').forEach((t) => t.classList.toggle('dim', !!S.group && t.dataset.g !== S.group));
   $$('#legend .chip').forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.g === S.group)));
   $$('#seg button').forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.g === S.group)));
   $$('#cats .chip').forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.c === S.cat)));
@@ -780,13 +787,17 @@ function drawCountdown() {
 function drawHero() {
   const order = {good: 0, mid: 1, flag: 2};
   const sorted = S.deals.slice().sort((a, b) => order[grp(a)] - order[grp(b)] || b.score - a.score);
-  $('#field').innerHTML = sorted.map((r) => `<button type="button" class="t ${grp(r)}" data-open="${esc(r.id)}" aria-label="${esc(r.product)}, ${esc(r.retailer)}, ${money(r.now)}, ${esc(info(r)[0])}"></button>`).join('') + '<div class="tip" id="tip" hidden></div>';
   const n = {good: 0, mid: 0, flag: 0};
   S.deals.forEach((r) => n[grp(r)]++);
   for (const k in n) $('#n-' + k).textContent = n[k];
+  const lab = {good: 'verified good', mid: 'not yet verified', flag: 'watch out'};
+  $('#field').innerHTML = ['good', 'mid', 'flag'].filter((k) => n[k]).map((k) => {
+    const pc = Math.round(100 * n[k] / S.deals.length);
+    return `<button type="button" class="mixb ${k}" data-g="${k}" style="flex:${n[k]} 1 0" title="${n[k]} ${lab[k]} (${pc}%)" aria-label="${n[k]} ${lab[k]}, ${pc}% of deals. Filter to these."></button>`;
+  }).join('');
   const rets = new Set(S.deals.map((r) => r.retailer)).size;
   $('#headline').textContent = `${S.deals.length} Black Friday deals checked. ${n.good} hold up.`;
-  $('#sub').textContent = `Each ticket is a deal from one of ${rets} Australian retailers, checked against price history and other stores. ${n.flag} come with a catch. Point at a ticket to peek, tap it for the full story, or tap a colour to filter.`;
+  $('#sub').textContent = `Every deal from ${rets} Australian retailers, checked against price history and other stores. ${n.flag} come with a catch. Tap a colour to filter.`;
   const latest = S.deals.map((r) => r.seen).sort().pop();
   $('#stamp').textContent = `Prices last checked ${fmtDate(latest)}. Updated twice a day until Cyber Monday.`;
   $('#foot-upd').textContent = `Data as of ${fmtDate(latest)}`;
@@ -844,14 +855,14 @@ function drawCal(rows) {
 }
 
 document.addEventListener('click', (e) => {
-  const t = e.target.closest('[data-open],[data-pick],[data-unpick],[data-close],[data-share],#legend .chip,#seg button,#cats .chip,.cell[data-r],[data-ret]');
+  const t = e.target.closest('[data-open],[data-pick],[data-unpick],[data-close],[data-share],#legend .chip,.mixb,#seg button,#cats .chip,.cell[data-r],[data-ret]');
   if (!t) return;
   if (t.dataset.share) share(t.dataset.share);
   else if (t.dataset.open) openDeal(t.dataset.open);
   else if (t.dataset.pick) { togglePick(t.dataset.pick); if ($('#dlg').open) { t.setAttribute('aria-pressed', String(S.picks.includes(t.dataset.pick))); t.textContent = S.picks.includes(t.dataset.pick) ? 'Added to compare' : '+ Add to compare'; } }
   else if (t.dataset.unpick) togglePick(t.dataset.unpick);
   else if (t.hasAttribute('data-close')) $('#dlg').close();
-  else if (t.matches('#legend .chip')) { S.group = S.group === t.dataset.g ? '' : t.dataset.g; refresh(); }
+  else if (t.matches('#legend .chip,.mixb')) { S.group = S.group === t.dataset.g ? '' : t.dataset.g; refresh(); }
   else if (t.matches('#seg button')) { S.group = t.dataset.g; refresh(); }
   else if (t.matches('#cats .chip')) { S.cat = t.dataset.c; refresh(); }
   else if (t.dataset.r) { S.cat = t.dataset.c; $('#f-ret').value = t.dataset.r; S.group = ''; refresh(); goDeals(); }
@@ -888,14 +899,6 @@ try { if (localStorage.getItem('st-pro-x') === '1') $('.alert').hidden = true; }
 document.querySelector('.alert .acta').addEventListener('click', () => track('pro_banner_click', {}));
 $('#alert-x').addEventListener('click', () => { $('.alert').hidden = true; try { localStorage.setItem('st-pro-x', '1'); track('pro_banner_dismiss', {}); } catch {} });
 
-const field = $('#field');
-field.addEventListener('pointerover', (e) => {
-  const t = e.target.closest('.t'), tip = $('#tip'); if (!t || !tip) return;
-  const r = S.byId[t.dataset.open]; tip.textContent = `${r.product} · ${r.retailer} · ${money(r.now)} · ${info(r)[0]}`; tip.hidden = false;
-  const fb = field.getBoundingClientRect(), tb = t.getBoundingClientRect();
-  tip.style.left = Math.max(0, Math.min(tb.left - fb.left - 100, fb.width - tip.offsetWidth)) + 'px'; tip.style.top = (tb.bottom - fb.top + 8) + 'px';
-});
-field.addEventListener('pointerleave', () => { const tip = $('#tip'); if (tip) tip.hidden = true; });
 
 const secs = ['deals', 'map', 'watch', 'calendar', 'how', 'pro'].map((id) => document.getElementById(id));
 const spy = new IntersectionObserver((es) => { es.forEach((en) => { if (en.isIntersecting) { $$('#links a').forEach((a) => a.classList.toggle('on', a.getAttribute('href') === '#' + en.target.id)); $$('.tabbar a').forEach((a) => a.classList.toggle('on', a.dataset.tab === en.target.id || (en.target.id === 'top' && a.dataset.tab === 'deals'))); } }); }, {rootMargin: '-45% 0px -50% 0px'});
