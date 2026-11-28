@@ -76,3 +76,9 @@ A scheduled refresh runs twice a day and commits new data here. By hand: edit `r
 - `manifest.webmanifest`, `sw.js` (caches nothing) and `icons/` make the site installable. On Android (Chrome, Samsung Internet) the installed app appears in the share menu: sharing a product page from any store's app opens `/share/`, which hands the link to the Check a deal box via `/?check=…`.
 - The Check box shows "add Strikethrough to your phone" when the browser offers installation, and a "Check on Strikethrough" bookmarklet on desktop. iPhones don't support web share targets, so on iOS the bookmarklet or pasting a link is the way in.
 - `/?check=<product or link>` works as a plain link too.
+
+## SEO
+
+- `build_pages.py` writes, from `data/deals.json`: a page per category (`/deals/<category>/`), a price-check page per product (`/price/<product_key>/`, comparing every store we track, with Product + AggregateOffer and BreadcrumbList structured data), static category and popular-product links into the homepage footer (between `<!--SEO-LINKS-->` markers), `sitemap.xml` and `robots.txt`. It runs in every refresh, so pages stay current and pages for products no longer tracked are removed.
+- Homepage has WebSite and Organization structured data. `404.html` is served for unknown URLs (`not_found_handling` in `wrangler.jsonc`).
+- When the site switches to year-round mode after Cyber Monday, update the homepage `<title>`, description and og tags, and the "Black Friday" wording in `build_pages.py` category titles.

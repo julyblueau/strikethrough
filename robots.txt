@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /share/
 
 Sitemap: https://strikethrough.com.au/sitemap.xml
