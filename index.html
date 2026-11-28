@@ -22,6 +22,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <meta property="og:image" content="https://strikethrough.com.au/og/home.jpg?v=3"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Strikethrough: which Black Friday deals are actually real?"><meta property="og:site_name" content="Strikethrough"><meta property="og:locale" content="en_AU">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://strikethrough.com.au/og/home.jpg?v=3">
 <meta name="theme-color" content="#0a0a0b">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Strikethrough">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23111'/%3E%3Ctext x='16' y='23' font-family='Arial' font-weight='900' font-size='20' fill='%23fff' text-anchor='middle'%3ES%3C/text%3E%3Cpath d='M5 19 L27 13' stroke='%23e10600' stroke-width='3'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -154,6 +157,10 @@ select,input{font:inherit;font-size:16px;color:var(--ink);background:var(--soft)
 .chk .go{min-height:44px;border:0;border-radius:999px;background:var(--ink);color:var(--bg);font-weight:600;font-size:15px;padding:8px 18px;cursor:pointer}
 .chk-res{display:grid;gap:8px;margin-top:10px}
 .chk-res:empty{display:none}
+.chk-tip{font-size:13px;color:var(--mute);margin:10px 0 0}
+.chk-tip:not(:has(span:not([hidden]))){display:none}
+.chk-tip .lnk{background:none;border:0;padding:0;color:var(--ink);text-decoration:underline;font:inherit;cursor:pointer}
+.chk-tip .bm{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:1px 10px;color:var(--ink);text-decoration:none;background:var(--bg);cursor:grab}
 .hit{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
 .hit b{font-size:15px}
 .hit .sub{font-size:13.5px;color:var(--mute);margin:2px 0 0}
@@ -401,6 +408,7 @@ dialog::backdrop{background:rgb(0 0 0 / .65);-webkit-backdrop-filter:blur(6px);b
         <button class="go" type="submit">Check it</button>
       </form>
       <div class="chk-res" id="chk-res" aria-live="polite"></div>
+      <p class="chk-tip" id="chk-tip"><span id="tip-install" hidden>Check deals straight from any store's app: <button type="button" class="lnk" id="install-btn">add Strikethrough to your phone</button>, then use Share → Strikethrough.</span><span id="tip-bm" hidden>Shopping on a computer? Drag <a class="bm" id="bm" href="#" title="Drag me to your bookmarks bar">Check on Strikethrough</a> to your bookmarks bar, then click it on any product page.</span></p>
     </section>
     <div class="top3wrap" id="top3wrap" hidden><p class="eye" style="margin:26px 0 12px"><i>★</i>Today's best 3</p><div class="top3" id="top3"></div></div>
     <div class="field" id="field" role="group" aria-label="Share of checked deals by verdict. Select a part to filter the deals."></div>
@@ -1063,6 +1071,34 @@ const watchHtml = (r) => {
     <input type="email" name="email" placeholder="Your email" aria-label="Email for price-drop alerts" value="${esc(em)}" required><button type="submit">Alert me</button></form><p class="fmsg" id="watch-msg" role="status"></p></div>`;
 };
 
+
+/* ---- Install + share target + bookmarklet ---- */
+if ('serviceWorker' in navigator && !/claude\.ai|claudeusercontent/.test(location.hostname)) navigator.serviceWorker.register('/sw.js').catch(() => {});
+let installEvt = null;
+addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); installEvt = e; $('#tip-install').hidden = false; $('#tip-bm').hidden = true; });
+$('#install-btn').addEventListener('click', async () => {
+  if (!installEvt) return; installEvt.prompt();
+  const r = await installEvt.userChoice.catch(() => ({})); track('app_install', {outcome: r.outcome || 'unknown'});
+  installEvt = null; $('#tip-install').hidden = true;
+});
+addEventListener('appinstalled', () => { $('#tip-install').hidden = true; });
+(() => {
+  const desk = matchMedia('(pointer:fine) and (min-width:900px)').matches;
+  const bm = $('#bm');
+  bm.href = "javascript:(function(){location.href='https://strikethrough.com.au/?check='+encodeURIComponent(location.href)+'&src=bookmark#check'})()";
+  bm.addEventListener('click', (e) => e.preventDefault());
+  $('#tip-bm').hidden = !desk;
+})();
+function runCheckParam() {
+  const p = new URLSearchParams(location.search), q = p.get('check');
+  if (!q) return;
+  const f = $('#chk-f'); f.q.value = q.slice(0, 500);
+  f.requestSubmit ? f.requestSubmit() : f.dispatchEvent(new Event('submit', {cancelable: true}));
+  track('check_shared', {via: p.get('src') || 'link'});
+  setTimeout(() => $('#check').scrollIntoView({block: 'start'}), 80);
+  try { history.replaceState(null, '', location.pathname); } catch {}
+}
+
 const optional = (u, dflt) => fetch(u).then((r) => (r.ok ? r.json() : dflt)).catch(() => dflt);
 Promise.all([fetch(CONFIG.dealsUrl).then((r) => r.json()), fetch(CONFIG.calendarUrl).then((r) => r.json()), optional(CONFIG.historyUrl, {}), optional(CONFIG.affiliatesUrl, {retailers: {}}), optional(CONFIG.featuredUrl, {ids: []}), optional('data/ozb_feed.json', {items: []})])
   .then(([d, c, h, a, f, oz]) => {
@@ -1074,7 +1110,7 @@ Promise.all([fetch(CONFIG.dealsUrl).then((r) => r.json()), fetch(CONFIG.calendar
     ['#disc', '#disc2'].forEach((s) => { $(s).hidden = !anyAff; $(s).textContent = S.aff.disclosure || ''; });
     $('#fcats').innerHTML = [...new Set(S.deals.map((r) => r.category))].sort().map((c) => `<a href="deals/${slugify(c)}/">${esc(c)}</a>`).join('');
     if (!location.hash) S.group = 'good';
-    drawFilters(); drawHero(); drawTop3(); drawCountdown(); render(); drawHeat(); drawWatch(); drawCal(c.rows || c); drawTray(); route();
+    drawFilters(); drawHero(); drawTop3(); drawCountdown(); render(); drawHeat(); drawWatch(); drawCal(c.rows || c); drawTray(); route(); runCheckParam();
   })
   .catch(() => { $('#stamp').textContent = "Deals couldn't load just now. Refresh to try again."; $('#cards').innerHTML = '<div class="empty">Deals couldn\'t load just now. Refresh to try again.</div>'; });
 }

@@ -70,3 +70,9 @@ A scheduled refresh runs twice a day and commits new data here. By hand: edit `r
   - To switch sending on: create a free Resend account, verify `strikethrough.com.au` there (it gives DNS records to add in Cloudflare), then add Worker secrets `RESEND_API_KEY` and optionally `ALERT_FROM` (default `Strikethrough <alerts@strikethrough.com.au>`). Until then the job does nothing and watches simply accumulate.
 - **Exports**: `/api/export?key=<EXPORT_KEY>&form=check-request` and `&form=watch` list requests and alerts.
 - **OzBargain feed**: `.github/workflows/ozbargain.yml` runs `scripts/ozb_feed.py` every 4 hours and commits `data/ozb_feed.json` when it changes. The site uses it to keep vote counts current.
+
+## Install and share to Strikethrough
+
+- `manifest.webmanifest`, `sw.js` (caches nothing) and `icons/` make the site installable. On Android (Chrome, Samsung Internet) the installed app appears in the share menu: sharing a product page from any store's app opens `/share/`, which hands the link to the Check a deal box via `/?check=…`.
+- The Check box shows "add Strikethrough to your phone" when the browser offers installation, and a "Check on Strikethrough" bookmarklet on desktop. iPhones don't support web share targets, so on iOS the bookmarklet or pasting a link is the way in.
+- `/?check=<product or link>` works as a plain link too.
