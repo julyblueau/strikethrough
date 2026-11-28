@@ -188,6 +188,19 @@ select,input{font:inherit;font-size:16px;color:var(--ink);background:var(--soft)
 .alt{background:linear-gradient(180deg,#0f0f11,#0a0a0b)}
 .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,4vw,48px);margin-top:20px}
 .scroll{overflow-x:auto}
+.hm{display:none;margin-top:16px}
+.hm-pick{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--mute);margin-bottom:10px}
+.hm-pick select{flex:1;background:var(--card);color:var(--ink)}
+.hm-row{display:grid;grid-template-columns:minmax(0,7.5em) minmax(0,1fr) 7.4em;gap:10px;align-items:center;width:100%;padding:9px 0;border:0;border-bottom:1px solid var(--line);background:none;color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.hm-row b{font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hm-row .hb{height:14px;border-radius:3px;background:var(--line);overflow:hidden}
+.hm-row .hb i{display:block;height:100%;border-radius:3px}
+.hm-row .hv{font-size:13px;color:var(--mute);white-space:nowrap;text-align:right;min-width:6.5em}
+.hm-row .hv strong{color:var(--ink);font-size:15px}
+.hm-row.few{opacity:.6}
+.hm-note{font-size:12.5px;color:var(--mute);margin:8px 0 0}
+.hm-none{font-size:14px;color:var(--mute);padding:10px 0}
+@media(max-width:700px){#map .scroll,#map .key{display:none}.hm{display:block}}
 table{border-collapse:collapse;width:100%;font-size:15px}
 th{text-align:left;font-weight:600;color:var(--mute);font-size:13px;padding:8px 10px;border-bottom:1px solid var(--line)}
 td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
@@ -449,8 +462,9 @@ dialog::backdrop{background:rgb(0 0 0 / .65);-webkit-backdrop-filter:blur(6px);b
   <div class="wrap">
     <p class="eye"><i>02</i>Discount map</p>
     <h2 class="disp" id="map-title">Where the real discounts are</h2>
-    <p class="lede">Average real discount for each retailer and category we track. Tap a square to see those deals.</p>
+    <p class="lede">Average real discount for each retailer and category we track. Tap one to see those deals.</p>
     <div class="scroll"><div class="heat" id="heat"></div></div>
+    <div class="hm" id="hm"><label class="hm-pick"><span>Showing</span><select id="hm-cat" aria-label="Category"></select></label><div id="hm-list" role="list"></div></div>
     <div class="key"><span>Smaller</span><span class="ramp"></span><span>Bigger real discount</span><span>· number under it = deals tracked</span></div>
     <h3 style="margin-top:36px">How each retailer's deals hold up</h3>
     <div class="scores" id="scores"></div>
@@ -875,6 +889,10 @@ function drawHeat() {
     const a = v.reduce((s, x) => s + x, 0) / v.length, w = Math.round(12 + 88 * Math.min(a, 70) / 70);
     return `<button class="cell" type="button" data-r="${esc(rt)}" data-c="${esc(c)}" style="background:color-mix(in srgb,var(--green) ${w}%,var(--bg));color:${w > 55 ? '#fff' : 'var(--ink)'}" aria-label="${esc(rt)}, ${esc(c)}: ${Math.round(a)}% average real discount across ${v.length} deals">${Math.round(a)}%<small>${v.length}</small></button>`;
   }).join('')).join('');
+  const sel = $('#hm-cat'), keep = sel.value;
+  sel.innerHTML = '<option value="">All categories</option>' + cats.map((c) => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
+  sel.value = cats.includes(keep) ? keep : '';
+  drawHeatList();
   const by = {};
   S.deals.forEach((r) => { const o = by[r.retailer] = by[r.retailer] || {good: 0, mid: 0, flag: 0, n: 0}; o[grp(r)]++; o.n++; });
   const col = {good: 'var(--green)', mid: 'var(--grey)', flag: 'var(--red)'};
@@ -882,6 +900,20 @@ function drawHeat() {
     <div class="sbar" role="img" aria-label="${esc(name)}: ${o.good} verified good, ${o.mid} not yet verified, ${o.flag} watch-outs">${['good', 'mid', 'flag'].map((k) => `<span style="width:${100 * o[k] / o.n}%;background:${col[k]}"></span>`).join('')}</div>
     <span class="v">${o.good} good · ${o.flag} watch-out${o.flag === 1 ? '' : 's'} · ${o.n} deal${o.n === 1 ? '' : 's'}</span></div>`).join('');
 }
+
+function drawHeatList() {
+  // Mobile version of the discount map: one category at a time, retailers ranked by average real discount.
+  const cat = $('#hm-cat').value, agg = {};
+  S.deals.filter((r) => !cat || r.category === cat).forEach((r) => { const o = agg[r.retailer] = agg[r.retailer] || {s: 0, n: 0}; o.s += r.real_pct; o.n++; });
+  // Retailers with fewer than 3 deals here go last and faded: one deal isn't a pattern.
+  const rows = Object.entries(agg).map(([rt, o]) => ({rt, a: o.s / o.n, n: o.n})).sort((x, y) => (y.n >= 3) - (x.n >= 3) || y.a - x.a || y.n - x.n);
+  const max = Math.max(1, ...rows.map((r) => r.a));
+  $('#hm-list').innerHTML = rows.length ? rows.map((r) => {
+    const w = Math.round(12 + 88 * Math.min(r.a, 70) / 70);
+    return `<button class="hm-row${r.n < 3 ? ' few' : ''}" type="button" role="listitem" data-r="${esc(r.rt)}" data-c="${esc(cat)}" aria-label="${esc(r.rt)}${cat ? ', ' + esc(cat) : ''}: ${Math.round(r.a)}% average real discount across ${r.n} deals"><b>${esc(r.rt)}</b><span class="hb"><i style="width:${Math.max(4, 100 * r.a / max)}%;background:color-mix(in srgb,var(--green) ${w}%,var(--bg))"></i></span><span class="hv"><strong>${Math.round(r.a)}%</strong> · ${r.n} deal${r.n === 1 ? '' : 's'}</span></button>`;
+  }).join('') + (rows.some((r) => r.n < 3) ? '<p class="hm-note">Faded rows have fewer than 3 deals, so treat them as a rough guide.</p>' : '') : '<p class="hm-none">No deals tracked in this category yet.</p>';
+}
+$('#hm-cat').addEventListener('change', () => { drawHeatList(); track('map_category', {category: $('#hm-cat').value || 'all'}); });
 
 function drawWatch() {
   const before = S.deals.filter((r) => r.verdict === 'Cheaper before').sort((a, b) => b.now - a.now);
@@ -904,7 +936,7 @@ function drawCal(rows) {
 }
 
 document.addEventListener('click', (e) => {
-  const t = e.target.closest('[data-open],[data-pick],[data-unpick],[data-close],[data-share],#legend .chip,.mixb,#seg button,#cats .chip,.cell[data-r],[data-ret]');
+  const t = e.target.closest('[data-open],[data-pick],[data-unpick],[data-close],[data-share],#legend .chip,.mixb,#seg button,#cats .chip,.cell[data-r],.hm-row[data-r],[data-ret]');
   if (!t) return;
   if (t.dataset.share) share(t.dataset.share);
   else if (t.dataset.open) { S.wantWatch = !!t.dataset.watch; openDeal(t.dataset.open); }
@@ -914,7 +946,7 @@ document.addEventListener('click', (e) => {
   else if (t.matches('#legend .chip,.mixb')) { S.group = S.group === t.dataset.g ? '' : t.dataset.g; refresh(); }
   else if (t.matches('#seg button')) { S.group = t.dataset.g; refresh(); }
   else if (t.matches('#cats .chip')) { S.cat = t.dataset.c; refresh(); }
-  else if (t.dataset.r) { S.cat = t.dataset.c; $('#f-ret').value = t.dataset.r; S.group = ''; refresh(); goDeals(); }
+  else if (t.dataset.r) { S.cat = t.dataset.c || ''; $('#f-ret').value = t.dataset.r; S.group = ''; refresh(); goDeals(); }
   else if (t.dataset.ret) { $('#f-ret').value = t.dataset.ret; S.cat = ''; S.group = ''; refresh(); goDeals(); }
 });
 $('#dlg').addEventListener('click', (e) => { if (e.target === $('#dlg')) $('#dlg').close(); });
