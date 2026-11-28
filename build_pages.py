@@ -287,9 +287,10 @@ for d in price_dir.iterdir():
 idx = HERE / "index.html"
 ih = idx.read_text()
 top_keys = sorted(by_key, key=lambda k: -max(x["score"] for x in by_key[k]))[:24]
-links = ('<div class="fcats">' + "".join(f'<a href="/deals/{slugify(c)}/">{e(c)}</a>' for c in cats) + '</div>'
-         + '<p style="margin:16px 0 0">Popular price checks</p><div class="fcats">'
-         + "".join(f'<a href="/price/{e(k)}/">{e(by_key[k][0]["product"])}</a>' for k in top_keys) + '</div>')
+links = ('<details class="fl"><summary>Browse deals by category</summary><p>'
+         + " · ".join(f'<a href="/deals/{slugify(c)}/">{e(c)}</a>' for c in cats) + '</p></details>'
+         + '<details class="fl"><summary>Popular price checks</summary><p>'
+         + " · ".join(f'<a href="/price/{e(k)}/">{e(by_key[k][0]["product"])}</a>' for k in top_keys) + '</p></details>')
 ih = re.sub(r"<!--SEO-LINKS-->.*?<!--/SEO-LINKS-->", lambda m: "<!--SEO-LINKS-->" + links + "<!--/SEO-LINKS-->", ih, flags=re.S)
 idx.write_text(ih)
 print(len(made), "product pages")
