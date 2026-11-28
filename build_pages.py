@@ -129,7 +129,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 {''.join(body)}
 <div class="cats">{other}</div>
 {disc}
-<p class="fine">Prices come from retailer pages and dated deal reports, change through the day, and may be member-only or colour-specific. Always confirm the price at checkout. Strikethrough is independent and isn't paid by the retailers listed.</p>
+<p class="fine">Prices come from retailer pages and dated deal reports, change through the day, and may be member-only or colour-specific. Always confirm the price at checkout. Strikethrough is independent and isn't paid by the retailers listed. <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a> · <a href="/contact/">Contact &amp; corrections</a></p>
 </div></body></html>"""
     out = HERE / "deals" / slug
     out.mkdir(parents=True, exist_ok=True)
@@ -143,6 +143,7 @@ for d in (HERE / "deals").iterdir():
             f.unlink()
         d.rmdir()
 
+urls += [f"{SITE}/{p}/" for p in ("privacy", "terms", "contact")]
 (HERE / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
                                   + "".join(f"  <url><loc>{u}</loc><lastmod>{latest}</lastmod></url>\n" for u in urls) + "</urlset>\n")
 (HERE / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n")

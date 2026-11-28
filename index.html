@@ -147,6 +147,7 @@ select,input{font:inherit;font-size:16px;color:var(--ink);background:var(--soft)
 .hist text{font:12px Inter,system-ui,sans-serif;fill:var(--mute);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
 .drow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
 .drow>*{flex:1 1 200px}
+.flinks{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;color:var(--mute)}.flinks a{color:var(--mute)}
 .copied{font-size:13px;color:var(--green);min-height:1.2em;margin:6px 0 0}
 /* Check a deal */
 .chk{margin-top:22px;border:1px solid var(--line);background:var(--soft);border-radius:18px;padding:14px;max-width:820px}
@@ -521,6 +522,7 @@ dialog::backdrop{background:rgb(0 0 0 / .65);-webkit-backdrop-filter:blur(6px);b
     <span>Independent, and not paid by the retailers listed.</span>
     <span id="foot-upd"></span>
   </div>
+  <div class="wrap flinks" style="margin-top:14px"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="/contact/">Contact &amp; corrections</a><span>Run independently by Cameron Gibbens</span></div>
   <div class="wrap" style="margin-top:18px"><span>Browse checked deals by category</span><div class="fcats" id="fcats"></div><p class="disc" id="disc2" hidden></p></div>
 </footer>
 

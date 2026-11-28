@@ -30,13 +30,14 @@ export function message(meta, row, key) {
   const text = `${row.product} is now ${money(row.now)} at ${row.retailer}. You asked us to tell you when it dropped below ${money(meta.w)}.\n\n` +
     `Our verdict: ${row.verdict}. ${row.reason || ''}\n\nPrice story: ${story}\n\n` +
     `Strikethrough checks Australian deals against price history and other stores. It is independent and not paid by retailers.\n` +
+    `Sent by Strikethrough (Cameron Gibbens, Melbourne). Contact: hello@strikethrough.com.au\n` +
     `Stop alerts for this product: ${unsub}`;
   const html = `<div style="font:15px/1.5 -apple-system,Segoe UI,sans-serif;color:#111;max-width:520px">` +
     `<p style="font-size:20px;font-weight:700;margin:0 0 6px">${esc(row.product)} is now ${money(row.now)}</p>` +
     `<p style="margin:0 0 14px">at ${esc(row.retailer)}. You asked us to tell you when it dropped below ${money(meta.w)}.</p>` +
     `<p style="margin:0 0 14px"><b>Our verdict:</b> ${esc(row.verdict)}. ${esc(row.reason || '')}</p>` +
     `<p><a href="${story}" style="display:inline-block;background:#e0362c;color:#fff;padding:10px 18px;border-radius:999px;text-decoration:none;font-weight:600">See the price story</a></p>` +
-    `<p style="color:#666;font-size:12px;margin-top:24px">Strikethrough checks Australian deals against price history and other stores. It is independent and not paid by retailers. ` +
+    `<p style="color:#666;font-size:12px;margin-top:24px">Strikethrough checks Australian deals against price history and other stores. It is independent and not paid by retailers. Sent by Strikethrough (Cameron Gibbens, Melbourne), <a href="mailto:hello@strikethrough.com.au" style="color:#666">hello@strikethrough.com.au</a>. ` +
     `<a href="${unsub}" style="color:#666">Stop alerts for this product</a>.</p></div>`;
   return { subject, text, html, unsub };
 }
